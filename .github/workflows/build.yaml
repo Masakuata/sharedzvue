@@ -1,6 +1,7 @@
-name: 'Construir imagen de Docker'
+name: '🐋🚀Construir imagen de Docker'
 
 on:
+  # Ejecutar con boton
   workflow_dispatch:
     inputs:
       tag:
@@ -8,6 +9,9 @@ on:
         description: Version o tag de la imagen
         required: true
         default: latest
+  # Ejecutar cuando haya cambios en rama deploy
+  push:
+    branches: ['deploy']
 
 jobs:
   build_image:
