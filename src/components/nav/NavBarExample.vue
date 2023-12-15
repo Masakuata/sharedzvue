@@ -3,7 +3,7 @@
         <nav class="container px-6 py-8 mx-auto md:flex md:justify-between md:items-center">
             <div class="flex items-center justify-between">
                 <router-link to="/">
-                    <img src="@/assets/sharedz_full_transparent.png" alt="Descripción de la imagen" class="h-10  rounded-full shadow-lg">
+                    <img src="@/assets/sharedz_full_transparent.png" alt="Descripción de la imagen" class="h-10">
                 </router-link>
                 <!-- Mobile menu button -->
                 <div @click="toggleNav" class="flex md:hidden">
