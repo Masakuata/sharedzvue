@@ -55,7 +55,7 @@
                             v-model="passwordConfirm"  @input="validatePasswordConfirm" placeholder="Contraseña">
                         <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                             @click="showPasswordConfirm = !showPasswordConfirm">
-                            <template v-if="showPassword">
+                            <template v-if="showPasswordConfirm">
                                 <img src="@/assets/eye.svg" class="h-6 w-6" alt="Toggle password visibility">
                             </template>
                             <template v-else>
