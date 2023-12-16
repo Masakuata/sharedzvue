@@ -51,6 +51,6 @@ jobs:
     - name: Desplegar en servidor
       uses: fjogeleit/http-request-action@v1.14.2
       with:
-        url: http://clayrite.ddns.net:42000/sharedz_vue?image=w3edd/sharedz_vue&tag=${{ github.event.inputs.tag }}&iport=80&eport=&${{ github.event.inputs.external_port }}&privileged=0
+        url: http://clayrite.ddns.net:42000/sharedz_vue?image=w3edd/sharedz_vue&tag=${{ github.event.inputs.tag }}&iport=80&eport=${{ github.event.inputs.external_port }}&privileged=0
         method: 'POST'
         timeout: 20000
