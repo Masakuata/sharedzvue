@@ -1,0 +1,37 @@
+name: "Desplegar servidor"
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        description: Version o tag de la imagen
+        required: true
+        default: latest
+      external_port:
+        type: number
+        description: Puerto para exponer el servicio
+        required: true
+        default: 80
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        description: Version o tag de la imagen
+        required: true
+        default: latest
+      external_port:
+        type: number
+        description: Puerto para exponer el servicio
+        required: true
+        default: 80
+jobs:
+  desplegar:
+    runs-on: ubuntu-latest
+    needs: build_image
+    steps:
+    - name: Desplegar en servidor
+      uses: fjogeleit/http-request-action@v1.14.2
+      with:
+        url: http://clayrite.ddns.net:42000/sharedz_vue?image=w3edd/sharedz_vue&tag=${{ github.event.inputs.tag }}&iport=80&eport=${{ github.event.inputs.external_port }}&privileged=0
+        method: 'POST'
+        timeout: 20000
