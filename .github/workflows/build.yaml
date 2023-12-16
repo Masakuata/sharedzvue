@@ -52,7 +52,7 @@ jobs:
   desplegar:
     needs: build_image
     if: ${{ fromJSON(inputs.deploy) }}
-    uses: ./.github/deploy.yaml
+    uses: ./.github/workflows/deploy.yaml
     with:
       external_port: ${{ fromJSON(inputs.external_port) }}
       tag: ${{ inputs.tag }}
