@@ -1,8 +1,8 @@
 <template>
-    <div class="pt-10 pb-10  md:flex md:justify-center  md:h-[88vh] md:pt-0 md:pb-0 md:items-center">
+    <div class="pt-10 pb-10  md:flex md:justify-center  md:h-[88vh] md:pt-0 md:pb-0 md:items-center md:w-screen">
 
 
-        <div class="flex flex-col px-10 md:flex-row md:space-x-10 lg:space-x-80">
+        <div class="flex flex-col px-10 md:flex-row md:w-full">
             <div class="md:w-1/2">
                 <h1 class="w-full text-center md:text-2xl md:text-center">
                     Comienza a organizar tus gastos grupales de manera automatizada
@@ -15,7 +15,7 @@
 
 
 
-            <div class="md:w-1/2">
+            <div class="md:w-1/2 md:px-10">
                 <div class="flex">
                     <p @click="register" class="text-start w-1/2"
                         :class="isRegister ? 'text-blueLetters font-bold underline' : 'text-black'">Regístrate</p>

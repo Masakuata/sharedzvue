@@ -1,6 +1,6 @@
 <template>
 
-  <div class="flex flex-col items-center px-5 md:flex-row md:items-center md:h-screen">
+  <div class="flex flex-col items-center px-5  md:px-0 md:flex-row md:items-center md:w-screen md:h-screen">
 
     <div class="w-full h-96 mt-5 bg-blue-300 rounded-lg mx-1 p-5  md:w-1/2 md:mx-10 md:h-96">
       <p class="text-lg font-semibold text-white">Hola, somos una pagina que te ayudara a organizar tus gastos mejor en tus eventos con tus amigos.

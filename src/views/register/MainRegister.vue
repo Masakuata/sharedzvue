@@ -91,6 +91,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { validateEmail, validatePassword, validateName } from '@/utils/validator.js'
+import { registrarUsuario } from '@/api/api.js'
+import axios from 'axios';
 
 
 const email = ref('');
@@ -127,12 +129,23 @@ const validateForm = () => {
 
 const submitForm = () => {
     if (validateForm()) {
-        console.log('Formulario enviado:');
-        // Aquí puedes hacer el envío del formulario o manejar los datos como necesites
+        let miembro = {
+            username: nickname.value,
+            email: email.value,
+            password: password.value
+        }
+        postUsuario(miembro);
     } else {
         console.log('Errores en el formulario:');
     }
 };
+
+const postUsuario = async (miembro) => {
+    let respuesta = await registrarUsuario(miembro);
+    console.log('Respuesta del servidor:');
+    
+    console.log(respuesta);
+}
 
 const validarEmail = () => {
     faltaEmail.value = false;

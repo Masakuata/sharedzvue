@@ -20,30 +20,35 @@
             <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
             <ul :class="showMenu ? 'flex' : 'hidden'"
                 class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-10 md:mt-0">
-                <li>
-                    <router-link class="text-white" to="/identificate">Login</router-link>
-                </li>
-
-                <li>
-                    <router-link class="text-white" to="/identificate">Regístrate</router-link>
-                </li>
-
-                <li>
-                    <router-link class="text-white" to="/">Home</router-link>
-                </li>
-
                 
+                <li v-for="(menu, index) in menus" :key="index">
+                    <router-link class="text-white" :to="menu.path">{{ menu.name }}</router-link>
+                </li>
             </ul>
         </nav>
     </div>
 </template>
-<script>
+<script setup>
 import { ref } from "vue";
-export default {
-    setup() {
-        let showMenu = ref(false);
-        const toggleNav = () => (showMenu.value = !showMenu.value);
-        return { showMenu, toggleNav };
+
+let showMenu = ref(false);
+const toggleNav = () => (showMenu.value = !showMenu.value);
+const menus = [
+    {
+        name: "Home",
+        path: "/",
     },
-};
+    {
+        name: "Login",
+        path: "/identificate",
+    },
+    {
+        name: "Regístrate",
+        path: "/identificate",
+    },
+];
+
+
+        
+        
 </script>
