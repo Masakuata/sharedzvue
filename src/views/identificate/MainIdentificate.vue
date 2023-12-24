@@ -1,15 +1,15 @@
 <template>
-    <div class="pt-10 pb-10  md:flex md:justify-center  md:h-[88vh] md:pt-0 md:pb-0 md:items-center md:w-screen">
+    <div class="pt-10 pb-10 bg-bgBlue md:bg-bgBlue md:flex md:justify-center  md:h-[100vh] md:pt-0 md:pb-0 md:items-center md:w-full">
 
 
         <div class="flex flex-col px-10 md:flex-row md:w-full">
             <div class="md:w-1/2">
-                <h1 class="w-full text-center md:text-2xl md:text-center">
-                    Comienza a organizar tus gastos grupales de manera automatizada
+                <h1 class="w-full text-center md:text-2xl md:text-center text-white">
+                    Comienza a organizar tus ventas e inventario de manera automatizada
                 </h1>
 
                 <div class="flex justify-center">
-                    <img src="@/assets/friends_transparent.png" alt="Descripción de la imagen" class="w-36 md:w-96" />
+                    <img src="@/assets/pet-icon.svg" alt="Descripción de la imagen" style="width: 600px; height: auto;" />
                 </div>
             </div>
 
@@ -18,9 +18,9 @@
             <div class="md:w-1/2 md:px-10">
                 <div class="flex">
                     <p @click="register" class="text-start w-1/2"
-                        :class="isRegister ? 'text-blueLetters font-bold underline' : 'text-black'">Regístrate</p>
+                        :class="isRegister ? 'text-white font-bold underline' : 'text-white'">Regístrate</p>
                     <p @click="login" class="text-end w-1/2"
-                        :class="isLogin ? 'text-blueLetters font-bold underline' : 'text-black'">Iniciar Sesión</p>
+                        :class="isLogin ? 'text-white font-bold underline' : 'text-white'">Iniciar Sesión</p>
                 </div>
 
                 <MainLogin v-if="isLogin"></MainLogin>

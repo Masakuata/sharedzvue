@@ -1,10 +1,10 @@
 <template>
-    <div class="flex flex-col w-full pt-10">
+    <div class="flex flex-col w-full pt-10 md:w-full ">
 
         <div>
             <form @submit.prevent="submitForm" class="space-y-4">
                 <div>
-                    <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
+                    <label for="correo" class="block text-sm font-medium text-white">Correo</label>
                     <input type="email" id="correo" v-model="email" @input="validateEmail"
                         class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
                     <template v-if="email.length > 0">
@@ -15,7 +15,7 @@
                 </div>
 
                 <div>
-                    <label for="contraseniaComp" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <label for="contraseniaComp" class="block text-sm font-medium text-white">Contraseña</label>
                     <div class="relative">
                         <input :type="showPassword ? 'text' : 'password'" id="contraseniaComp"
                             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg"
@@ -39,12 +39,9 @@
 
 
                 <div class="flex pt-5">
-                    <button class="w-full bg-redCancel h-12 rounded-lg text-white font-semibold text-lg mr-1">
-                        Cancelar
-                    </button>
-                    <ButtonX :text="'Iniciar'" :isLoading="loading" @onClick="submitForm"></ButtonX>
+                    <ButtonX :isLoading="loading" 
+                    @click="iniciarSesion">Iniciar</ButtonX>
                 </div>
-
 
             </form>
         </div>
@@ -54,8 +51,13 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { validateEmail, validatePassword } from '@/utils/validator.js'
-import { login } from '@/api/api';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+import {useMyStore} from '@/stores/store.js';
+import { useRouter } from 'vue-router'
+
+
+const router = useRouter();
+const {loginStore, logoutStore} = useMyStore();
 
 const showPassword = ref(false);
 
@@ -106,7 +108,10 @@ const validateForm = () => {
     return emailValid.value && passwordValid.value;
 };
 
-const submitForm = () => {
+
+
+const iniciarSesion = () => {
+    console.log('Clic en iniciar sesion');
     if (validateForm()) {
 
         let miembro = {
@@ -114,7 +119,6 @@ const submitForm = () => {
             password: password.value
         }
         loginUsuario(miembro);
-        console.log('Formulario enviado:');     // Aquí puedes hacer el envío del formulario o manejar los datos como necesites
     } else {
         console.log('Errores en el formulario:');
     }
@@ -122,12 +126,23 @@ const submitForm = () => {
 
 const loginUsuario = async (miembro) => {
     loading.value = true;
-    let respuesta = await login(miembro);
-    console.log('Respuesta del servidor:');
-    console.log(respuesta);
+    //let respuesta = await login(miembro);
+    //console.log('Respuesta del servidor:');
+    //console.log(respuesta);
     setTimeout(() => {
         loading.value = false;
+        localStorage.setItem('token', '1234567890');
+        loginStore();
+        router.push({ name: 'home' })
+
     }, 3000);
+    
+}
+
+
+const cancelar = () => {
+    console.log('Clic en cancelar');    
+    logoutStore();
 }
 
 

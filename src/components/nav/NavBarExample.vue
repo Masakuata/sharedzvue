@@ -29,11 +29,15 @@
     </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import {useMyStore} from '@/stores/store.js';
+
+
+const store = useMyStore();
 
 let showMenu = ref(false);
 const toggleNav = () => (showMenu.value = !showMenu.value);
-const menus = [
+const menus = ref( [
     {
         name: "Home",
         path: "/",
@@ -46,7 +50,45 @@ const menus = [
         name: "Regístrate",
         path: "/identificate",
     },
-];
+]);
+
+const modifyMenus = (loggedIn) => {
+    console.log("Modificando el menu");
+    if (loggedIn) {
+        menus.value= [
+            {
+                name: "Main Home",
+                path: "/",
+            },
+            {
+                name: "Registrar producto",
+                path: "/add-product",
+            },
+        ]
+    }else{
+        menus.value= [
+            {
+                name: "Home",
+                path: "/",
+            },
+            {
+                name: "Login",
+                path: "/identificate",
+            },
+            {
+                name: "Regístrate",
+                path: "/identificate",
+            },
+        ]
+    }
+};
+
+watch(
+    () => store.loggedIn,
+    () => {
+        modifyMenus(store.loggedIn);
+    }
+)
 
 
         

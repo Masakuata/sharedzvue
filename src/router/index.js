@@ -1,14 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/identificate',
     name: 'identificate',
     component: function () {
       return import(/* webpackChunkName: "identificate" */ '../views/identificate/MainIdentificate.vue')
@@ -16,17 +10,31 @@ const routes = [
   },
 
   {
-    path: '/about',
-    name: 'about',
+    path: '/home',
+    name: 'home',
     component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+      return import(/* webpackChunkName: "identificate" */ '../views/home/Home.vue')
     }
   },
   {
-    path: '/login',
-    name: 'login',
+    path: '/add-customer',
+    name: 'addcustomer',
     component: function () {
-      return import(/* webpackChunkName: "login" */ '../views/login/MainLogin.vue')
+      return import(/* webpackChunkName: "identificate" */ '../views/addcustomer/AddCustomer.vue')
+    }
+  },
+  {
+    path: '/add-note',
+    name: 'addnote',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/addnote/AddNote.vue')
+    }
+  },
+  {
+    path: '/inventory',
+    name: 'inventory',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/inventory/Inventory.vue')
     }
   }
 ]

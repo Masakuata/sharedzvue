@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@vue-hero-icons/outline": "^1.7.2",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
     "bootstrap-icons": "^1.11.2",

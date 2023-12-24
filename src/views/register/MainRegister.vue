@@ -4,7 +4,7 @@
         <div>
             <form @submit.prevent="submitForm" class="space-y-4">
                 <div>
-                    <label for="nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
+                    <label for="nickname" class="block text-sm font-medium text-white">Nickname</label>
                     <input type="text" id="nickname" v-model="nickname" @input="validateNickname"
                         class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
                     <template v-if="nickname.length > 0">
@@ -15,7 +15,7 @@
                 </div>
 
                 <div>
-                    <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
+                    <label for="correo" class="block text-sm font-medium text-white">Correo</label>
                     <input  id="correo" v-model="email" @input="validarEmail"
                         class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
                     <template v-if="email.length > 0">
@@ -26,7 +26,7 @@
                 </div>
 
                 <div>
-                    <label for="contraseniaComp" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <label for="contraseniaComp" class="block text-sm font-medium text-white">Contraseña</label>
                     <div class="relative">
                         <input :type="showPassword ? 'text' : 'password'" id="contraseniaComp"
                             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg"
@@ -48,7 +48,7 @@
                     <p v-else-if="faltaPassword" class="text-red-600">La contraseña es un campo requerido</p>
                 </div>
                 <div>
-                    <label for="contraseniaConf" class="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
+                    <label for="contraseniaConf" class="block text-sm font-medium text-white">Confirmar Contraseña</label>
                     <div class="relative">
                         <input :type="showPasswordConfirm ? 'text' : 'password'" id="contraseniaConf"
                             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg"
@@ -71,14 +71,8 @@
                 </div>
 
                 <div class="flex pt-5">
-                    <button type="submit" class="w-full bg-redCancel h-12 rounded-lg text-white font-semibold text-lg mr-1">
-                        Cancelar
-                    </button>
-
-                    <button type="submit"
-                        class="w-full bg-primaryBlue h-12 rounded-lg text-white font-semibold text-lg ml-1">
-                        Registrarse
-                    </button>
+                    <ButtonX :isLoading="loading" 
+                    @click="submitForm">Registrarse</ButtonX>
 
                 </div>
 
@@ -92,7 +86,7 @@
 import { ref, watch } from 'vue'
 import { validateEmail, validatePassword, validateName } from '@/utils/validator.js'
 import { registrarUsuario } from '@/api/api.js'
-import axios from 'axios';
+import ButtonX from '@/components/utilities/ButtonX.vue';
 
 
 const email = ref('');
@@ -116,6 +110,8 @@ const faltaPasswordConfirm = ref(false);
 
 const mensajeErrorPasword = ref('');
 
+const loading = ref(false); 
+
 
 
 const validateForm = () => {
@@ -129,6 +125,7 @@ const validateForm = () => {
 
 const submitForm = () => {
     if (validateForm()) {
+        loading.value = true;
         let miembro = {
             username: nickname.value,
             email: email.value,
@@ -141,10 +138,10 @@ const submitForm = () => {
 };
 
 const postUsuario = async (miembro) => {
-    let respuesta = await registrarUsuario(miembro);
-    console.log('Respuesta del servidor:');
+    //let respuesta = await registrarUsuario(miembro);
     
-    console.log(respuesta);
+
+    loading.value = false;
 }
 
 const validarEmail = () => {

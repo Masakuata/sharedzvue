@@ -1,7 +1,7 @@
 // store.js
 import { defineStore } from 'pinia';
 
-export const useMiStore = defineStore('miStore', {
+export const useMyStore = defineStore('miStore', {
     // Estado del store
     state: () => {
         return {
@@ -10,10 +10,12 @@ export const useMiStore = defineStore('miStore', {
     },
     // Acciones
     actions: {
-        login() {
+        loginStore() {
+            console.log('Logeando en la store');
             this.loggedIn = true;
         },
-        logout() {
+        logoutStore() {
+            console.log('Deslogeando en la store');
             this.loggedIn = false;
         }
     },
