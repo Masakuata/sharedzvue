@@ -5,7 +5,7 @@
             type="button" @click="toggleSidebar"
             class="inline-flex   items-center p-2 mt-2 ms-3 text-sm text-black rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
             <span class="sr-only">Open sidebar</span>
-            <svg class="w-6 h-6 md:hidden" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+            <svg id="menuButton" class="w-6 h-6 md:hidden" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
                 <path clip-rule="evenodd" fill-rule="evenodd"
                     d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
@@ -17,7 +17,7 @@
 
 
         <aside :class="{ 'translate-x-0': isSidebarOpen, '-translate-x-full': !isSidebarOpen }"
-            class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0" aria-label="Sidebar">
+            class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform duration-500 md:translate-x-0" aria-label="Sidebar">
 
             <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                 <div :class="{ 'text-right': isSidebarOpen }" class="md:inline">
@@ -114,12 +114,14 @@
 
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, defineEmits } from 'vue'
 import { useRouter } from 'vue-router';
 import {useMyStore} from '@/stores/store.js';
 
+const emit = defineEmits(['cerrarSesion']);
+
 const router = useRouter();
-const {logoutStore} = useMyStore();
+const store = useMyStore();
 
 const goHome = () => {
     toggleSidebar()
@@ -143,16 +145,31 @@ const goInventory = () => {
 const isSidebarOpen = ref(false)
 
 const toggleSidebar = () => {
+    console.log('toggleSidebar en el sidebar');
     isSidebarOpen.value = !isSidebarOpen.value
 }
 
-const cerrarSesion = () => {
-    localStorage.removeItem('token');
-    logoutStore();
-    router.push({ name: 'identificate' })
-    toggleSidebar()
+const closeSidebar = () => {
+    isSidebarOpen.value = false 
 }
 
+const cerrarSesion = () => {
+    emit('cerrarSesion');
+}
+watch(
+    () => store.sidebarStore,
+    () => {
+        console.log('watch sidebarStore');
+        closeSidebar();
+    }
+)
+
+watch(
+    () => store.loggedIn,
+    () => {
+        isLogged.value = store.loggedIn;
+    }
+)
 
 
 </script>

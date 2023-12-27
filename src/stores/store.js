@@ -6,6 +6,7 @@ export const useMyStore = defineStore('miStore', {
     state: () => {
         return {
             loggedIn: false,
+            sidebarStore: false,
         };
     },
     // Acciones
@@ -17,6 +18,10 @@ export const useMyStore = defineStore('miStore', {
         logoutStore() {
             console.log('Deslogeando en la store');
             this.loggedIn = false;
+        },
+        toggleSidebarStore() {
+            console.log('Toggling sidebar en la store', this.sidebarStore);
+            this.sidebarStore = !this.sidebarStore;
         }
     },
     // Getters

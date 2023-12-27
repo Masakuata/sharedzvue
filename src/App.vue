@@ -5,9 +5,9 @@
 
     <div class="flex flex-col bg-bgBlue md:flex  md:flex-row" :class="{'bg-white' : isLogged }">
       <div v-if="isLogged" class="w-fit">
-        <SideBar></SideBar>
+        <SideBar @cerrarSesion="cerrarSesion"></SideBar>
       </div>
-      <div class="md:w-full md:h-[100vh] h-[95vh] bg-bgBlue" :class="{'bg-white' : isLogged }">
+      <div class="md:w-full md:h-[100vh] h-[90vh] bg-bgBlue" :class="{'bg-white' : isLogged }">
         <RouterView></RouterView>
       </div>
     </div> 
@@ -21,24 +21,40 @@
 import SideBar from './components/nav/SideBar.vue';
 import {useMyStore} from '@/stores/store.js';
 import { ref, watch, onMounted } from "vue";
+import { useRouter } from 'vue-router';
 
 const store = useMyStore();
 const isLogged = ref(false);
+const router = useRouter();
 
+const goHome = () => {
+    router.push({ name: 'home' })
+}
 
+const cerrarSesion = () => {
+    localStorage.removeItem('token');
+    store.logoutStore();
+    isLogged.value = false; 
+    router.push({ name: 'identificate' })
+}
 
 watch(
     () => store.loggedIn,
     () => {
+      console.log('Entro al watch de app para actualizar isLogged', store.loggedIn)
         isLogged.value = store.loggedIn;
     }
 )
 
 onMounted(() => {
+    console.log('onMounted app'); 
     let token = localStorage.getItem('token');
+    console.log('token', token);  
     if (token) {
         isLogged.value = true;
-    }
+        goHome();
+    }else{
+        router.push({ name: 'identificate' })}
 })
 
 </script>

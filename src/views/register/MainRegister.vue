@@ -138,7 +138,7 @@ const submitForm = () => {
 };
 
 const postUsuario = async (miembro) => {
-    //let respuesta = await registrarUsuario(miembro);
+    let respuesta = await registrarUsuario(miembro);
     
 
     loading.value = false;
