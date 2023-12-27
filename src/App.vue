@@ -3,11 +3,11 @@
   
   <main>
 
-    <div class="flex flex-col bg-bgBlue md:flex  md:flex-row" :class="{'bg-white' : isLogged }">
+    <div class="flex flex-col bg-bgBlue md:flex  md:flex-row">
       <div v-if="isLogged" class="w-fit">
         <SideBar @cerrarSesion="cerrarSesion"></SideBar>
       </div>
-      <div class="md:w-full md:h-[100vh] h-[90vh] bg-bgBlue" :class="{'bg-white' : isLogged }">
+      <div class="md:w-full md:h-[100vh] h-[100vh] bg-bgBlue" :class="{'bg-white' : isLogged }">
         <RouterView></RouterView>
       </div>
     </div> 

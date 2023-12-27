@@ -1,6 +1,8 @@
 <template>
-    <div @click="clickEnDiv" class="flex flex-col items-center pl-4  w-full h-full md:h-full">
-        <h1 class="text-xl font-semibold w-full text-left" >Bienvenido</h1>
+
+<h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3" >INICIO</h1>
+    <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+        
         <div class="flex text-left w-full">
           <p class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>

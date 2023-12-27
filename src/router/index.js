@@ -36,6 +36,14 @@ const routes = [
     component: function () {
       return import(/* webpackChunkName: "identificate" */ '../views/inventory/Inventory.vue')
     }
+  },
+
+  {
+    path: '/sales',
+    name: 'sales',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/sales/Sales.vue')
+    }
   }
 ]
 

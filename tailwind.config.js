@@ -13,6 +13,8 @@ module.exports = {
         blueLetters: '#4771A3',
         prymaryDarkBlue: '#145f63',
         bgBlue: '#054F7E',
+        textBlueDark: '#001D33',
+        bgBlueLight: '#CFE5FF',
       }
     },
   },
