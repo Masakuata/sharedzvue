@@ -1,0 +1,19 @@
+name: "🚀Desplegar con Netlify"
+
+on:
+  workflow_dispatch
+
+jobs:
+  merge_to_deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout codigo
+      uses: actions/checkout@v2
+
+    - name: Update deployment
+      uses: devmasx/merge-branch@master
+      with:
+        type: now
+        from_branch: main
+        target_branch: deployment
+        github_token: ${{ secrets.EDSON_GITHUB_TOKEN }}
