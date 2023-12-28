@@ -1,4 +1,4 @@
-name: "Desplegar servidor"
+name: "🚀Desplegar con Anton"
 on:
   workflow_call:
     inputs:

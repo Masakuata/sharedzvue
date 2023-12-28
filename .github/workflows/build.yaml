@@ -1,4 +1,4 @@
-name: '🐋🚀Construir imagen de Docker'
+name: '🐋Construir imagen de Docker'
 
 on:
   # Ejecutar con boton
@@ -20,8 +20,6 @@ on:
         required: true
         default: false
   # Ejecutar cuando haya cambios en rama deploy
-  push:
-    branches: ['deploy']
 
 jobs:
   build_image:
@@ -49,9 +47,9 @@ jobs:
         tags: ${{ secrets.EDSON_DOCKERHUB_ID }}/sharedz_vue:${{ github.event.inputs.tag }}
         platforms: linux/amd64, linux/arm64
         push: true
-  desplegar:
+  desplegar_con_anton:
     needs: build_image
-    if: ${{ fromJSON(inputs.deploy) }}
+    if: ${{ fromJSON(inputs.deploy) }} && ${{ inputs.name == "Anton" }}
     uses: ./.github/workflows/deploy.yaml
     with:
       external_port: ${{ fromJSON(inputs.external_port) }}
