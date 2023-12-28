@@ -54,6 +54,7 @@ import { validateEmail, validatePassword } from '@/utils/validator.js'
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import {useMyStore} from '@/stores/store.js';
 import { useRouter } from 'vue-router'
+import { login } from '@/api/api.js'
 
 
 const router = useRouter();
@@ -126,7 +127,15 @@ const iniciarSesion = () => {
 
 const loginUsuario = async (miembro) => {
     loading.value = true;
-    //let respuesta = await login(miembro);
+    let respuesta = {}
+    try {
+        respuesta = await login(miembro);
+    } catch (error) {
+        console.log('Error en loginUsuario');
+        console.log(error);
+    }
+    
+    
     //console.log('Respuesta del servidor:');
     //console.log(respuesta);
     setTimeout(() => {

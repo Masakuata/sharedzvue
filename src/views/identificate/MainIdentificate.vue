@@ -1,6 +1,6 @@
 <template>
-    <div class="pt-10 pb-10 bg-bgBlue md:bg-bgBlue md:flex md:justify-center  md:h-[100vh] md:pt-0 md:pb-0 md:items-center md:w-full">
-
+    <div
+        class="pt-10 pb-10 bg-bgBlue md:bg-bgBlue md:flex md:justify-center  md:h-[100vh] md:pt-0 md:pb-0 md:items-center md:w-full">
 
         <div class="flex flex-col px-10 md:flex-row md:w-full">
             <div class="md:w-1/2">
@@ -24,7 +24,7 @@
                 </div>
 
                 <MainLogin v-if="isLogin"></MainLogin>
-                <MainRegister v-if="isRegister"></MainRegister>
+                <MainRegister v-if="isRegister" @user-registered="userRegistered"></MainRegister>
 
             </div>
 
@@ -44,6 +44,10 @@
 import { ref, onMounted } from 'vue'
 import MainLogin from '@/views/login/MainLogin.vue'
 import MainRegister from '@/views/register/MainRegister.vue'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
+
 
 
 const isLogin = ref(true);
@@ -60,10 +64,21 @@ const register = () => {
     isRegister.value = true;
 }
 
+const userRegistered = () => {
+    login();
+    notify();
+}
+
+const notify = () => {
+    toast("Te has registrado exitosamente, ahora inicia sesión", {
+        type: 'success',
+        autoClose: 2000,
+    });
+}
+
 
 
 onMounted(() => {
-    //cargar();
 });
 
 </script>

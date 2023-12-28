@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
-const url = 'http://clayrite.ddns.net:80'
+const url = 'http://clayrite.ddns.net:81'
 const env = 'devn'
 
 function getUrl() {
@@ -14,29 +14,34 @@ function getUrl() {
 }
 
 export async function registrarUsuario(miembro) {
-    const complemento = '/miembro';
-    let urlnew = getUrl() + complemento; 
+    const complemento = '/usuario';
+    let urlnew = getUrl() + complemento;
+    let respuesta = {} 
 
     try { // Reemplaza con tu URL
-        const respuesta = await axios.post(urlnew, miembro);
-        console.log('Respuesta:', respuesta.data);
-        // Manejo de la respuesta
+        console.log('El miembro es', miembro);
+
+        respuesta = await axios.post(urlnew, miembro);
+        return respuesta;
     } catch (error) {
-        console.error('Error en la petición POST:', error);
-        // Manejo del error
+        throw error;
     }
 }
 
 export async function login(user) {
-    const complemento = '/miembro/login';
+    const complemento = '/usuario/login';
     let urlnew = getUrl() + complemento; 
 
-    try { // Reemplaza con tu URL
-        const respuesta = await axios.post(urlnew, user);
-        console.log('Respuesta:', respuesta.data);
-        // Manejo de la respuesta
+    try { 
+        let respuesta = await axios.post(urlnew, user);
+        let respuestaJson =  respuesta.json
+        console.log('RespuestaJson:', respuestaJson);
+        //let token = respuestaJson.headers.get('Token')
+        console.log('La respuesta es', respuestaJson);
+        //console.log('El token es', token);
+        return respuesta  
     } catch (error) {
-        console.error('Error en la petición POST:', error);
-        // Manejo del error
+        console.log('Error en login', error);
+        throw error;
     }
 }

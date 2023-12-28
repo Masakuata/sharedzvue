@@ -16,7 +16,7 @@
 
                 <div>
                     <label for="correo" class="block text-sm font-medium text-white">Correo</label>
-                    <input  id="correo" v-model="email" @input="validarEmail"
+                    <input id="correo" v-model="email" @input="validarEmail"
                         class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
                     <template v-if="email.length > 0">
                         <p class="text-green-600" v-if="emailValid">Email Válido</p>
@@ -30,7 +30,7 @@
                     <div class="relative">
                         <input :type="showPassword ? 'text' : 'password'" id="contraseniaComp"
                             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg"
-                            v-model="password"  @input="validarPassword" placeholder="Contraseña">
+                            v-model="password" @input="validarPassword" placeholder="Contraseña">
                         <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                             @click="showPassword = !showPassword">
                             <template v-if="showPassword">
@@ -52,7 +52,7 @@
                     <div class="relative">
                         <input :type="showPasswordConfirm ? 'text' : 'password'" id="contraseniaConf"
                             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg"
-                            v-model="passwordConfirm"  @input="validatePasswordConfirm" placeholder="Contraseña">
+                            v-model="passwordConfirm" @input="validatePasswordConfirm" placeholder="Contraseña">
                         <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                             @click="showPasswordConfirm = !showPasswordConfirm">
                             <template v-if="showPasswordConfirm">
@@ -67,12 +67,12 @@
                         <p class="text-green-600" v-if="passwordConfirmValid">Contraseña Válida</p>
                         <p v-else class="text-red-600">{{ mensajeErrorPasword }}</p>
                     </template>
-                    <p v-else-if="faltaPasswordConfirm" class="text-red-600">El confirmar contraseña es un campo requerido</p>
+                    <p v-else-if="faltaPasswordConfirm" class="text-red-600">El confirmar contraseña es un campo requerido
+                    </p>
                 </div>
 
                 <div class="flex pt-5">
-                    <ButtonX :isLoading="loading" 
-                    @click="submitForm">Registrarse</ButtonX>
+                    <ButtonX :isLoading="loading" @click="submitForm">Registrarse</ButtonX>
 
                 </div>
 
@@ -83,11 +83,22 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, defineEmits } from 'vue'
 import { validateEmail, validatePassword, validateName } from '@/utils/validator.js'
-import { registrarUsuario } from '@/api/api.js'
+import { registrarUsuario, login } from '@/api/api.js'
 import ButtonX from '@/components/utilities/ButtonX.vue';
+import { useRouter } from 'vue-router';
+import { useMyStore } from '@/stores/store.js';
 
+
+const emit = defineEmits(['userRegistered']);
+
+
+
+const { loginStore } = useMyStore();
+
+
+const router = useRouter();
 
 const email = ref('');
 const emailValid = ref(false);
@@ -110,7 +121,8 @@ const faltaPasswordConfirm = ref(false);
 
 const mensajeErrorPasword = ref('');
 
-const loading = ref(false); 
+const loading = ref(false);
+
 
 
 
@@ -119,11 +131,12 @@ const validateForm = () => {
     faltaPassword.value = password.length === undefined;
     faltaPasswordConfirm.value = passwordConfirm.length === undefined;
     faltaNickname.value = nickname.length === undefined;
-    
+
     return emailValid.value && passwordValid.value && passwordConfirmValid.value && nicknameValid.value;
 };
 
 const submitForm = () => {
+    
     if (validateForm()) {
         loading.value = true;
         let miembro = {
@@ -132,16 +145,30 @@ const submitForm = () => {
             password: password.value
         }
         postUsuario(miembro);
+        emit('user-registered');
     } else {
         console.log('Errores en el formulario:');
     }
 };
 
 const postUsuario = async (miembro) => {
-    //let respuesta = await registrarUsuario(miembro);
-    
+    try {
+        console.log('Registrando miembro', miembro);
+        await registrarUsuario(miembro);
+        loading.value = false;
+        console.log('Miembro registrado');
+        router.push({ name: 'identificate', params: { vista: 'login' } });
 
-    loading.value = false;
+    } catch (error) {
+        loading.value = false;
+        console.log(error);
+    }
+
+
+
+
+
+
 }
 
 const validarEmail = () => {
@@ -150,7 +177,7 @@ const validarEmail = () => {
 };
 
 const validarPassword = () => {
-    faltaPassword.value = false;    
+    faltaPassword.value = false;
     passwordValid.value = validatePassword(password.value);
     if (!passwordValid.value) {
         mensajeErrorPasword.value = 'La contraseña debe tener al menos 6 caracteres';

@@ -14,3 +14,7 @@ body {
   width: inherit;
   background-color: #054F7E;
 }
+
+.Toastify__toast-container {
+  width: 50%;
+}

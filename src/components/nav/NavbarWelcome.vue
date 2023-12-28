@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-primaryBlue text-gray-100 py-3 px-6 shadow md:flex justify-between 
+  <div class="bg-blue-400 text-gray-100 py-3 px-6 shadow md:flex justify-between 
 items-center ">
     <div class="flex items-start">
       <h1 class="text-2xl font-semibold">Sharedz</h1>
