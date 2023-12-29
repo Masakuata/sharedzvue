@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
 const url = 'http://clayrite.ddns.net:81'
-const env = 'devn'
+const env = 'dev'
 
 function getUrl() {
     if (env === 'dev') {
