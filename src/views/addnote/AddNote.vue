@@ -5,7 +5,7 @@
     </ModalX>
 
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">NOTAS</h1>
-    <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+    <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full bg-gray-50">
 
         <p class="w-full text-xl font-semibold">Cliente</p>
         <SearchX></SearchX>
