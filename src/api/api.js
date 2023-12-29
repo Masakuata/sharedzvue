@@ -98,3 +98,27 @@ export async function getClientesBusqueda(nombre) {
         throw error;
     }
 }
+
+export async function getProductosBusqueda(nombre) {
+    const complemento = '/producto'
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew, {params: {nombre: nombre}});
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postProducto(producto) {
+    const complemento = '/producto';
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.post(urlnew, producto);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -71,7 +71,7 @@
         </div>
 
         <div class="w-full mt-3">
-            <ButtonX color="blue" @click="registrarCliente">Registrar Cliente</ButtonX>
+            <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
         </div>
 
 
@@ -87,6 +87,9 @@ import { toggleSidebar } from '@/utils/sidebarManager.js';
 import { validateEmail, validateName, validateRFC } from '@/utils/validator.js'
 import { postCliente } from '@/api/api.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+import { toast } from 'vue3-toastify';
+
+const loading = ref(false);
 
 const email = ref('');
 const emailValid = ref(false);
@@ -189,28 +192,48 @@ const validateForm = () => {
     return emailValid.value && nameValid.value && rfcValid.value && direccionValid.value && telefonoValid.value;
 }
 
-const resgistarCliente = () => {
+const resgistrarCliente = () => {
     if (validateForm()) {
         let cliente = {
             email: email.value,
             nombre: name.value,
-            rfc: rfc.value,
+            RFC: rfc.value,
             direccion: direccion.value,
             telefono: telefono.value,
             tipoCliente: 0,
         }
-        registrarCliente(cliente);
+        postClienteMetod(cliente);
     }
 }
 
-const registrarCliente = async (cliente) => {
+const postClienteMetod = async (cliente) => {
+    loading.value = true;
     try {
         await postCliente(cliente);
+        notify();
+        cleanfields();
     } catch (error) {
         console.log(error);
 
     }
+    loading.value = false;
 };
+
+const notify = () => {
+    toast("Cliente registrado exitosamente", {
+        type: 'success',
+        autoClose: 2000,
+    });
+}
+
+const cleanfields = () => {
+    email.value = '';
+    name.value = '';
+    rfc.value = '';
+    direccion.value = '';
+    telefono.value = '';
+}
+
 
 
 onMounted(() => {
