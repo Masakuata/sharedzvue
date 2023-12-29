@@ -1,6 +1,10 @@
 <template>
-    <button @click="onClick" :disabled="isLoading"
-        class="w-full bg-white h-12 rounded-lg text-bgBlue font-semibold text-lg flex justify-center items-center">
+    <button @click="onClick" :disabled="isLoading" :class="{
+        'w-full bg-white h-12 rounded-lg text-bgBlue font-semibold text-lg flex justify-center items-center': isWhite,
+        'w-full bg-bgBlue h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isBlue,
+        'w-full bg-red-500 h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isRed,
+        'w-full bg-green-500 h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isGreen,
+    }">
         <span v-if="isLoading">
             <LoadingIcon></LoadingIcon>
         </span>
@@ -12,13 +16,38 @@
 </template>
   
 <script setup>
-import { defineProps} from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
 import LoadingIcon from '@/components/utilities/LoadingIcon.vue';
+
+
+const isBlue = ref(false);
+const isRed = ref(false);
+const isGreen = ref(false);
+const isWhite = ref(false);
 
 const props = defineProps({
     isLoading: Boolean,
+    color: String,
 });
 
+
+
+onMounted(() => {
+    switch (props.color) {
+        case 'blue':
+            isBlue.value = true;
+            break;
+        case 'red':
+            isRed.value = true;
+            break;
+        case 'green':
+            isGreen.value = true;
+            break;
+        default:
+            isWhite.value = true;
+            break;
+    }
+});
 
 </script>
   

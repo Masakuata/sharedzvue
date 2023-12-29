@@ -30,8 +30,7 @@ const desplazarHaciaElemento = () => {
   }
 };
 
-const clickEnDiv = () => {
-    console.log('click en div');    
+const clickEnDiv = () => {   
     toggleSidebar();
 };
 

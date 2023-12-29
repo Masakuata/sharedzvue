@@ -105,6 +105,7 @@ watch(
 const validateForm = () => {
     faltaPassword.value = password.length === undefined;
     faltaEmail.value = email.length === undefined;
+    
 
     return emailValid.value && passwordValid.value;
 };
@@ -130,22 +131,17 @@ const loginUsuario = async (miembro) => {
     let respuesta = {}
     try {
         respuesta = await login(miembro);
-    } catch (error) {
-        console.log('Error en loginUsuario');
-        console.log(error);
-    }
-    
-    
-    //console.log('Respuesta del servidor:');
-    //console.log(respuesta);
-    setTimeout(() => {
+        console.log('La Respuesta del servidor es:' , respuesta.data);
+        localStorage.setItem('token', respuesta.data.token);
+        loginStore(respuesta.data.username , respuesta.data.email);
         loading.value = false;
-        localStorage.setItem('token', '1234567890');
-        loginStore();
         router.push({ name: 'home' })
 
-    }, 3000);
-    
+    } catch (error) {
+        loading.value = false;
+        console.log('Error en loginUsuario');
+        console.log(error);
+    }    
 }
 
 

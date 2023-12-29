@@ -1,3 +1,4 @@
+import { ref } from "vue";
 
 
 
@@ -14,4 +15,9 @@ export const validatePassword = (password) => {
 
 export const validateName = (name) => {
     return name.length > 5;
+}
+
+export const validateRFC = (rfc) => {
+    const regexRFC = /^([A-ZÑ&]{3,4})\d{6}([A-Z\d]{3})?$/;
+    return regexRFC.test(rfc);
 }

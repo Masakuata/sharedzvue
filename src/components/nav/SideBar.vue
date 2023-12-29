@@ -195,7 +195,6 @@ const goSales = () => {
 const isSidebarOpen = ref(false)
 
 const toggleSidebar = () => {
-    console.log('toggleSidebar en el sidebar');
     isSidebarOpen.value = !isSidebarOpen.value
 }
 
@@ -209,7 +208,6 @@ const cerrarSesion = () => {
 watch(
     () => store.sidebarStore,
     () => {
-        console.log('watch sidebarStore');
         closeSidebar();
     }
 )

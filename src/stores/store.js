@@ -7,20 +7,22 @@ export const useMyStore = defineStore('miStore', {
         return {
             loggedIn: false,
             sidebarStore: false,
+            username: 'user',
+            email: 'email'
+
         };
     },
     // Acciones
     actions: {
-        loginStore() {
-            console.log('Logeando en la store');
+        loginStore(username, email) {
+            this.username = username;
+            this.email = email;
             this.loggedIn = true;
         },
         logoutStore() {
-            console.log('Deslogeando en la store');
             this.loggedIn = false;
         },
         toggleSidebarStore() {
-            console.log('Toggling sidebar en la store', this.sidebarStore);
             this.sidebarStore = !this.sidebarStore;
         }
     },
