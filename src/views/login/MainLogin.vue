@@ -55,6 +55,7 @@ import ButtonX from '@/components/utilities/ButtonX.vue';
 import {useMyStore} from '@/stores/store.js';
 import { useRouter } from 'vue-router'
 import { login } from '@/api/api.js'
+import { toast } from 'vue3-toastify';
 
 
 const router = useRouter();
@@ -139,15 +140,16 @@ const loginUsuario = async (miembro) => {
 
     } catch (error) {
         loading.value = false;
-        console.log('Error en loginUsuario');
-        console.log(error);
+        notify();
+        
     }    
 }
 
-
-const cancelar = () => {
-    console.log('Clic en cancelar');    
-    logoutStore();
+const notify = () => {
+    toast("El correo y contraseña no coincidden con algún usuario registrado ", {
+        type: 'warning',
+        autoClose: 2000,
+    });
 }
 
 

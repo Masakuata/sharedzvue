@@ -89,6 +89,7 @@ import { registrarUsuario, login } from '@/api/api.js'
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { useRouter } from 'vue-router';
 import { useMyStore } from '@/stores/store.js';
+import { toast } from 'vue3-toastify';
 
 
 const emit = defineEmits(['userRegistered']);
@@ -145,7 +146,6 @@ const submitForm = () => {
             password: password.value
         }
         postUsuario(miembro);
-        emit('user-registered');
     } else {
         console.log('Errores en el formulario:');
     }
@@ -156,12 +156,18 @@ const postUsuario = async (miembro) => {
         console.log('Registrando miembro', miembro);
         await registrarUsuario(miembro);
         loading.value = false;
-        console.log('Miembro registrado');
+        notify("Te has registrado exitosamente, ahora inicia sesión", "success");
+        emit('user-registered', true);
         router.push({ name: 'identificate', params: { vista: 'login' } });
 
     } catch (error) {
         loading.value = false;
+        emit('user-registered', false);
         console.log(error);
+        console.log(error.response.status);
+        if (error.response.status === 409) {
+            notify("Ya existe una cuenta vinculada al mismo correo.", "error");
+        } 
     }
 
 
@@ -229,5 +235,12 @@ watch(
         validarNickname();
     }
 )
+
+const notify = (message , type) => {
+    toast(message, {
+        type: type,
+        autoClose: 2000,
+    });
+}
 
 </script>

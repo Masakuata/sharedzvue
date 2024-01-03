@@ -2,6 +2,7 @@ import axios from 'axios';
 
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
+const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
 const url = 'http://clayrite.ddns.net:81'
 const env = 'prod'
 
@@ -9,7 +10,7 @@ function getUrl() {
     if (env === 'prod') {
         return httpsUrl
     } else {
-        return url
+        return urlEdson
     }
 }
 

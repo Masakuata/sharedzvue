@@ -6,4 +6,7 @@ module.exports = {
         appleMobileWebAppCapable: 'yes',
         appleMobileWebAppStatusBarStyle: 'black',
     },
+    configureWebpack: {
+        devtool: 'source-map'
+    }
 }

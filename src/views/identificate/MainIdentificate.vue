@@ -64,14 +64,18 @@ const register = () => {
     isRegister.value = true;
 }
 
-const userRegistered = () => {
-    login();
-    notify();
+const userRegistered = (isRegistered) => {
+    if (isRegistered) {
+        login();
+        
+    }else{
+        
+    }
 }
 
-const notify = () => {
-    toast("Te has registrado exitosamente, ahora inicia sesión", {
-        type: 'success',
+const notify = (message , type) => {
+    toast(message, {
+        type: type,
         autoClose: 2000,
     });
 }
