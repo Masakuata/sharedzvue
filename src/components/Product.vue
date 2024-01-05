@@ -6,10 +6,10 @@
         <img v-else src="@/assets/cat-icon.svg" alt="Descripción de la imagen" style="width: 60px; height: auto;" />
     </div>
     <div class="flex flex-col w-full">
-        <p>Purina Ganador, Bulldog</p>
-        <p>Paquete de 6 pzas</p>
-        <p>Stock: 10</p>
-        <p class="text-bgBlue">500$</p>
+        <p>{{ producto.nombre + ' ' + producto.raza }}</p>
+        <p>{{ producto.presentacion }}</p>
+        <p>{{ 'Stock: ' + producto.cantidad }}</p>
+        <p class="text-bgBlue">{{ '$' + producto.precio }}</p>
         
     </div>
 </div>
@@ -19,12 +19,15 @@
 </template>
 <script setup>
 
+// nombre: String,
+// presentacion: String,
+// tipoMascota: Number,
+// raza: Number,
+// precio: String
+// cantidad: Number,
+
 const props = defineProps({
-    nombre: String,
-    presentacion: String,
-    tipoMascota: Number,
-    raza: Number,
-    precio: String
+    producto: Object
 })
 
 </script>

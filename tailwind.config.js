@@ -15,6 +15,7 @@ module.exports = {
         bgBlue: '#054F7E',
         textBlueDark: '#001D33',
         bgBlueLight: '#CFE5FF',
+        bgPurple: '#695779'
       }
     },
   },

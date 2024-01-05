@@ -237,7 +237,6 @@ const cleanfields = () => {
 
 
 onMounted(() => {
-    console.log('Mounted');
 });
 
 </script>

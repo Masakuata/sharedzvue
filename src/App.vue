@@ -41,13 +41,11 @@ const cerrarSesion = () => {
 watch(
     () => store.loggedIn,
     () => {
-      console.log('Entro al watch de app para actualizar isLogged', store.loggedIn)
         isLogged.value = store.loggedIn;
     }
 )
 
 onMounted(() => {
-    console.log('onMounted app'); 
     let token = localStorage.getItem('token');
     console.log('token', token);  
     if (token) {
