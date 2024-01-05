@@ -153,7 +153,6 @@ const submitForm = () => {
 
 const postUsuario = async (miembro) => {
     try {
-        console.log('Registrando miembro', miembro);
         await registrarUsuario(miembro);
         loading.value = false;
         notify("Te has registrado exitosamente, ahora inicia sesión", "success");
@@ -164,7 +163,6 @@ const postUsuario = async (miembro) => {
         loading.value = false;
         emit('user-registered', false);
         console.log(error);
-        console.log(error.response.status);
         if (error.response.status === 409) {
             notify("Ya existe una cuenta vinculada al mismo correo.", "error");
         } 

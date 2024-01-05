@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-row w-full bg-white p-2 rounded-lg shadow-lg mt-2">
-        <div class="flex flex-col w-11/12">
+        <div @click="showDetails" class="flex flex-col w-11/12">
             <div class="flex flex-row w-full">
                 <p class="mr-2 w-1/2 truncate">{{ producto.nombre }}</p>
                 <p class="w-1/2 truncate">{{ producto.presentacion }}</p>
@@ -34,6 +34,8 @@ const cantidadFormat = ref('QTY: 13');
 const precioFormat = ref('IUV: $1000');
 const subtotalFormat = ref('Subt: $13000');
 
+
+
 const formatInfo = () => {
     cantidadFormat.value = `QTY: ${props.producto.cantidadCompra}`;
     precioFormat.value = `IUV: $${props.producto.precio}`;
@@ -45,26 +47,33 @@ const props = defineProps({
     producto: Object,
     isDeletable: Boolean
 });
-const emit = defineEmits(['unselectItem']);
+const emit = defineEmits(['unselectItem', 'showDetails']);
 
 const unselectItem = () => {
     emit('unselectItem', props.producto);
 };
 
 const calcularSubtotal = () => {
-    console.log('calcular Subtotal item: ' + props.producto.nombre);
-    console.log('La nueva cantidad de compra:' + props.producto.cantidadCompra);
-    console.log('El precio:' + props.producto.precio);
     let subtotalLargo = props.producto.cantidadCompra * props.producto.precio;  
     let subtotal = subtotalLargo.toFixed(2);
     let subtotalFloat = parseFloat(subtotal);  
-    console.log('El nuevo subtotal:' + subtotalFloat); 
     props.producto.subtotal = subtotalFloat;
     formatInfo();
 };
 
+const showDetails = () => {
+    emit('showDetails', props.producto);
+};
+
 watch(
     () => props.producto.cantidadCompra,
+    () => {
+        calcularSubtotal();
+    }
+);
+
+watch(
+    () => props.producto.precio,
     () => {
         calcularSubtotal();
     }

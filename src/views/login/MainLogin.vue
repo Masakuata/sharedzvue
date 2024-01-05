@@ -114,9 +114,7 @@ const validateForm = () => {
 
 
 const iniciarSesion = () => {
-    console.log('Clic en iniciar sesion');
     if (validateForm()) {
-
         let miembro = {
             email: email.value,
             password: password.value
@@ -132,7 +130,6 @@ const loginUsuario = async (miembro) => {
     let respuesta = {}
     try {
         respuesta = await login(miembro);
-        console.log('La Respuesta del servidor es:' , respuesta.data);
         localStorage.setItem('token', respuesta.data.token);
         loginStore(respuesta.data.username , respuesta.data.email);
         loading.value = false;

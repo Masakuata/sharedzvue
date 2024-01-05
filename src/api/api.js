@@ -49,8 +49,6 @@ export async function registrarUsuario(miembro) {
     let respuesta = {} 
 
     try { // Reemplaza con tu URL
-        console.log('El miembro es', miembro);
-
         respuesta = await axiosInstance.post(urlnew, miembro);
         return respuesta;
     } catch (error) {
@@ -65,10 +63,6 @@ export async function login(user) {
     try { 
         let respuesta = await axiosInstance.post(urlnew, user);
         let respuestaJson =  respuesta.json
-        console.log('RespuestaJson:', respuestaJson);
-        //let token = respuestaJson.headers.get('Token')
-        console.log('La respuesta es', respuestaJson);
-        //console.log('El token es', token);
         return respuesta  
     } catch (error) {
         console.log('Error en login', error);
@@ -100,12 +94,12 @@ export async function getClientesBusqueda(nombre) {
     }
 }
 
-export async function getProductosBusqueda(nombre) {
+export async function getProductosBusqueda(nombre, tipocliente) {
     const complemento = '/producto'
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.get(urlnew, {params: {nombre: nombre}});
+        let respuesta = await axiosInstance.get(urlnew, {params: {nombre: nombre, tipo_cliente: tipocliente}});
         return respuesta;
     } catch (error) {
         throw error;
@@ -118,6 +112,18 @@ export async function postProducto(producto) {
 
     try {
         let respuesta = await axiosInstance.post(urlnew, producto);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postVenta(venta) {
+    const complemento = '/venta';
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.post(urlnew, venta);
         return respuesta;
     } catch (error) {
         throw error;

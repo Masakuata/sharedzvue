@@ -53,7 +53,6 @@ const menus = ref( [
 ]);
 
 const modifyMenus = (loggedIn) => {
-    console.log("Modificando el menu");
     if (loggedIn) {
         menus.value= [
             {
