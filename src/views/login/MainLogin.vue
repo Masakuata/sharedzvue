@@ -2,6 +2,7 @@
     <div class="flex flex-col w-full pt-10 md:w-full ">
 
         <div>
+            
             <form @submit.prevent="submitForm" class="space-y-4">
                 <div>
                     <label for="correo" class="block text-sm font-medium text-white">Correo</label>
@@ -39,9 +40,10 @@
 
 
                 <div class="flex pt-5">
-                    <ButtonX :isLoading="loading" 
-                    @click="iniciarSesion">Iniciar</ButtonX>
+                    <ButtonX :isLoading="loading" @click="iniciarSesion">Iniciar</ButtonX>
                 </div>
+
+                <button v-if="pwaEvent" @click="promptInstall" class="bg-white h-14">Instalar App</button>
 
             </form>
         </div>
@@ -49,17 +51,19 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { validateEmail, validatePassword } from '@/utils/validator.js'
 import ButtonX from '@/components/utilities/ButtonX.vue';
-import {useMyStore} from '@/stores/store.js';
+import { useMyStore } from '@/stores/store.js';
 import { useRouter } from 'vue-router'
 import { login } from '@/api/api.js'
 import { toast } from 'vue3-toastify';
 
+const pwaEvent = ref(null);
+
 
 const router = useRouter();
-const {loginStore, logoutStore} = useMyStore();
+const { loginStore, logoutStore } = useMyStore();
 
 const showPassword = ref(false);
 
@@ -73,6 +77,25 @@ const password = ref('');
 const passwordValid = ref(false);
 const faltaPassword = ref(false);
 const mensajeErrorPasword = ref('');
+
+
+const promptInstall = () => {
+    // Mostrar el prompt de instalación
+    pwaEvent.value.prompt();
+
+    // Decidir qué hacer después de que el usuario responda
+    pwaEvent.value.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('El usuario aceptó instalar la app');
+        } else {
+            console.log('El usuario rechazó instalar la app');
+        }
+
+        // Reseteamos la variable para no mostrar el botón nuevamente
+        pwaEvent.value = null;
+    });
+};
+
 
 const validarEmail = () => {
     faltaEmail.value = false;
@@ -106,7 +129,7 @@ watch(
 const validateForm = () => {
     faltaPassword.value = password.length === undefined;
     faltaEmail.value = email.length === undefined;
-    
+
 
     return emailValid.value && passwordValid.value;
 };
@@ -131,15 +154,15 @@ const loginUsuario = async (miembro) => {
     try {
         respuesta = await login(miembro);
         localStorage.setItem('token', respuesta.data.token);
-        loginStore(respuesta.data.username , respuesta.data.email);
+        loginStore(respuesta.data.username, respuesta.data.email);
         loading.value = false;
         router.push({ name: 'home' })
 
     } catch (error) {
         loading.value = false;
         notify();
-        
-    }    
+
+    }
 }
 
 const notify = () => {
@@ -150,5 +173,14 @@ const notify = () => {
 }
 
 
+onMounted(() => {
 
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Evitamos que se muestre el mensaje de instalación
+        e.preventDefault();
+
+        // Guardamos el evento para mostrarlo cuando queramos
+        pwaEvent.value = e;
+    });
+});
 </script>

@@ -4,7 +4,7 @@
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
         
         <div class="flex text-left w-full">
-          <p class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
+          <p @click="getProductosFormat" class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>
         
         
@@ -20,8 +20,16 @@
 import { ref, onMounted } from 'vue';
 import {toggleSidebar} from '@/utils/sidebarManager.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+import {getProductos} from './precios.js';
+import { resgistrarProductos} from '@/api/api.js'
 
 const elemento = ref(null);
+
+const getProductosFormat = () => {
+  let productos = getProductos();
+  resgistrarProductos(productos);
+  console.log( 'Los productos formateados son:',productos);
+};
 
 const desplazarHaciaElemento = () => {
   const elemento = document.getElementById('menuButton');

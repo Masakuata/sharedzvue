@@ -6,6 +6,10 @@ import router from './router'
 import './index.css'
 import Vue3Toast from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import VueTailwindDatepicker from "vue-tailwind-datepicker";
+
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const pinia = createPinia()
 
@@ -13,6 +17,8 @@ const pinia = createPinia()
 const app = createApp(App)
 app.use(router)
 app.use(pinia)
+app.component('VueDatePicker', VueDatePicker);
+app.use(VueTailwindDatepicker)
 app.use(Vue3Toast, {
     hideProgressBar: true,
         autoClose: 500,

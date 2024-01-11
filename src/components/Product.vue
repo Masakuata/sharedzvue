@@ -14,6 +14,17 @@
     </div>
 </div>
 
+<div class="flex flex-row h-32 w-full items-center rounded-lg shadow-lg bg-gray-50 p-3">
+                <div class="w-28 h-28 rounded-lg bg-gray-400"></div>
+                <div class="p-2 flex flex-col">
+                    <p>Cliente</p>
+                    <p>Saldo</p>
+                    <p>Monto total</p>
+                    <p>Restante</p>
+                    <p>Fecha</p>
+                </div>
+            </div>
+
 
 
 </template>
