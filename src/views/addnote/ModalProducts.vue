@@ -1,61 +1,96 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
-        <div class="bg-white rounded-lg mx-4 h-[90vh] w-full z-50">
-            <p class="bg-bgBlue text-center text-white text-xl h-fit p-2 rounded-t-lg">Selecciona un producto y agrégalo a
+        <div class="bg-white rounded-lg mx-4 h-[80vh] w-full z-50">
+            <p class="bg-bgBlue text-center text-white text-xl h-fit p-2 pt-5 rounded-t-lg">Selecciona un producto y
+                agrégalo a
                 la lista de compra</p>
 
 
-            <div class="p-4">
+            <div class="p-4 h-[80vh]">
                 <SearchProduct @select-product="selectProduct" :tipo-cliente="props.tipoCliente"></SearchProduct>
                 <template v-if="isProductSelected">
                     <div class="mt-3">
                         <ProductDetails :producto="producto"></ProductDetails>
                     </div>
-                    <div v-if="!isProductInList" class="flex flex-row items-center text-right">
-                        <p class="w-full text-left pr-3">Selecciona la cantidad</p>
-                        <input v-model="cantidad" class="w-20 h-10 border border-gray-400 rounded-lg mt-2 px-2">
-                    </div>
 
-                    <div v-if="isProductInList" class="w-full">
-                        <p class="text-red-500 text-center">Este producto ya se encuentra en la lista de compra. ¿Desea modificar
-                            la cantidad de compra?</p>
-                        <div class="flex  flex-row w-full  items-center border border-blue-500 rounded-lg px-3">
-                            <p class="w-6/12 text-left h-fit">Cantidad en lista</p>
-                            <div v-if="!editCantidadMode" class="flex flex-row w-6/12  h-10 items-center ">
-                                <p class="w-full text-center h-fit pr-3">{{ productoEnLista.cantidadCompra }}</p>
-                                <div class="w-10" @click="toggleEditCantidadMode">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-pencil text-bgBlue">
-                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                        <path d="m15 5 4 4" />
-                                    </svg>
+                    <template v-if="isDisponible">
+                        <div v-if="errorCantidadMayor"
+                            class="flex flex-row py-1 mt-2 h-fit border-2 border-orange-500 rounded-xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-alert-triangle w-10 h-auto mx-2">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                <path d="M12 9v4" />
+                                <path d="M12 17h.01" />
+                            </svg>
+                            <p>La cantidad no puede ser mayor que la de inventario</p>
+                        </div>
+                        <div v-if="errorCantidadCero"
+                            class="flex flex-row py-1 mt-2 h-fit border-2 border-orange-500 rounded-xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-alert-triangle w-10 h-auto mx-2">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                <path d="M12 9v4" />
+                                <path d="M12 17h.01" />
+                            </svg>
+                            <p>La cantidad no puede ser 0</p>
+                        </div>
+
+                        <div v-if="!isProductInList" class="flex flex-row items-center text-right">
+                            <p class="w-full text-left pr-3">Selecciona la cantidad</p>
+                            <input v-model="cantidad" class="w-20 h-10 border border-gray-400 rounded-lg mt-2 px-2">
+                        </div>
+
+                        <div v-if="isProductInList" class="w-full">
+                            <p class="text-bgBlue text-center">Este producto ya se encuentra en la lista de venta. ¿Desea
+                                modificar
+                                la cantidad de venta?</p>
+                            <div class="flex  flex-row w-full  items-center border border-blue-500 rounded-lg px-3">
+                                <p class="w-6/12 text-left h-fit">Cantidad en lista</p>
+                                <div v-if="!editCantidadMode" class="flex flex-row w-6/12  h-10 items-center ">
+                                    <p class="w-full text-center h-fit pr-3">{{ productoEnLista.cantidadCompra }}</p>
+                                    <div class="w-10" @click="toggleEditCantidadMode">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-pencil text-bgBlue">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                            <path d="m15 5 4 4" />
+                                        </svg>
+                                    </div>
+
+                                </div>
+                                <div v-else class="flex flex-row items-center justify-center h-14 w-6/12">
+                                    <input v-model="nuevaCantidad" class="w-20 h-10 border border-gray-400 rounded-lg px-2">
                                 </div>
 
-                            </div>
-                            <div v-else class="flex flex-row items-center justify-center h-14 w-6/12">
-                                <input v-model="nuevaCantidad" class="w-20 h-10 border border-gray-400 rounded-lg px-2">
                             </div>
 
                         </div>
 
-                    </div>
+                        <div class="flex justify-center space-x-3 mt-4">
+                            <ButtonX @click="cancel" color="red">Cancelar</ButtonX>
 
-                    <div class="flex justify-center space-x-3 mt-4">
-                        <ButtonX @click="cancel" color="red">Cancelar</ButtonX>
+                            <ButtonX v-if="isProductInList" @click="confirm" color="blue">Actualizar</ButtonX>
+                            <ButtonX v-else="isProductInList" @click="confirm" color="blue">Agregar</ButtonX>
+                        </div>
 
-                        <ButtonX v-if="isProductInList" @click="confirm" color="blue">Actualizar</ButtonX>
-                        <ButtonX v-else="isProductInList" @click="confirm" color="blue">Agregar</ButtonX>
-                    </div>
+                    </template>
+                    <template v-else>
+                        <div class="flex flex-col" id="contenedorRegresar">
+                            <p class="text-center text-xl">Este producto no se encuentra disponible</p>
+                            <button @click="cancel"
+                                class="w-full text-white text-lg font-semibold h-12  bg-red-500 rounded-lg">Regresar</button>
+                        </div>
+                    </template>
+
                 </template>
                 <template v-else>
-                    <div class="flex  flex-col  h-[70vh] ">
+                    <div class="flex  flex-col  h-[60vh]" id="contenedorRegresar">
                         <button @click="cancel"
-                            class="w-full text-white text-lg font-semibold h-12 mt-auto bg-red-500 rounded-lg">Cancelar</button>
+                            class="w-full text-white text-lg font-semibold h-12 mt-auto bg-red-500 rounded-lg">Regresar</button>
                     </div>
                 </template>
-
-
             </div>
 
 
@@ -70,6 +105,11 @@ import ProductDetails from '@/components/utilities/ProductDetails.vue';
 import { toast } from 'vue3-toastify';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 
+const errorCantidadCero = ref(false);
+const errorCantidadMayor = ref(false);
+
+const isDisponible = ref(true);
+
 const emit = defineEmits(['confirmAddProduct', 'cancelAddProduct']);
 const producto = ref(null);
 const isProductSelected = ref(false);
@@ -80,7 +120,7 @@ const productoEnLista = ref({});
 const isProductInList = ref(false);
 const editCantidadMode = ref(false);
 
-const nuevaCantidad = ref(0);
+const nuevaCantidad = ref('0');
 
 const props = defineProps({
     isVisible: Boolean,
@@ -110,39 +150,45 @@ const selectProduct = (item) => {
 const clearComponent = () => {
     producto.value = null;
     isProductSelected.value = false;
-    cantidad.value = '1';
-    nuevaCantidad.value = 0;
+    cantidad.value = '0';
+    nuevaCantidad.value = '0';
     isProductInList.value = false;
     editCantidadMode.value = false;
     productoEnLista.value = null;
     cantidadDisponible = 0;
+    errorCantidadCero.value = false;
+    errorCantidadMayor.value = false;
 };
 
 const confirm = () => {
     if (producto.value != null) {
-        
-
         if (isProductInList.value) {
-            if (nuevaCantidad.value === 0) {
+            console.log('la nueva cantidad es: ' + nuevaCantidad.value);
+            let nuevaCantidadInt = parseInt(nuevaCantidad.value);
+            if (nuevaCantidadInt == 0 || nuevaCantidad.value == '') {
                 toast("No puedes editar un producto con cantidad 0", {
                     type: 'warning',
                     autoClose: 2000,
                 });
+                errorCantidadCero.value = true;
                 return;
             }
-            producto.value.cantidadCompra = nuevaCantidad.value;
-            let subtotal = nuevaCantidad.value * producto.value.precio;
+
+            producto.value.cantidadCompra = nuevaCantidadInt;
+            let subtotal = nuevaCantidad * producto.value.precio;
             subtotal = subtotal.toFixed(2);
             subtotal = parseFloat(subtotal);
             producto.value.subtotal = subtotal;
         } else {
-            if (cantidad.value == '0') {
-                toast("No puedes agregar un producto con cantidad 0", {
+            if (cantidad.value == '0' || cantidad.value == '') {
+                toast("No puedes agregar un producto con una cantidad de 0", {
                     type: 'warning',
                     autoClose: 2000,
                 });
-                return;   
+                errorCantidadCero.value = true;
+                return;
             }
+            console.log('Se construyo en el else');
             let cantidadInt = parseInt(cantidad.value);
             producto.value.cantidadCompra = cantidadInt;
             let subtotal = cantidadInt * producto.value.precio;
@@ -165,14 +211,20 @@ const confirm = () => {
         subtotal: producto.value.subtotal,
     }
 
-    if (productoEmit.cantidad === 0) {
+
+    if (productoEmit.cantidad === 0 ) {
         toast("No puedes agregar un producto con cantidad 0", {
             type: 'warning',
             autoClose: 2000,
         });
         return;
     }
-    
+
+    if (productoEmit.cantidadCompra > productoEmit.cantidad ) {
+        notifyCantidadExcedida();
+        return;
+    }
+
     emit('confirmAddProduct', productoEmit);
     clearComponent();
 };
@@ -185,19 +237,57 @@ const cancel = () => {
 watch(
     () => cantidad.value,
     () => {
+
+        if (producto.value == null) {
+            return;
+        }
+
         cantidad.value = cantidad.value.replace(/\D/g, '');
         let cantidadInt = parseInt(cantidad.value);
+        
+        if (cantidadInt != 0){
+            errorCantidadCero.value = false;
+        } 
+            
+
         if (cantidadInt > cantidadDisponible) {
-            if (producto.value!= null) {
-                cantidad.value = cantidadDisponible.toString();
-                notify();
-            }
+
+            //cantidad.value = cantidadDisponible.toString();
+            //notifyCantidadExcedida();
+            errorCantidadMayor.value = true;
+
+        }else{
+            errorCantidadMayor.value = false;
         }
     }
 )
 
+const calcularNuevaCantidad = () => {
+    if (productoEnLista.value == null) {
+        return;
+    }
+
+    nuevaCantidad.value = nuevaCantidad.value.replace(/\D/g, '');
+    let nuevaCantidadInt = parseInt(nuevaCantidad.value);
+
+    if (nuevaCantidadInt != 0){
+        errorCantidadCero.value = false;
+    }
+
+    if (nuevaCantidadInt > productoEnLista.value.cantidad) {
+        //nuevaCantidad.value = productoEnLista.value.cantidad.toString();
+        //notifyCantidadExcedida();
+        errorCantidadMayor.value = true;
+    } else {
+        errorCantidadMayor.value = false;
+    }
+}
+
 const validarProductoEnLista = () => {
     if (producto.value != null) {
+
+        isDisponible.value = producto.value.cantidad > 0;
+
         let productoAux = props.productosLista.find(item => item.id == producto.value.id);
         if (productoAux != null) {
             isProductInList.value = true;
@@ -224,7 +314,7 @@ watch(
     () => productoEnLista.value,
     () => {
         if (productoEnLista.value != null) {
-            nuevaCantidad.value = productoEnLista.value.cantidadCompra;
+            nuevaCantidad.value = productoEnLista.value.cantidadCompra.toString();
         }
     }
 )
@@ -235,19 +325,11 @@ watch(
     }
 )
 
-const calcularNuevaCantidad = () => {
-    if(productoEnLista.value == null){
-        return;
-    }
-    if (nuevaCantidad.value > productoEnLista.value.cantidad) {
-        nuevaCantidad.value = productoEnLista.value.cantidad;
-        notify();
-    }
-}
 
 
 
-const notify = () => {
+
+const notifyCantidadExcedida = () => {
     toast("No puedes vender mas artículos de los que tienes en stock", {
         type: 'warning',
         autoClose: 2000,

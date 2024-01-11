@@ -1,6 +1,7 @@
 <template>
     <div class="relative w-full">
         <template v-if="!isSelected">
+            <AlertX :flag="noResults" message="No se encontraron clientes que coincidan"></AlertX>
             <input type="text" v-model="searchQuery" placeholder="Buscar cliente..." class="border rounded-lg w-full h-14 px-2" />
             <ul v-if="searchQuery" class="w-full absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[50vh] overflow-scroll">
                 <li v-for="item in items" :key="item.id" class="border-b p-2" @click="selectItem(item)">
@@ -24,6 +25,7 @@
 <script setup>
 import { ref,  watch, defineEmits, defineProps } from 'vue';
 import {getClientesBusqueda} from '@/api/api.js';
+import AlertX from './AlertX.vue';
 
 const props = defineProps({
     reload: Boolean,
@@ -32,6 +34,7 @@ const props = defineProps({
 const searchQuery = ref('');
 const selectedItem = ref({});
 const isSelected = ref(false);
+const noResults = ref(false);
 
 
 const emit = defineEmits(['select-item', 'unselect-item']);
@@ -82,10 +85,16 @@ watch(
 
 const getClientes = async () => {
     if (searchQuery.value.length < 1) {
+        noResults.value = false;
         return;
     }
     const clientes = await getClientesBusqueda(searchQuery.value);
     items.value = clientes.data;
+    if (items.value.length == 0) {
+        noResults.value = true;
+    } else {
+        noResults.value = false;
+    }
 };
 
 

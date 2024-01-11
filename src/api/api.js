@@ -3,14 +3,15 @@ import axios from 'axios';
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
 const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
+const urlEdsonOfice = 'http://192.168.1.101:8080'
 const url = 'http://clayrite.ddns.net:81'
-const env = 'prod'
+const env = 'dev'
 
 function getUrl() {
     if (env === 'prod') {
         return httpsUrl
     } else {
-        return urlEdson
+        return urlEdsonOfice
     }
 }
 
@@ -124,6 +125,59 @@ export async function postVenta(venta) {
 
     try {
         let respuesta = await axiosInstance.post(urlnew, venta);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getVentas(paramsMethod) {
+    const complemento = '/venta/buscar';
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew, {params: paramsMethod});
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getProductosLista(listaProductos) {
+    const complemento = '/producto/detalles';
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.patch(urlnew, listaProductos);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getVentaProductosDetalles(idVenta) {
+    const complemento = '/venta/' + idVenta+ '/productos';
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+
+
+
+}
+
+
+export async function resgistrarProductos(productos) {
+    const complemento = '/producto/cargar';
+    let urlnew = getUrl() + complemento;
+    let respuesta = {} 
+
+    try { // Reemplaza con tu URL
+        respuesta = await axiosInstance.post(urlnew, productos);
         return respuesta;
     } catch (error) {
         throw error;

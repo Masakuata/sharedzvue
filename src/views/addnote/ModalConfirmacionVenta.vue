@@ -1,10 +1,10 @@
 <template>
     <div @click="clickOut" v-if="isVisible"
         class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-gray-100 h-[90vh] rounded-lg  max-w-xs w-full z-50">
+        <div class="bg-gray-100 h-[90vh] rounded-lg  w-full mx-4 z-50">
 
             <template v-if="!requestSent">
-                <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg">Confirmar la compra</p>
+                <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la venta</p>
                 <div class="w-full p-4 h-[80vh]">
                     <div class="w-full h-[50vh] border border-gray-400 rounded-lg mt-3 p-3 overflow-scroll">
                         <p>Productos a vender</p>
@@ -101,10 +101,17 @@ import { postVenta } from '@/api/api.js';
 
 
 const requestSent = ref(false);
-const loading = ref(true);
+const loading = ref(false);
 
 const error = ref(false);
 const errorMessage = ref('');
+
+const limpiarComponente = () => {
+    requestSent.value = false;
+    loading.value = false;
+    error.value = false;
+    errorMessage.value = '';
+};
 
 
 const emit = defineEmits(['confirmarVenta', 'cerrarConfirmarVenta']);
@@ -112,7 +119,7 @@ const props = defineProps({
     isVisible: Boolean,
     productos: Array,
     cliente: Object,
-    abonoInicial: Number,
+    abonoInicial: String,
     pagado: Boolean,
     total: Number,
 });
@@ -139,12 +146,17 @@ const construirVenta = () => {
         productosAux.push(productoAux);
     });
 
+    let abonoInicialFloat = parseFloat(props.abonoInicial);
+
+    let hoy = new Date();
+    let fecha =  hoy.getDate()+ '-' + (hoy.getMonth() + 1) + '-' + hoy.getFullYear();
+
     let venta = {
         cliente: props.cliente.id,
         pagado: props.pagado,
-        fecha: new Date(),
+        fecha: fecha,
         facturado: true,
-        abono: props.abonoInicial,
+        abono: abonoInicialFloat,
         productos: productosAux,
     }
 
@@ -153,6 +165,7 @@ const construirVenta = () => {
 
 const registrarVentaApi = async () => {
     try {
+        loading.value = true;
         requestSent.value = true;
         let venta = construirVenta();
         await postVenta(venta);
@@ -167,12 +180,7 @@ const registrarVentaApi = async () => {
 
 };
 
-const limpiarComponente = () => {
-    requestSent.value = false;
-    loading.value = false;
-    error.value = false;
-    errorMessage.value = '';
-};
+
 
 
 

@@ -2,6 +2,9 @@
 
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3" >VENTAS</h1>
         <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+            <SearchSales></SearchSales>
+
+
             
             
             
@@ -16,6 +19,8 @@
     <script setup>
     import { ref, onMounted } from 'vue';
     import {toggleSidebar} from '@/utils/sidebarManager.js';
+
+    import SearchSales from './SearchSales.vue'
 
     
     
