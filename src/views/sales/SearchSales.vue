@@ -145,6 +145,7 @@ const construirQuery = () => {
             return
         }
 
+        console.log('El dia es:', dateValue.value.getUTCDate());
         query.value = {
             dia: dateValue.value.getUTCDate(),
             mes: dateValue.value.getUTCMonth() + 1,
