@@ -44,6 +44,13 @@ const routes = [
     component: function () {
       return import(/* webpackChunkName: "identificate" */ '../views/sales/Sales.vue')
     }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'home',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/home/Home.vue')
+    }
   }
 ]
 

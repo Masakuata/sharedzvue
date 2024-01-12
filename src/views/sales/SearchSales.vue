@@ -145,11 +145,11 @@ const construirQuery = () => {
             return
         }
 
-        console.log('El dia es:', dateValue.value.getUTCDate());
+        console.log('El dia es:', dateValue.value.getDate());
         query.value = {
-            dia: dateValue.value.getUTCDate(),
-            mes: dateValue.value.getUTCMonth() + 1,
-            anio: dateValue.value.getUTCFullYear(),
+            dia: dateValue.value.getDate(),
+            mes: dateValue.value.getMonth() + 1,
+            anio: dateValue.value.getFullYear(),
         };
         getItems();
         return
