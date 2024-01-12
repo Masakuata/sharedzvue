@@ -6,6 +6,17 @@
         <div class="flex text-left w-full">
           <p @click="getProductosFormat" class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>
+
+        <input
+          type="date"
+          name="startDate"
+          :value="startDate && startDate.toISOString().split('T')[0]"
+          @input="startDate = getDateClean($event.target.valueAsDate)"
+          autocomplete="off"
+          class="form-control rounded-lg w-full"
+        />
+
+        
         
         
 
@@ -25,6 +36,8 @@ import { resgistrarProductos} from '@/api/api.js'
 
 const elemento = ref(null);
 
+const startDate = ref(null);
+
 const getProductosFormat = () => {
   let productos = getProductos();
   resgistrarProductos(productos);
@@ -41,6 +54,31 @@ const desplazarHaciaElemento = () => {
 const clickEnDiv = () => {   
     toggleSidebar();
 };
+
+const getDateClean = (currDate) => {
+  // need to convert to UTC to get working input filter
+  console.log( 'El date que retorna el datepicker', currDate);
+
+
+  let month = currDate.getUTCMonth() + 1;
+
+  console.log( 'El mes es:', month);
+
+  if (month < 10) month = "0" + month;
+
+  let day = currDate.getUTCDate();
+
+  console.log( 'El dia es:', day);
+
+  if (day < 10) day = "0" + day;
+
+  const dateStr =
+    currDate.getUTCFullYear() + "-" + month + "-" + day + "T00:00:00";
+  console.log(dateStr);
+  const d = new Date(dateStr);
+  console.log(d);
+  return d;
+  }
 
 onMounted(() => {
   //desplazarHaciaElemento();
