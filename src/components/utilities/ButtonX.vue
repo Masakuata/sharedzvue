@@ -2,8 +2,8 @@
     <button @click="onClick" :disabled="isLoading" :class="{
         'w-full bg-white h-12 rounded-lg text-bgBlue font-semibold text-lg flex justify-center items-center': isWhite,
         'w-full bg-bgBlue h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isBlue,
-        'w-full bg-red-500 h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isRed,
-        'w-full bg-green-500 h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isGreen,
+        'w-full bg-colorCancel h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isRed,
+        'w-full bg-bgGreen h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isGreen,
         'w-full bg-bgPurple h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isPurple,
     }">
         <span v-if="isLoading">

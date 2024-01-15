@@ -4,21 +4,11 @@
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
         
         <div class="flex text-left w-full">
-          <p @click="getProductosFormat" class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
+          <p  class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>
 
-        <input
-          type="date"
-          name="startDate"
-          :value="startDate && startDate.toISOString().split('T')[0]"
-          @input="startDate = getDateClean($event.target.valueAsDate)"
-          autocomplete="off"
-          class="form-control rounded-lg w-full"
-        />
+        
 
-        
-        
-        
 
     </div>
 
@@ -38,11 +28,6 @@ const elemento = ref(null);
 
 const startDate = ref(null);
 
-const getProductosFormat = () => {
-  let productos = getProductos();
-  resgistrarProductos(productos);
-  console.log( 'Los productos formateados son:',productos);
-};
 
 const desplazarHaciaElemento = () => {
   const elemento = document.getElementById('menuButton');

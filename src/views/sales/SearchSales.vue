@@ -1,6 +1,6 @@
 <template>
-
-    <ModalAbonar :isVisible="isVisibleModalAbonar" :sale="saleSelected" @cerrarConfirmarAbono="closeSaleModal" @confirmarAbono="confirmarAbono" ></ModalAbonar>
+    <ModalAbonar :isVisible="isVisibleModalAbonar" :sale="saleSelected" @cerrarConfirmarAbono="closeSaleModal"
+        @confirmarAbono="confirmarAbono"></ModalAbonar>
     <div class="w-full">
         <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
         <div class="py-3">
@@ -18,9 +18,14 @@
                 <AlertX :flag="isFechaFutura" message="No puedes seleccionar fechas futuras"></AlertX>
                 <p>Selecciona la fecha</p>
                 <template v-if="isVisibleDatePicker">
-                    <VueDatePicker v-model="dateValue" :enableTimePicker="false"></VueDatePicker>
+                    <!-- <VueDatePicker v-model="dateValue" :enableTimePicker="false"></VueDatePicker> -->
+
+                    <input type="date" name="startDate" 
+                        v-model="dateValue"
+                        class="form-control rounded-lg w-full" />
+
                 </template>
-                
+
             </div>
 
         </template>
@@ -77,7 +82,7 @@ const opciones = [
 
 const query = ref({})
 const isFechaDia = ref(false);
-const dateValue = ref([]);
+const dateValue = ref('');
 
 const items = ref([]);
 const page = ref(0);
@@ -106,7 +111,11 @@ const closeSaleModal = () => {
     isVisibleModalAbonar.value = false;
 }
 const confirmarAbono = () => {
+    isVisibleDatePicker.value = true;
+    isVisibleModalAbonar.value = false;
     console.log('Confirmar abono');
+    items.value = [];
+    construirQuery();
 }
 
 
@@ -135,7 +144,6 @@ const construirQuery = () => {
     if (opcionSeleccionada.value === 'no-pagados') {
         query.value = {};
         query.value.pagado = 0;
-        console.log('Cayo en no pagados');
         getItems();
         return
     }
@@ -145,11 +153,15 @@ const construirQuery = () => {
             return
         }
 
-        console.log('El dia es:', dateValue.value.getDate());
+        //2024-01-18
+
+        let anio = dateValue.value.substring(0, 4);
+        let mes = dateValue.value.substring(5, 7);
+        let dia = dateValue.value.substring(8, 10);
         query.value = {
-            dia: dateValue.value.getDate(),
-            mes: dateValue.value.getMonth() + 1,
-            anio: dateValue.value.getFullYear(),
+            dia: dia,
+            mes: mes,
+            anio: anio,
         };
         getItems();
         return
@@ -176,7 +188,6 @@ const getItems = async () => {
 }
 
 const addItems = async () => {
-    console.log('Agregando items'); 
 
     try {
         page.value = page.value + 1;
@@ -200,12 +211,16 @@ const addItems = async () => {
 watch(
     () => dateValue.value,
     () => {
-
         if (dateValue.value == null || dateValue.value.length === 0) {
             items.value = [];
             return
         }
-        if (isFutureDate(dateValue.value)) {
+
+        let anio = dateValue.value.substring(0, 4);
+        let mes = dateValue.value.substring(5, 7);
+        let dia = dateValue.value.substring(8, 10);
+
+        if (isFutureDate(dia, mes, anio)) {
             isFechaFutura.value = true;
         } else {
             items.value = [];
@@ -218,7 +233,6 @@ watch(
 const showSaleModalComp = (sale) => {
     saleSelected.value = sale;
     showSaleModal();
-    console.log('La venta seleccionada es:' ,sale);
 }
 
 onMounted(() => {
