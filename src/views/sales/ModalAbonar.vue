@@ -31,7 +31,7 @@
                         <ProductoVentaRow v-for="product in productos" :key=product.id :producto="product">
                         </ProductoVentaRow>
                     </div>
-                    <p class="font-semibold">{{ 'Cliente: ' + sale.cliente.nombre }}</p>
+                    <p class="font-semibold">{{ sale.cliente.nombre }}</p>
                     <p class="text-bgBlue">{{ 'Total: $' + sale.total }}</p>
                     <p class="text-green-600">{{ 'Abonado: $' + sale.abonado }}</p>
                     <p class="text-red-600">{{ 'Restante: $' + restante }}</p>
@@ -42,9 +42,11 @@
                             <input type="checkbox" v-model="finiquitarRestante"
                                 class="w-6 h-6 text-blue-600 border-gray-300 rounded focus:ring-blue-500" id="checkbox">
                         </div>
+                        <AlertX :flag="errorAbono" :message="errorMessageAbono"  ></AlertX>
                         <div class="flex flex-row w-full  border-bgBlue items-center space-x-2 pt-2">
                             <p class="font-semibold w-1/2">Monto del Abono</p>
                             <div class="w-1/2 text-right pr-2">
+                                
                                 <input class="h-14 border border-gray-200 rounded-lg px-2 w-28"
                                     :disabled="finiquitarRestante" v-model="abono">
                             </div>
@@ -75,7 +77,7 @@
             </template>
             <template v-else>
                 <div class="w-full h-[90vh] flex justify-center items-center">
-                    <template v-if="loading">
+                    <template v-if="loadingSendAbono">
                         <div class="w-full">
                             <p class="text-2xl font-semibold text-center text-bgBlue">Registrando abono...</p>
                             <div class="w-full flex justify-center mt-2">
@@ -106,7 +108,7 @@
                                     </svg>
                                 </div>
                                 <div class="p-2 w-full">
-                                    <ButtonX color="blue">Aceptar</ButtonX>
+                                    <ButtonX @click="aceptar" color="blue">Aceptar</ButtonX>
                                 </div>
 
                             </div>
@@ -146,11 +148,15 @@
 <script setup>
 import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
-import { getVentaProductosDetalles } from '@/api/api.js';
+import { getVentaProductosDetalles, postAbono } from '@/api/api.js';
 import ProductoVentaRow from './ProductoVentaRow.vue';
+import AlertX from '@/components/utilities/AlertX.vue';
+import {getHoyString} from '@/utils/validator.js'
 
+const loadingSendAbono = ref(false);
 
-
+const errorAbono = ref(false);
+const errorMessageAbono = ref('');
 
 const requestSent = ref(false);
 const loading = ref(false);
@@ -163,7 +169,7 @@ const restante = ref(0);
 
 const cliente = ref({});
 
-const abono = ref(0);
+const abono = ref('0');
 
 const finiquitarRestante = ref(false);
 
@@ -175,10 +181,10 @@ const cleanComponent = () => {
     loading.value = false;
     error.value = false;
     errorMessage.value = '';
-    productos.value = [];
-    restante.value = 0;
-    cliente.value = {};
-    abono.value = 0;
+    //productos.value = [];
+    //restante.value = 0;
+    //cliente.value = {};
+    //abono.value = 0;
     finiquitarRestante.value = false;
 };
 
@@ -193,20 +199,86 @@ const cerrarModal = () => {
     emit('cerrarConfirmarAbono');
 };
 
-const registrarAbono = () => {
-    construirPayload();
-    //emit('confirmarAbono');
-    // requestSent.value = true;
-    // loading.value = true;
-    // error.value = false;
-    // errorMessage.value = '';
+watch(
+    () => abono.value,
+    () => {
+        abono.value = filtrarEntrada(abono.value);  
+        let abonoFloat = parseFloat(abono.value);
+        let restanteFloat = parseFloat(restante.value);
 
-    // let abono = {
-    //     venta_id: props.sale.id,
-    //     abono: props.sale.abono,
-    // };
+        if (abonoFloat > restanteFloat) {
+            errorAbono.value = true;
+            errorMessageAbono.value = 'El abono no puede ser mayor al restante';
+        }else{
+            errorAbono.value = false;
+            errorMessageAbono.value = '';
+        }
+    }
+);
 
-    // postAbono(abono);
+const filtrarEntrada = (input) => {
+
+    if (typeof input === 'number') {
+        console.log('Es un numero');
+        return '';
+    }
+    console.log('El input es: ', input);
+    console.log(typeof input);
+    // Primero, quitar todos los caracteres que no sean dígitos o puntos
+    let filtrado = input.replace(/[^\d.]/g, '');
+
+    // Comprobar si hay más de un punto en la cadena
+    if ((filtrado.match(/\./g) || []).length > 1) {
+        // Dejar solo el primer punto y eliminar los demás
+        let partes = filtrado.split('.');
+        filtrado = partes.shift() + '.' + partes.join('');
+    }
+
+    return filtrado;
+};
+
+const registrarAbono = async ()  => {
+    console.log('Registrar abono');
+    if (abono.value === '' || abono.value === '0') {
+        errorAbono.value = true;
+        errorMessageAbono.value = 'El abono no puede ser 0';
+        return;
+    }
+   
+    if (!errorAbono.value) {
+        let payload = construirPayloadAbono();
+        
+
+        try {
+            requestSent.value = true;
+            loadingSendAbono.value = true;
+            let response = await postAbono(props.sale.id, payload);
+            console.log('La respuesta es: ', response);
+            loadingSendAbono.value = false;
+        }catch(error){
+            loadingSendAbono.value = false;
+            console.log(error);
+        }
+
+    }
+
+
+};
+
+const construirPayloadAbono = () => {
+
+    let abonoFloat = parseFloat(abono.value);
+    let hoy = getHoyString();
+
+    let payload = {
+        cantidad: abonoFloat,
+        finiquito: finiquitarRestante.value,
+        fecha: hoy,
+    };
+
+    
+
+    return payload;
 };
 
 
@@ -222,6 +294,12 @@ watch(
 
     }
 );
+const aceptar = () => {
+    cleanComponent();
+    emit('confirmarAbono');
+};
+
+
 
 watch(
     () => finiquitarRestante.value,

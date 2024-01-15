@@ -23,20 +23,55 @@ export const validateRFC = (rfc) => {
     return regexRFC.test(rfc);
 }
 
-export const isFutureDate = (date) => {
-    console.log('La fecha es:' , date);
-    const hoy = new Date();
+export const isFutureDate = (dia, mes, anio) => {
+
+    let dateParam = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+    dateParam.setFullYear(anio);
+    dateParam.setMonth(mes-1);
+    dateParam.setDate(dia);
+
+    console.log('La fecha construida validator es: ', dateParam);
+    const hoy  = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+
+    console.log('La fecha de hoy validator es: ', hoy);
     
     if(
-        date.getUTCDate() == hoy.getUTCDate() &&
-        date.getUTCMonth() == hoy.getUTCMonth() &&
-        date.getUTCFullYear() == hoy.getUTCFullYear()
+        dateParam.getUTCDate() == hoy.getUTCDate() &&
+        dateParam.getUTCMonth() == hoy.getUTCMonth() &&
+        dateParam.getUTCFullYear() == hoy.getUTCFullYear()
         
         ){
         console.log('La fecha es hoy: ', hoy);
         return false;
     }
     
-    return date > hoy;
+    return dateParam > hoy;
 
+}
+
+export const getHoyString = () => {
+    const hoy  = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+    let  fechaString = hoy.toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
+
+
+  
+    fechaString = fechaString.toString()
+    fechaString = fechaString.substring(0, 9);
+    fechaString = fechaString.replaceAll('/', '-');
+    console.log('La fecha retornada es ', fechaString);
+    return fechaString;
+}
+
+export const filtrarEntrada = (input) => {
+    // Primero, quitar todos los caracteres que no sean dígitos o puntos
+    let filtrado = input.replace(/[^\d.]/g, '');
+
+    // Comprobar si hay más de un punto en la cadena
+    if ((filtrado.match(/\./g) || []).length > 1) {
+        // Dejar solo el primer punto y eliminar los demás
+        let partes = filtrado.split('.');
+        filtrado = partes.shift() + '.' + partes.join('');
+    }
+
+    return filtrado;
 }

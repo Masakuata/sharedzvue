@@ -14,7 +14,7 @@ module.exports = {
         "vtd-secondary": colors.gray, // Dark mode Datepicker color
         primaryBlue: '#1E8C93',
         secondaryLigthBlue: '#F1FBFF',
-        redCancel: '#93481E',
+        redCancel: '#526070',
         blueLetters: '#4771A3',
         prymaryDarkBlue: '#145f63',
         bgBlue: '#054F7E',
@@ -23,6 +23,11 @@ module.exports = {
         bgPurple: '#695779',
         bgProduct: '#DEE3EB',
         colorTextGray: '#42474E' ,
+        colorCancel: '#526070',
+        bgGray: '#DEE3EB',
+        blueLight: '#9EEFFD',
+        bgGreen: '#56C596',
+        bgRed: '#FFDAD6'
       }
     },
   },
