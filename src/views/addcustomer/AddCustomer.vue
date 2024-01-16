@@ -88,6 +88,10 @@
             <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
         </div>
 
+        <div class="w-full mt-3">
+            <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
+        </div>
+
 
 
 
@@ -102,6 +106,9 @@ import { validateEmail, validateName, validateRFC } from '@/utils/validator.js'
 import { postCliente } from '@/api/api.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { toast } from 'vue3-toastify';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const tiposCliente = [
     { value: 1, name: 'Público' },
@@ -218,11 +225,14 @@ const validateForm = () => {
 
 const resgistrarCliente = () => {
     if (validateForm()) {
+        let direcciones = []
+        direcciones.push(direccion.value);
+
         let cliente = {
             email: email.value,
             nombre: name.value,
             RFC: rfc.value,
-            direccion: direccion.value,
+            direcciones: direcciones,
             telefono: telefono.value,
             tipoCliente: tipoClienteSelected.value,
         }
@@ -253,6 +263,10 @@ const postClienteMetod = async (cliente) => {
     }
     loading.value = false;
 };
+
+const regresarVistaClientes = () => {
+    router.go(-1) ;
+}
 
 const notify = () => {
     toast("Cliente registrado exitosamente", {

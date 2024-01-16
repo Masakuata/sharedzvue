@@ -95,6 +95,17 @@ export async function getClientesBusqueda(nombre) {
         throw error;
     }
 }
+export async function getAllClientes() {
+    const complemento = '/cliente/all'
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
 
 export async function getProductosBusqueda(nombre, tipocliente) {
     const complemento = '/producto'
