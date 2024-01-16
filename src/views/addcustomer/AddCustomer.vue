@@ -27,6 +27,29 @@
         </div>
 
         <div class="w-full">
+            <label for="direccion" class="block text-sm font-medium text-bgBlue">Dirección</label>
+            <input id="direccion" v-model="direccion" @input="validarDireccion" maxlength="50"
+                class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+            <template v-if="direccion.length > 0">
+                <p class="text-green-600" v-if="direccionValid">Dirección válida</p>
+                <p v-else class="text-red-600">Ingresa una direccion válida</p>
+            </template>
+            <p v-else-if="faltaDireccion" class="text-red-600">La dirección es un campo requerido</p>
+        </div>
+
+
+        <label for="miSelect" class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
+        <div class="w-full h-12">
+            <select v-model="tipoClienteSelected" id="miSelect"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <option disabled value="">Selecciona una opción</option>
+                <option class="w-full" v-for="opcion in tiposCliente" :key="opcion.value" :value="opcion.value">{{ opcion.name
+                }}</option>
+            </select>
+        </div>
+
+
+        <div class="w-full">
             <label for="correo" class="block text-sm font-medium text-bgBlue">Correo</label>
             <input type="email" id="correo" v-model="email" @input="validateEmail"
                 class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
@@ -48,16 +71,7 @@
             <p v-else-if="faltaRfc" class="text-red-600">El RFC es un campo requerido</p>
         </div>
 
-        <div class="w-full">
-            <label for="direccion" class="block text-sm font-medium text-bgBlue">Dirección</label>
-            <input id="direccion" v-model="direccion" @input="validarDireccion" maxlength="50"
-                class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-            <template v-if="direccion.length > 0">
-                <p class="text-green-600" v-if="direccionValid">Dirección válida</p>
-                <p v-else class="text-red-600">Ingresa una direccion válida</p>
-            </template>
-            <p v-else-if="faltaDireccion" class="text-red-600">La dirección es un campo requerido</p>
-        </div>
+
 
         <div class="w-full">
             <label for="telefono" class="block text-sm font-medium text-bgBlue">Teléfono</label>
@@ -67,7 +81,7 @@
                 <p class="text-green-600" v-if="telefonoValid">Teléfono válido</p>
                 <p v-else class="text-red-600">Ingresa un teléfono válido</p>
             </template>
-            <p v-else-if="faltaDireccion" class="text-red-600">La dirección es un campo requerido</p>
+            <p v-else-if="faltaTelefono" class="text-red-600">La dirección es un campo requerido</p>
         </div>
 
         <div class="w-full mt-3">
@@ -88,6 +102,16 @@ import { validateEmail, validateName, validateRFC } from '@/utils/validator.js'
 import { postCliente } from '@/api/api.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { toast } from 'vue3-toastify';
+
+const tiposCliente = [
+    { value: 1, name: 'Público' },
+    { value: 2, name: 'Detalle' },
+    { value: 3, name: 'Mayorista' },
+];
+
+const tipoClienteSelected = ref(1);
+
+
 
 const loading = ref(false);
 
@@ -183,13 +207,13 @@ watch(
 )
 
 const validateForm = () => {
-    faltaEmail.value = email.length === undefined;
+    //faltaEmail.value = email.length === undefined;
     faltaName.value = name.length === undefined;
-    faltaRfc.value = rfc.length === undefined;
+    //faltaRfc.value = rfc.length === undefined;
     faltaDireccion.value = direccion.length === undefined;
-    faltaTelefono.value = telefono.length === undefined;
+    //faltaTelefono.value = telefono.length === undefined;
 
-    return emailValid.value && nameValid.value && rfcValid.value && direccionValid.value && telefonoValid.value;
+    return nameValid.value && direccionValid.value;
 }
 
 const resgistrarCliente = () => {
@@ -200,7 +224,7 @@ const resgistrarCliente = () => {
             RFC: rfc.value,
             direccion: direccion.value,
             telefono: telefono.value,
-            tipoCliente: 0,
+            tipoCliente: tipoClienteSelected.value,
         }
         postClienteMetod(cliente);
     }
@@ -214,6 +238,17 @@ const postClienteMetod = async (cliente) => {
         cleanfields();
     } catch (error) {
         console.log(error);
+        if (error.response.status === 409) {
+            toast("El cliente ya existe", {
+                type: 'error',
+                autoClose: 2000,
+            });
+        } else {
+            toast("Error al registrar el cliente", {
+                type: 'error',
+                autoClose: 2000,
+            });
+        }
 
     }
     loading.value = false;
