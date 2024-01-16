@@ -20,6 +20,13 @@ const routes = [
     path: '/add-customer',
     name: 'addcustomer',
     component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/addcustomer/MainAddCustomer.vue')
+    }
+  },
+  {
+    path: '/add-customer/create-customer',
+    name: 'createcustomer',
+    component: function () {
       return import(/* webpackChunkName: "identificate" */ '../views/addcustomer/AddCustomer.vue')
     }
   },

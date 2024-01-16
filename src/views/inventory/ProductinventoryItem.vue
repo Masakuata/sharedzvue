@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row w-full h-32 bg-bgBlue mt-3 rounded-lg overflow-hidden" @click="goProductDetail" >
+    <div class="flex flex-row w-full h-32 bg-bgBlue mt-3 rounded-lg overflow-hidden" >
         <div class="w-1/3 bg-bgGray h-full">
             <div class="p-3 h-full w-full">
                 <svg class="w-full h-full" width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,9 +63,6 @@ onMounted(() => {
         isDisponible.value = true;
     }
 });
-const goProductDetail = () => {
-    router.push({ name: 'addproduct' })
-}
 
 
 
