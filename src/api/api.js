@@ -6,7 +6,7 @@ const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
 const urlEdsonDell = 'http://192.168.1.103:8080'
 const urlEdsonOfice = 'http://192.168.1.101:8080'
 const url = 'http://clayrite.ddns.net:81'
-const env = 'dev'
+const env = 'prod'
 
 function getUrl() {
     if (env === 'prod') {

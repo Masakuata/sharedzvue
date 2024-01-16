@@ -5,6 +5,7 @@
         'w-full bg-colorCancel h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isRed,
         'w-full bg-bgGreen h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isGreen,
         'w-full bg-bgPurple h-12 rounded-lg text-white font-semibold text-lg flex justify-center items-center': isPurple,
+        'w-full bg-[#FFDAD6] h-12 rounded-lg text-[#410002] font-semibold text-lg flex justify-center items-center': isRedLite,
     }">
         <span v-if="isLoading">
             <LoadingIcon></LoadingIcon>
@@ -26,6 +27,7 @@ const isRed = ref(false);
 const isGreen = ref(false);
 const isWhite = ref(false);
 const isPurple = ref(false);
+const isRedLite = ref(false);   
 
 const props = defineProps({
     isLoading: Boolean,
@@ -36,6 +38,9 @@ const props = defineProps({
 
 onMounted(() => {
     switch (props.color) {
+        case 'redLite':
+            isRedLite.value = true;
+            break;
         case 'blue':
             isBlue.value = true;
             break;
