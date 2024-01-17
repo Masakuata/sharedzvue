@@ -52,6 +52,15 @@ const routes = [
       return import(/* webpackChunkName: "identificate" */ '../views/sales/Sales.vue')
     }
   },
+
+  {
+    path: '/sale/details/:id',
+    name: 'salesdetails',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/sales/DetalleVenta.vue')
+    }
+  },
+
   {
     path: '/add-product',
     name: 'addproduct',
