@@ -2,29 +2,71 @@
     <div class="relative w-full">
         <template v-if="!isSelected">
             <AlertX :flag="noResults" message="No se encontraron clientes que coincidan"></AlertX>
-            <input type="text" v-model="searchQuery" placeholder="Buscar cliente..." class="border rounded-lg w-full h-14 px-2" />
-            <ul v-if="searchQuery" class="w-full absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[50vh] overflow-scroll">
+            <input type="text" v-model="searchQuery" placeholder="Buscar cliente..."
+                class="border rounded-lg w-full h-14 px-2" />
+            <ul v-if="searchQuery"
+                class="w-full absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[50vh] overflow-scroll">
                 <li v-for="item in items" :key="item.id" class="border-b p-2" @click="selectItem(item)">
                     {{ item.nombre }}
                 </li>
             </ul>
         </template>
         <template v-else>
-            <p>Cliente seleccionado:</p>
-            <div class="flex flex-row w-full h-14 items-center shadow-lg rounded-lg px-3 border border-bgBlue">
-                <p class="w-full">{{ selectedItem.nombre }}</p>
-                <div class="flex flew-row w-10 justify-end">
-                    <svg  @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle text-red-700"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+            <div>
+                <p class="w-full text-center text-white font-semibold bg-gray-400 mt-3  rounded-t-lg">CLIENTE SELECCIONADO</p>
+                <div class="flex flex-row w-full h-16 bg-bgBlue  rounded-b-lg overflow-hidden">
+                    <div class="w-3/12 bg-bgGray h-full">
+                        <div class="h-full w-full flex flex-row items-center justify-center">
+                            <svg width="50" height="50" viewBox="0 0 200 200" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <mask id="mask0_259_34" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
+                                    width="200" height="200">
+                                    <rect width="200" height="200" fill="#D9D9D9" />
+                                </mask>
+                                <g mask="url(#mask0_259_34)">
+                                    <path
+                                        d="M66.8748 150H91.8748V141.667H75.2081V133.333H91.8748V108.333H66.8748V116.667H83.5415V125H66.8748V150ZM125.208 150H133.541V108.333H125.208V125H116.875V108.333H108.541V133.333H125.208V150ZM175.208 92.0833V158.333C175.208 162.917 173.576 166.84 170.312 170.104C167.048 173.368 163.125 175 158.541 175H41.8748C37.2915 175 33.3679 173.368 30.104 170.104C26.8401 166.84 25.2081 162.917 25.2081 158.333V92.0833C22.0137 89.1667 19.5484 85.4167 17.8123 80.8333C16.0762 76.25 16.0415 71.25 17.7081 65.8333L26.4581 37.5C27.5692 33.8889 29.5484 30.9028 32.3956 28.5417C35.2429 26.1806 38.5415 25 42.2915 25H158.125C161.875 25 165.139 26.1458 167.916 28.4375C170.694 30.7292 172.708 33.75 173.958 37.5L182.708 65.8333C184.375 71.25 184.34 76.1806 182.604 80.625C180.868 85.0694 178.403 88.8889 175.208 92.0833ZM118.541 83.3333C122.291 83.3333 125.139 82.0486 127.083 79.4792C129.028 76.9097 129.791 74.0278 129.375 70.8333L124.791 41.6667H108.541V72.5C108.541 75.4167 109.514 77.9514 111.458 80.1042C113.403 82.2569 115.764 83.3333 118.541 83.3333ZM81.0415 83.3333C84.2359 83.3333 86.8401 82.2569 88.854 80.1042C90.8679 77.9514 91.8748 75.4167 91.8748 72.5V41.6667H75.6248L71.0415 70.8333C70.4859 74.1667 71.2151 77.0833 73.229 79.5833C75.2429 82.0833 77.847 83.3333 81.0415 83.3333ZM43.9581 83.3333C46.4581 83.3333 48.6456 82.4306 50.5206 80.625C52.3956 78.8194 53.5415 76.5278 53.9581 73.75L58.5415 41.6667H42.2915L33.9581 69.5833C33.1248 72.3611 33.5762 75.3472 35.3123 78.5417C37.0484 81.7361 39.9304 83.3333 43.9581 83.3333ZM156.458 83.3333C160.486 83.3333 163.403 81.7361 165.208 78.5417C167.014 75.3472 167.43 72.3611 166.458 69.5833L157.708 41.6667H141.875L146.458 73.75C146.875 76.5278 148.021 78.8194 149.896 80.625C151.771 82.4306 153.958 83.3333 156.458 83.3333ZM41.8748 158.333H158.541V99.5833C157.847 99.8611 157.396 100 157.187 100H156.458C152.708 100 149.41 99.375 146.562 98.125C143.715 96.875 140.903 94.8611 138.125 92.0833C135.625 94.5833 132.778 96.5278 129.583 97.9167C126.389 99.3055 122.986 100 119.375 100C115.625 100 112.118 99.3055 108.854 97.9167C105.59 96.5278 102.708 94.5833 100.208 92.0833C97.847 94.5833 95.104 96.5278 91.979 97.9167C88.854 99.3055 85.4859 100 81.8748 100C77.847 100 74.2012 99.3055 70.9373 97.9167C67.6734 96.5278 64.7915 94.5833 62.2915 92.0833C59.3748 95 56.4929 97.0486 53.6456 98.2292C50.7984 99.4097 47.5692 100 43.9581 100H43.0206C42.6734 100 42.2915 99.8611 41.8748 99.5833V158.333Z"
+                                        fill="#1C1B1F" />
+                                </g>
+                            </svg>
+                        </div>
+
+                    </div>
+                    <div class="flex flex-col w-8/12">
+
+                        <div class="flex flex-row w-full mt-2">
+                            <p class="text-white font-semibold text-lg ml-3 mr-2">{{ selectedItem.nombre }}</p>
+                        </div>
+
+                        <div class="flex flex-row w-full px-3 ">
+                            <div class="flex flex-col w-full">
+                                <template v-if="selectedItem.direcciones">
+                                    <p class="text-white text-sm">{{ selectedItem.direcciones[0] }}</p>
+                                </template>
+
+                            </div>
+
+                        </div>
+                    </div>  
+                    <div class="flex flex-row w-1/12 h-full items-center justify-center">
+                        <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-circle text-red-700">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m15 9-6 6" />
+                        <path d="m9 9 6 6" />
+                    </svg>
+                    </div>
+
                 </div>
-                
             </div>
         </template>
     </div>
 </template>
   
 <script setup>
-import { ref,  watch, defineEmits, defineProps } from 'vue';
-import {getClientesBusqueda} from '@/api/api.js';
+import { ref, watch, defineEmits, defineProps } from 'vue';
+import { getClientesBusqueda } from '@/api/api.js';
 import AlertX from './AlertX.vue';
 
 const props = defineProps({
@@ -48,7 +90,7 @@ const selectItem = (item) => {
     selectedItem.value = item;
     searchQuery.value = item.nombre;
     isSelected.value = true;
-    
+
     let cliente = {
         id: item.id,
         nombre: item.nombre,
@@ -58,7 +100,7 @@ const selectItem = (item) => {
         rfc: item.RFC,
         tipoCliente: item.tipoCliente,
     };
-    emit('select-item', cliente);  
+    emit('select-item', cliente);
 };
 const unselectItem = () => {
     selectedItem.value = null;

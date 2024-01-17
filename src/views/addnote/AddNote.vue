@@ -17,12 +17,13 @@
             :is-visible="modalProductDetailVisible" :producto="productSelected"></ModalProducDetail>
 
 
-        <p class="w-full text-xl font-semibold mb-3">Seleccione un cliente y registre su venta</p>
+        <p class="w-full text-xl font-semibold mb-3 text-center">Seleccione un cliente y registre su venta</p>
         <SearchClientX :reload="reloadSearch" @select-item="seleccionarCliente" @unselect-item="deseleccionarCliente">
         </SearchClientX>
 
-        <div class="w-full h-[60vh] border border-gray-400 rounded-lg mt-3 p-3 overflow-scroll">
-            <p>Productos a vender</p>
+        <p class="w-full bg-gray-400 text-white text-center mt-3 font-semibold py-1 rounded-t-lg">PRODUCTOS A VENDER</p>
+        <div class="w-full h-[60vh] border border-gray-400 rounded-b-lg  p-3 overflow-scroll">
+
             <ProductoVenderRow v-for="product in productosLista" :key=product.id :producto="product"
                 @unselect-item="unselectProduct" :is-deletable="true" @showDetails="selectProduct"></ProductoVenderRow>
         </div>
@@ -45,26 +46,51 @@
             <p>La cantidad no puede ser mayor que la de inventario</p>
         </div>
         <div v-if="productosLista.length > 0" class="flex flex-row w-full h-10  items-center border-t border-bgBlue ">
-            <label class="text-gray-700 mr-10 font-semibold w-1/2" for="checkbox">Finiquitar venta</label>
+            <!-- <label class="text-gray-700 mr-10 font-semibold w-1/2" for="checkbox">Finiquitar venta</label>
             <div class="w-1/2 text-right">
                 <input type="checkbox" v-model="finiquitarVenta"
                 class="w-6 h-6 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " id="checkbox">
+            </div> -->
+            <div class="flex flex-row w-full h-10  items-center bg-blueLetters rounded-lg px-2 mt-2"
+                @click="togleFiniquitarRestante">
+                <div class="w-3/4">
+                    <label class="text-white mr-10 text-xl" for="checkbox">Finiquitar venta</label>
+                </div>
+                <div class="w-1/4 flex flex-row  justify-end">
+                    <input type="checkbox" v-model="finiquitarVenta"
+                        class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500" id="checkbox">
+                </div>
             </div>
-            
+
         </div>
 
         <div class="flex flex-row w-full  items-center space-x-2 pt-2">
-            <p class="font-semibold w-1/2">Abono Inicial</p>
+            <p class="font-semibold text-lg w-1/2">Abono Inicial</p>
             <div class="w-1/2 text-right pr-2">
-                <input :disabled="finiquitarVenta" class="h-14 border border-gray-200 rounded-lg px-2 w-28 " v-model="abonoInicial">
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-dollar-sign">
+                            <line x1="12" x2="12" y1="2" y2="22" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                    <input type="search" :disabled="finiquitarVenta" v-model="abonoInicial" id="default-search"
+                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required>
+
+                </div>
+                <!-- <input :disabled="finiquitarVenta" class="h-14 border border-gray-200 rounded-lg px-2 w-28 "
+                    v-model="abonoInicial"> -->
             </div>
+
 
         </div>
 
         <div class="flex flex-row w-full mt-3">
             <div class="w-1/2 pr-1">
-                <button class="w-full rounded-lg h-12 text-white font-semibold bg-red-600"
-                    @click="showModalCancelVenta">Regresar</button>
+                <ButtonX color="red" @click="showModalCancelVenta">Cancelar</ButtonX>
             </div>
             <div class="w-1/2 pl-1">
                 <button class="w-full rounded-lg h-12 text-white font-semibold bg-bgBlue" @click="registrarCompra">Registrar
@@ -85,6 +111,7 @@ import ModalProducDetail from './ModalProducDetail.vue';
 import { getProductosBusqueda } from '@/api/api.js';
 import ModalCancelVenta from './ModalCancelVenta.vue';
 import ModalConfirmacionVenta from './ModalConfirmacionVenta.vue';
+import ButtonX from '@/components/utilities/ButtonX.vue';
 
 
 //Variables del ModalProducDetail
@@ -356,6 +383,10 @@ watch(
         }
     }
 )
+
+const togleFiniquitarRestante = () => {
+    finiquitarVenta.value = !finiquitarVenta.value;
+};
 
 const filtrarEntrada = (input) => {
     // Primero, quitar todos los caracteres que no sean dígitos o puntos

@@ -233,3 +233,18 @@ export const registrarProducto = async (producto) => {
         throw error;
     }
 }
+
+export async function getDetallesVenta(idVenta) {
+    const complemento = '/venta/' + idVenta+ '/details';
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+
+
+
+}

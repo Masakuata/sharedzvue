@@ -66,11 +66,9 @@ import { isFutureDate } from '@/utils/validator.js';
 import AlertX from '@/components/utilities/AlertX.vue';
 import SaleRow from '@/components/SaleRow.vue';
 import ModalAbonar from '@/views/sales/ModalAbonar.vue';
-
-
-import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-// import ModalAbonar from '@/views/sales/ModalAbonar.vue';
+import { useRouter } from 'vue-router';
+
 
 
 const opciones = [
@@ -78,6 +76,7 @@ const opciones = [
     { value: 'no-pagados', texto: 'No pagados primero' },
 ];
 
+const router = useRouter();
 
 
 const query = ref({})
@@ -102,10 +101,10 @@ const isVisibleModalAbonar = ref(false);
 const saleSelected = ref({});
 
 //Metodos para el modal de abonar
-const showSaleModal = () => {
-    isVisibleDatePicker.value = false;
-    isVisibleModalAbonar.value = true;
-}
+// const showSaleModal = () => {
+//     isVisibleDatePicker.value = false;
+//     isVisibleModalAbonar.value = true;
+// }
 const closeSaleModal = () => {
     isVisibleDatePicker.value = true;
     isVisibleModalAbonar.value = false;
@@ -232,7 +231,10 @@ watch(
 
 const showSaleModalComp = (sale) => {
     saleSelected.value = sale;
-    showSaleModal();
+    console.log(sale);
+
+    router.push({ name: 'salesdetails', params: { id: sale.id } });
+    //showSaleModal();
 }
 
 onMounted(() => {
