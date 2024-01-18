@@ -1,5 +1,7 @@
 # nuevopwa
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/718fafe7-d10f-45d8-963a-ac4bd0f062c8/deploy-status)](https://app.netlify.com/sites/petlovepwa/deploys)
+
 ## Project setup
 ```
 yarn install
