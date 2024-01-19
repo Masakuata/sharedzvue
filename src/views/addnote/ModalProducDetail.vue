@@ -1,7 +1,7 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
-        <div class="bg-white rounded-lg mx-4 h-[60vh] w-full z-50">
-
+        <div class="bg-white rounded-lg mx-4 w-full z-50">
+            <p class="w-full text-white text-center font-semibold bg-bgBlue h-10 rounded-t-lg py-2">Detalles del produco</p>
             <div class="p-4">
                 <div class="mt-3">
                     <ProductDetails :producto="producto"></ProductDetails>
@@ -30,7 +30,10 @@
                 <div class="flex  flex-row w-full  items-center border border-blue-500 rounded-lg px-3">
                     <p class="w-6/12 text-left h-fit">Cantidad en lista</p>
                     <div v-if="!editCantidadMode" class="flex flex-row w-6/12  h-10 items-center ">
-                        <p class="w-full text-center h-fit pr-3">{{ producto.cantidadCompra }}</p>
+                        <template v-if="producto">
+                            <p class="w-full text-center h-fit pr-3">{{ producto.cantidadCompra }}</p>
+                        </template>
+                        
                         <div class="w-10" @click="toggleEditCantidadMode">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -61,7 +64,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue';
+import { defineProps, defineEmits, ref, watch, onMounted } from 'vue';
 import ProductDetails from '@/components/utilities/ProductDetails.vue';
 import { toast } from 'vue3-toastify';
 import ButtonX from '@/components/utilities/ButtonX.vue';
@@ -151,9 +154,9 @@ watch(
     () => props.producto,
     () => {
         producto.value = props.producto;
-        console.log('Ejecutando el watch de dateails');
+        
         nuevaCantidad.value = props.producto.cantidadCompra.toString();
-        console.log('La nueva cantidad es;' , nuevaCantidad.value);
+        
     }
 )
 
@@ -169,8 +172,7 @@ const calcularNuevaCantidad = () => {
 
 
     if (nuevaCantidad.value == '' || nuevaCantidadInt == 0) {
-        console.log('La nueva cantidad' , nuevaCantidad.value)
-        console.log('La nueva cantidad int' , nuevaCantidadInt)
+        
 
         errorCantidadCero.value = true;
         return;
@@ -201,6 +203,12 @@ const notifyCantidadCero = () => {
         autoClose: 2000,
     });
 }   
+
+onMounted(() => {
+    producto.value = props.producto;
+    nuevaCantidad.value = props.producto.cantidadCompra.toString();
+})
+
 </script>
 
 <style>

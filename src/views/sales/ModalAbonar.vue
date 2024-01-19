@@ -219,11 +219,10 @@ watch(
 const filtrarEntrada = (input) => {
 
     if (typeof input === 'number') {
-        console.log('Es un numero');
         return '';
     }
-    console.log('El input es: ', input);
-    console.log(typeof input);
+
+
     // Primero, quitar todos los caracteres que no sean dígitos o puntos
     let filtrado = input.replace(/[^\d.]/g, '');
 
@@ -238,7 +237,7 @@ const filtrarEntrada = (input) => {
 };
 
 const registrarAbono = async ()  => {
-    console.log('Registrar abono');
+
     if (abono.value === '' || abono.value === '0') {
         errorAbono.value = true;
         errorMessageAbono.value = 'El abono no puede ser 0';
@@ -253,7 +252,7 @@ const registrarAbono = async ()  => {
             requestSent.value = true;
             loadingSendAbono.value = true;
             let response = await postAbono(props.sale.id, payload);
-            console.log('La respuesta es: ', response);
+
             loadingSendAbono.value = false;
         }catch(error){
             loadingSendAbono.value = false;
@@ -287,9 +286,9 @@ watch(
     () => {
         let restanteFloat = props.sale.total - props.sale.abonado;
         restante.value = restanteFloat.toFixed(2);
-        console.log('Cambio la venta', props.sale);
+
         cliente.value = props.sale.cliente;
-        console.log('El cliente es: ', cliente.value);
+
         construirPayload();
 
     }
@@ -310,7 +309,7 @@ watch(
 
 
 
-        console.log('Cambio el checkbox', finiquitarRestante.value);
+
     }
 
 );
@@ -337,7 +336,7 @@ const construirPayload = () => {
         tipoCliente: props.sale.cliente.tipoCliente,
     };
 
-    console.log('El payload es: ', payload);
+
 
     getProductos(payload);
 
@@ -349,7 +348,6 @@ const getProductos = async (payload) => {
         loadingProducts.value = true;
         const { data } = await getVentaProductosDetalles(props.sale.id);
         productos.value = data;
-        console.log('Los productos son: ', productos.value);
         loadingProducts.value = false;
     } catch (error) {
         loadingProducts.value = false;

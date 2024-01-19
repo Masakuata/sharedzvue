@@ -12,9 +12,11 @@
         <ModalProducts :is-visible="modalProductsVisible" @cancelAddProduct="cancelModalProducts"
             @confirmAddProduct="confirmModalProducts" :productos-lista="productosLista" :tipoCliente="tipoCliente">
         </ModalProducts>
+        <template v-if="modalProductDetailVisible">
+            <ModalProducDetail @confirmEditProduct="editProductDetail" @cancelEditProduct="cancelModalProductDetail"
+                :is-visible="modalProductDetailVisible" :producto="productSelected"></ModalProducDetail>
+        </template>
 
-        <ModalProducDetail @confirmEditProduct="editProductDetail" @cancelEditProduct="cancelModalProductDetail"
-            :is-visible="modalProductDetailVisible" :producto="productSelected"></ModalProducDetail>
 
 
         <p class="w-full text-xl font-semibold mb-3 text-center">Seleccione un cliente y registre su venta</p>
@@ -326,16 +328,16 @@ const limpiarCampos = () => {
 };
 
 const seleccionarCliente = (clienteEmit) => {
-    console.log('clienteSeleccionado', clienteEmit);
+    
     cliente.value = clienteEmit;
 
     if (tipoCliente.value !== clienteEmit.tipoCliente) {
-        console.log('cambio de tipo de cliente');
+        
         tipoCliente.value = clienteEmit.tipoCliente;
         recargarProductos(clienteEmit.tipoCliente);
     } else {
         recargarProductos(clienteEmit.tipoCliente);
-        console.log('no cambio de tipo de cliente');
+        
     }
     isClienteSelected.value = true;
 };

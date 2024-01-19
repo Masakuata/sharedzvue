@@ -53,7 +53,7 @@ const props = defineProps({
 
 
 onMounted(() => {
-    console.log(props.cliente);
+
     direccion.value = props.cliente.direcciones[0];
     
 });

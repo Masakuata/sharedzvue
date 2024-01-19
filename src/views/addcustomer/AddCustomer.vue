@@ -38,15 +38,13 @@
         </div>
 
 
-        <label for="miSelect" class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
-        <div class="w-full h-12">
-            <select v-model="tipoClienteSelected" id="miSelect"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                <option disabled value="">Selecciona una opción</option>
-                <option class="w-full" v-for="opcion in tiposCliente" :key="opcion.value" :value="opcion.value">{{ opcion.name
-                }}</option>
-            </select>
-        </div>
+        <label class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
+        <template v-if="tiposFormato.length > 0">
+            <div class="w-full">
+                <SelectX :elementos="tiposFormato" @selectItem="seleccionarTipo" ></SelectX>
+            </div>
+        </template>
+        
 
 
         <div class="w-full">
@@ -96,6 +94,8 @@
 
 
 
+
+
     </div>
 </template>
     
@@ -107,8 +107,36 @@ import { postCliente } from '@/api/api.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { toast } from 'vue3-toastify';
 import { useRouter } from 'vue-router';
+import SelectX from '@/components/utilities/SelectX.vue';
+import {getTiposCliente} from '@/api/api.js';
 
 const router = useRouter();
+
+const tipos = ref([]);
+const tiposFormato = ref([]);
+
+const getTipos = async () => {
+    try {
+        const response = await getTiposCliente();
+        tipos.value = response.data;
+        formatearTipos();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const seleccionarTipo = (elemento) =>{
+    tipoClienteSelected.value = elemento;
+    
+}
+
+const formatearTipos =( ) =>{
+    tipos.value.forEach(element => {
+        tiposFormato.value.push({value:element.id,text:element.tipoCliente});
+    });
+    
+}
+
 
 const tiposCliente = [
     { value: 1, name: 'Público' },
@@ -116,7 +144,7 @@ const tiposCliente = [
     { value: 3, name: 'Mayorista' },
 ];
 
-const tipoClienteSelected = ref(1);
+const tipoClienteSelected = ref({});
 
 
 
@@ -234,7 +262,7 @@ const resgistrarCliente = () => {
             RFC: rfc.value,
             direcciones: direcciones,
             telefono: telefono.value,
-            tipoCliente: tipoClienteSelected.value,
+            tipoCliente: tipoClienteSelected.value.value,
         }
         postClienteMetod(cliente);
     }
@@ -286,6 +314,7 @@ const cleanfields = () => {
 
 
 onMounted(() => {
+    getTipos();
 });
 
 </script>

@@ -5,14 +5,16 @@ const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
 const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
 const urlEdsonDell = 'http://192.168.1.103:8080'
 const urlEdsonOfice = 'http://192.168.1.101:8080'
-const url = 'http://clayrite.ddns.net:81'
-const env = 'prod'
+const urlDevEnv = 'http://clayrite.ddns.net:81'
+const env = 'dev'
 
 function getUrl() {
     if (env === 'prod') {
         return httpsUrl
-    } else {
+    } else if (env === 'of') {
         return urlEdsonDell
+    }else if (env === 'dev') {
+        return urlDevEnv
     }
 }
 
@@ -119,13 +121,40 @@ export async function getProductosBusqueda(nombre, tipocliente) {
     }
 }
 export async function getProductosInventario(paramsMethod) {
-    console.log('Los params', paramsMethod)
 
     const complemento = '/producto'
     let urlnew = getUrl() + complemento;
 
     try {
         let respuesta = await axiosInstance.get(urlnew, {params: paramsMethod});
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getProductoId(id) {
+    const complemento = '/producto/' + id;
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function actualizarStockProducto(id, stock) {
+    const complemento = '/producto/' + id+ '/stock?cant=' + stock;
+
+    
+
+
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.put(urlnew);
         return respuesta;
     } catch (error) {
         throw error;
@@ -244,7 +273,31 @@ export async function getDetallesVenta(idVenta) {
     } catch (error) {
         throw error;
     }
+}
 
+export async function actualizarProducto(id, producto) {
+    const complemento = '/producto/' + id;
+    let urlnew = getUrl() + complemento;
 
+    try {
+        let respuesta = await axiosInstance.put(urlnew, producto);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
 
+export async function getTiposCliente() {
+
+    const complemento = '/tipoCliente'
+
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+    
 }

@@ -19,6 +19,10 @@
     import { ref, onMounted } from 'vue';
     import {toggleSidebar} from '@/utils/sidebarManager.js';
     import ButtonX from '@/components/utilities/ButtonX.vue';
+    import { useRoute, useRouter } from 'vue-router';
+
+    const route = useRoute();
+    const router = useRouter();
 
 
     

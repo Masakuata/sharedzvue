@@ -42,7 +42,7 @@ const props = defineProps({
 
 
 onMounted(() => {
-    console.log(' La venta es', props.sale);
+
     restante.value = props.sale.total - props.sale.abonado;
     //direccion.value = props.cliente.direcciones[0];
 });

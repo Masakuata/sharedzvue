@@ -67,7 +67,24 @@ const routes = [
     component: function () {
       return import(/* webpackChunkName: "identificate" */ '../views/inventory/addProduct/AddProduct.vue')
     }
-  }
+  },
+
+  {
+    path: '/edit-product/:id',
+    name: 'editproduct',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/inventory/editproduct/EditProductMain.vue')
+    }
+  },
+
+  {
+    path: '/modify-stock-product/:id',
+    name: 'modifystockproduct',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/inventory/modifystock/ModifyStockMain.vue')
+    }
+  },
+
 ]
 
 const router = createRouter({

@@ -29,7 +29,7 @@ const subtotalFormat = ref('Subt: $13000');
 
 
 const formatInfo = () => {
-    console.log('formatInfo');
+
 
     cantidadFormat.value = `Cantidad: ${props.producto.cantidad}`;
     precioFormat.value = `IUV: $${props.producto.precio}`;
@@ -46,7 +46,6 @@ const props = defineProps({
 
 
 const calcularSubtotal = () => {
-    console.log('calcularSubtotal');
     let subtotalLargo = props.producto.cantidad * props.producto.precio;  
     let subtotal = subtotalLargo.toFixed(2);
     let subtotalFloat = parseFloat(subtotal);  
