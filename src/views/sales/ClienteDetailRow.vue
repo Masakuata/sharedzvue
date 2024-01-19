@@ -55,10 +55,6 @@ const props = defineProps({
 
 
 
-onMounted(() => {
-    console.log( ' El cliente row es', props.cliente);
-    //direccion.value = props.cliente.direcciones[0];
-});
 
 
 </script>

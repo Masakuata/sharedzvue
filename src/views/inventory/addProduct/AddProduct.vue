@@ -45,7 +45,7 @@
       </div>
 
 
-
+      
       <div class="w-full">
         <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
         <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
@@ -55,45 +55,24 @@
           requerido</p>
       </div>
 
-      <div class="w-full mt-3 border border-gray-500 p-2 rounded-lg">
-        <div class="flex flex-row w-full ">
-          <label class="text-gray-700 mr-10 font-semibold w-1/2" for="checkbox">Precio detalle</label>
-          <div class="w-1/2 text-right">
-            <input type="checkbox" v-model="hasprecioDetalle"
-              class="w-6 h-6 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " id="checkbox">
-          </div>
-        </div>
-
-        <input type="text" :disabled="!hasprecioDetalle" id="precioProducto" v-model="precioDetalle"
-          @input="validatePrecioDetalleProdcuto"
-          class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-
-        <p v-if="hasprecioDetalle && faltaPrecioDetalle" class="text-red-600 w-full">El precio detalle está activado,
-          espefícica un precio</p>
-
+      <p class="text-lg font-semibold w-full text-center">Si el producto tendrá varios precios dependiendo el tipo de cliente, agrégalos</p>
+      <div class="w-full">
+        <SearchTipoCliente :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
       </div>
 
-      <div class="w-full mt-3 border border-gray-500 p-2 rounded-lg">
-        <div class="flex flex-row w-full ">
-          <label class="text-gray-700 mr-10 font-semibold w-1/2" for="checkboxMayo">Precio mayorista</label>
-          <div class="w-1/2 text-right">
-            <input type="checkbox" v-model="hasprecioMayorista"
-              class="w-6 h-6 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " id="checkboxMayo">
-          </div>
-
-        </div>
-
-        <input type="text" :disabled="!hasprecioMayorista" id="precioProducto" v-model="precioMayorista"
-          @input="validatePrecioMayoristaProdcuto"
-          class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-
-        <p v-if="hasprecioMayorista && faltaPrecioMayorista" class="text-red-600 w-full">El precio mayorista está
-          activado, espefícica un precio</p>
-      </div>
+      
 
       <div class="mt-3 w-full">
         <ButtonX color="purple" @click="registrarProductoMetod">Registrar producto</ButtonX>
+        <div class="w-full mt-3">
+          <ButtonX color="red" @click="regresar">Regresar</ButtonX>
+        </div>
       </div>
+      
+
+      
+
+      
     </template>
     <template v-else>
       <template v-if="loading">
@@ -143,7 +122,12 @@ import { registrarProducto } from '@/api/api.js';
 import LoadingX from '@/components/utilities/LoadingX.vue';
 import SuccesX from '@/components/utilities/SuccesX.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
+import { useRouter } from 'vue-router';
+import SearchTipoCliente from './selectTipoCliente/SearchTipoCliente.vue';
 
+const router = useRouter(); 
+
+const precios = ref([]);
 
 // Variables y metodos necesarios para tipoMascota
 const opciones = [
@@ -157,8 +141,7 @@ const hasErrror = ref(false);
 const errorMessage = ref('Error al registrar el producto');
 
 const ID_PUBLICO = 1;
-const ID_DETALLE = 2;
-const ID_MAYORISTA = 3;
+
 
 const opcionRazaSeleccionada = ref('');
 
@@ -187,7 +170,7 @@ const validatePrecioProdcuto = () => {
   faltaPrecioProducto.value = false;
   precioProducto.value = filtrarEntrada(precioProducto.value);
   let precioInt = parseInt(precioProducto.value);
-  console.log('Validando el precio del producto', precioInt);
+  
   if (precioInt > 0) {
     precioProductoValid.value = true;
   } else {
@@ -201,65 +184,6 @@ watch(
     validatePrecioProdcuto();
   },
 );
-
-//Variables y metodos para precio detalle
-const precioDetalle = ref('');
-const hasprecioDetalle = ref(false);
-const precioDetalleValid = ref(false);
-const faltaPrecioDetalle = ref(false);
-
-watch(
-  () => hasprecioDetalle.value,
-  () => {
-    if (!hasprecioDetalle.value) {
-      precioDetalle.value = '';
-    }
-  },
-);
-
-const validatePrecioDetalleProdcuto = () => {
-  precioDetalle.value = filtrarEntrada(precioDetalle.value);
-
-  let precioDetalleInt = parseInt(precioDetalle.value);
-  faltaPrecioDetalle.value = false;
-  console.log('Validando el preciodetalle del producto', precioDetalleInt);
-  if (precioDetalleInt > 0) {
-    precioDetalleValid.value = true;
-  } else {
-    console.log('No es valido el precio detalle');
-    precioDetalleValid.value = false;
-  }
-
-};
-
-// Variables y metodos necesarios para validar precioMayorista
-const precioMayorista = ref('');
-const hasprecioMayorista = ref(false);
-const precioMayoristaValid = ref(false);
-const faltaPrecioMayorista = ref(false);
-
-watch(
-  () => hasprecioMayorista.value,
-  () => {
-    if (!hasprecioMayorista.value) {
-      precioMayorista.value = '';
-    }
-  },
-);
-
-const validatePrecioMayoristaProdcuto = () => {
-  precioMayorista.value = filtrarEntrada(precioMayorista.value);
-  faltaPrecioMayorista.value = false;
-  let precioMayoristaInt = parseInt(precioMayorista.value);
-
-  if (precioMayoristaInt > 0) {
-    precioMayoristaValid.value = true;
-  } else {
-    console.log('No es valido el precio detalle');
-    precioMayoristaValid.value = false;
-  }
-
-};
 
 
 
@@ -306,16 +230,6 @@ const validateEmptyfields = () => {
 
 
   faltaPrecioProducto.value = precioProducto.value.length === 0;
-  console.log('faltaPrecioProducto', faltaPrecioProducto.value);
-
-  if (hasprecioDetalle.value) {
-    faltaPrecioDetalle.value = precioDetalle.value.length === 0;
-  }
-
-  if (hasprecioMayorista.value) {
-    faltaPrecioMayorista.value = precioMayorista.value.length === 0;
-  }
-
 };
 
 const validateForm = () => {
@@ -324,22 +238,12 @@ const validateForm = () => {
   if (
     nombreProductoValid.value &&
     presentacionProductoValid.value &&
-    precioProductoValid.value &&
-    precioDetalleValid.value &&
-    precioMayoristaValid.value
+    precioProductoValid.value
   ) {
 
     console.log('El formulario es valido');
     return true;
   } else {
-    console.log('El formulario no es valido');
-    console.log('nombreProductoValid', nombreProductoValid.value);
-    console.log('presentacionProductoValid', presentacionProductoValid.value);
-    console.log('cantidadProductoValid', cantidadProductoValid.value);
-    console.log('precioProductoValid', precioProductoValid.value);
-    console.log('precioDetalleValid', precioDetalleValid.value);
-    console.log('precioMayoristaValid', precioMayoristaValid.value);
-
     return false;
   }
 };
@@ -370,28 +274,27 @@ const registrarProductoMetod = async () => {
 
 }
 
+const regresar = () => {
+  router.go(-1);
+};
+
 
 const buildPayload = () => {
-  let precios = [];
+  let preciosMetod = [];
   const precioPublico = {
     id: ID_PUBLICO,
     precio: precioProducto.value,
   };
-  const precioDetallePay = {
-    id: ID_DETALLE,
-    precio: precioDetalle.value,
-  };
-  const precioMayoristaPay = {
-    id: ID_MAYORISTA,
-    precio: precioMayorista.value,
-  };
-  if (hasprecioDetalle.value) {
-    precios.push(precioDetallePay);
-  }
-  if (hasprecioMayorista.value) {
-    precios.push(precioMayoristaPay);
-  }
-  precios.push(precioPublico);
+
+  precios.value.forEach((item) => {
+    let precioAux = {
+      id: item.id,
+      precio: item.precio,
+    };
+    preciosMetod.push(precioAux);
+  });
+  
+  preciosMetod.push(precioPublico);
 
   let payload = {
     nombre: nombreProducto.value,
@@ -400,7 +303,7 @@ const buildPayload = () => {
     tipoMascota: opcionRazaSeleccionada.value,
     precio: precioProducto.value,
     raza: '',
-    precios: precios,
+    precios: preciosMetod,
   };
 
   return payload;
@@ -412,14 +315,10 @@ const aceptar = () => {
   requestSent.value = false;
   hasErrror.value = false;
   errorMessage.value = '';
-  precioDetalle.value = '';
-  precioMayorista.value = '';
   nombreProducto.value = '';
   presentacionProducto.value = '';
   cantidadProducto.value = '';
   precioProducto.value = '';
-  hasprecioDetalle.value = false;
-  hasprecioMayorista.value = false;
   opcionRazaSeleccionada.value = opciones[0].value;
 };
 

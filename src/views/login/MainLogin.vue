@@ -86,11 +86,10 @@ const promptInstall = () => {
     // Decidir qué hacer después de que el usuario responda
     pwaEvent.value.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
-            console.log('El usuario aceptó instalar la app');
-        } else {
-            console.log('El usuario rechazó instalar la app');
-        }
 
+        } else {
+
+        }
         // Reseteamos la variable para no mostrar el botón nuevamente
         pwaEvent.value = null;
     });

@@ -30,10 +30,10 @@ export const isFutureDate = (dia, mes, anio) => {
     dateParam.setMonth(mes-1);
     dateParam.setDate(dia);
 
-    console.log('La fecha construida validator es: ', dateParam);
+    
     const hoy  = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
 
-    console.log('La fecha de hoy validator es: ', hoy);
+    
     
     if(
         dateParam.getUTCDate() == hoy.getUTCDate() &&
@@ -41,7 +41,7 @@ export const isFutureDate = (dia, mes, anio) => {
         dateParam.getUTCFullYear() == hoy.getUTCFullYear()
         
         ){
-        console.log('La fecha es hoy: ', hoy);
+        
         return false;
     }
     
@@ -58,7 +58,7 @@ export const getHoyString = () => {
     fechaString = fechaString.toString()
     fechaString = fechaString.substring(0, 9);
     fechaString = fechaString.replaceAll('/', '-');
-    console.log('La fecha retornada es ', fechaString);
+    
     return fechaString;
 }
 

@@ -67,7 +67,7 @@ const clickEnDiv = () => {
 };
 
 const agregarCliente = () => {
-    console.log('agregar cliente');
+    
 
     //routerpush by name
     router.push({ name: 'createcustomer' });

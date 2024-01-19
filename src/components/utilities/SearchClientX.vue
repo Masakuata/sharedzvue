@@ -6,6 +6,11 @@
                 class="border rounded-lg w-full h-14 px-2" />
             <ul v-if="searchQuery"
                 class="w-full absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[50vh] overflow-scroll">
+                <template v-if="loading">
+                    <p class="w-full text-center text-sm font-semibold">Buscando...</p>
+                    <div class="flex flex-row items-center justify-center w-full"><LoadingIcon></LoadingIcon></div>
+                    
+                </template>
                 <li v-for="item in items" :key="item.id" class="border-b p-2" @click="selectItem(item)">
                     {{ item.nombre }}
                 </li>
@@ -13,7 +18,8 @@
         </template>
         <template v-else>
             <div>
-                <p class="w-full text-center text-white font-semibold bg-gray-400 mt-3  rounded-t-lg">CLIENTE SELECCIONADO</p>
+                <p class="w-full text-center text-white font-semibold bg-gray-400 mt-3  rounded-t-lg">CLIENTE SELECCIONADO
+                </p>
                 <div class="flex flex-row w-full h-16 bg-bgBlue  rounded-b-lg overflow-hidden">
                     <div class="w-3/12 bg-bgGray h-full">
                         <div class="h-full w-full flex flex-row items-center justify-center">
@@ -47,15 +53,15 @@
                             </div>
 
                         </div>
-                    </div>  
+                    </div>
                     <div class="flex flex-row w-1/12 h-full items-center justify-center">
-                        <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-x-circle text-red-700">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m15 9-6 6" />
-                        <path d="m9 9 6 6" />
-                    </svg>
+                        <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-x-circle text-red-700">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m15 9-6 6" />
+                            <path d="m9 9 6 6" />
+                        </svg>
                     </div>
 
                 </div>
@@ -68,6 +74,7 @@
 import { ref, watch, defineEmits, defineProps } from 'vue';
 import { getClientesBusqueda } from '@/api/api.js';
 import AlertX from './AlertX.vue';
+import LoadingIcon from './LoadingIcon.vue';
 
 const props = defineProps({
     reload: Boolean,
@@ -77,6 +84,8 @@ const searchQuery = ref('');
 const selectedItem = ref({});
 const isSelected = ref(false);
 const noResults = ref(false);
+
+const loading = ref(false);
 
 
 const emit = defineEmits(['select-item', 'unselect-item']);
@@ -130,13 +139,25 @@ const getClientes = async () => {
         noResults.value = false;
         return;
     }
-    const clientes = await getClientesBusqueda(searchQuery.value);
-    items.value = clientes.data;
-    if (items.value.length == 0) {
-        noResults.value = true;
-    } else {
-        noResults.value = false;
+
+    try {
+        items.value = [];
+        loading.value = true;
+        const clientes = await getClientesBusqueda(searchQuery.value);
+        items.value = clientes.data;
+        if (items.value.length == 0) {
+            noResults.value = true;
+        } else {
+            noResults.value = false;
+        }
+        loading.value = false;
+
+    } catch (error) {
+        loading.value = false;
+        console.log(error);
     }
+
+
 };
 
 

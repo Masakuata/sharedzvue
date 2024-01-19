@@ -222,7 +222,7 @@ watch(
     () => abono.value,
     () => {
         abono.value = filtrarEntrada(abono.value);
-        console.log('El abono es: ', abono.value);
+
         let abonoFloat = parseFloat(abono.value);
         let restanteFloat = parseFloat(restante.value);
 
@@ -255,7 +255,7 @@ const filtrarEntrada = (input) => {
 };
 
 const registrarAbono = async () => {
-    console.log('Registrar abono');
+
     if (abono.value === '' || abono.value === '0') {
         errorAbono.value = true;
         errorMessageAbono.value = 'El abono no puede ser 0';
@@ -270,7 +270,7 @@ const registrarAbono = async () => {
             requestSent.value = true;
             loadingSendAbono.value = true;
             let response = await postAbono(props.sale.id, payload);
-            console.log('La respuesta es: ', response);
+
             loadingSendAbono.value = false;
         } catch (error) {
             loadingSendAbono.value = false;
@@ -309,10 +309,10 @@ watch(
     () => finiquitarRestante.value,
     () => {
         if (finiquitarRestante.value) {
-            console.log('El restante es: ', restante.value);
-            console.log('El abono es: ', abono.value);
+
+
             abono.value = restante.value.toString();
-            console.log('El abono es: ', abono.value);
+
         } else {
             abono.value = '0';
         }
@@ -350,16 +350,16 @@ const getDetailsVenta = async (ventaId) => {
 
         loading.value = true;
         const { data } = await getDetallesVenta(ventaId);
-        console.log('Los detalles de la venta son: ', data);
+
         sale.value = data;
         cliente.value = data.cliente;
         productos.value = data.productos;
 
-        console.log('La sale es', sale.value);
-        console.log('El total es: ', sale.value.total);
-        console.log('El abonado es: ', sale.value.abonado);
+
+
+
         restante.value = sale.value.total - sale.value.abonado;
-        console.log('El restante es: ', restante.value);
+
         loading.value = false;
 
     } catch (error) {

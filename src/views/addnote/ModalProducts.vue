@@ -163,7 +163,6 @@ const clearComponent = () => {
 const confirm = () => {
     if (producto.value != null) {
         if (isProductInList.value) {
-            console.log('la nueva cantidad es: ' + nuevaCantidad.value);
             let nuevaCantidadInt = parseInt(nuevaCantidad.value);
             if (nuevaCantidadInt == 0 || nuevaCantidad.value == '') {
                 toast("No puedes editar un producto con cantidad 0", {
@@ -188,7 +187,6 @@ const confirm = () => {
                 errorCantidadCero.value = true;
                 return;
             }
-            console.log('Se construyo en el else');
             let cantidadInt = parseInt(cantidad.value);
             producto.value.cantidadCompra = cantidadInt;
             let subtotal = cantidadInt * producto.value.precio;
