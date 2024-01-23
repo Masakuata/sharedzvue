@@ -6,7 +6,7 @@ const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
 const urlEdsonDell = 'http://192.168.1.103:8080'
 const urlEdsonOfice = 'http://192.168.1.101:8080'
 const urlDevEnv = 'http://clayrite.ddns.net:81'
-const env = 'prod'
+const env = 'dev'
 
 function getUrl() {
     if (env === 'prod') {
@@ -301,3 +301,59 @@ export async function getTiposCliente() {
     }
     
 }
+
+export async function eliminarProducto(id) {
+    const complemento = '/producto/' + id
+
+    
+
+
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.delete(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export async function getCliente(idCliente) {
+    const complemento = '/cliente/' + idCliente;
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function putCliente(id, cliente) {
+    const complemento = '/cliente/' + id;
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.put(urlnew, cliente);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function eliminarCliente(id) {
+    const complemento = '/cliente/' + id;
+
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.delete(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+
+}
+

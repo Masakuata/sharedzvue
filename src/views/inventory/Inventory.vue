@@ -4,7 +4,8 @@
 
         <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>
         <input type="text" v-model="searchQuery" placeholder="Buscar..." class="border rounded w-full h-10 px-2" />
-        <button class="w-full h-10 mt-2 bg-bgPurple text-white font-semibold rounded-xl" @click="goAddProduct">Agregar producto</button>
+        <button class="w-full h-10 mt-2 bg-bgPurple text-white font-semibold rounded-xl" @click="goAddProduct">Agregar
+            producto</button>
 
         <div class="w-full h-[80vh] overflow-scroll mt-2">
             <template v-if="loadingItems">
@@ -15,7 +16,8 @@
 
             </template>
             <template v-else>
-                <ProductinventoryItem v-for="item in items" :key="item.id" :producto="item"></ProductinventoryItem>
+                <ProductinventoryItem v-for="item in items" :key="item.id" :producto="item" @click="onGo">
+                </ProductinventoryItem>
                 <template button v-if="isThereMoreResults">
                     <div class="w-full mt-2">
                         <ButtonX :isLoading="loadingaddItems" @click="addItems" color="green">Cargar más productos</ButtonX>
@@ -35,7 +37,7 @@
 </template>
     
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, onUnmounted } from 'vue';
 import { toggleSidebar } from '@/utils/sidebarManager.js';
 import SearchProduct from '@/components/utilities/SearchProduct.vue';
 import { postProducto } from '@/api/api.js';
@@ -44,6 +46,7 @@ import AlertX from '@/components/utilities/AlertX.vue';
 import { getProductosInventario } from '@/api/api.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { useRouter } from 'vue-router';
+import { useMyStore } from '@/stores/store.js';
 
 
 const searchQuery = ref('');
@@ -55,6 +58,9 @@ const isThereMoreResults = ref(false);
 
 const loadingItems = ref(false);
 const router = useRouter();
+const store = useMyStore();
+
+const isPushed = ref(false);
 
 
 watch(
@@ -120,14 +126,53 @@ const addItems = async () => {
 }
 
 const goAddProduct = () => {
+    store.setQueryInventory({ page: page.value, searchQuery: searchQuery.value });
     router.push({ name: 'addproduct' })
 }
 
 const closeSidebar = () => {
     toggleSidebar();
 };
+
+const onGo = () => {
+    isPushed.value = true;
+}
+
+const guardarQuery = () => {
+    
+    let queryAux = {
+        page: page.value,
+        query: searchQuery.value,
+    }
+    
+    store.setQueryInventory(queryAux);
+}
+
+onUnmounted(() => {
+    
+    if (isPushed.value) {
+        guardarQuery();
+    } else {
+        let queryAux = {
+            page: -1,
+            query: '',
+        }
+        store.setQueryInventory(queryAux);
+    }
+
+});
+
+const cargarQuery = () => {
+    page.value = store.getQueryInventory.page;
+    searchQuery.value = store.getQueryInventory.query;
+
+}
+
+
 onMounted(() => {
-    console.log('Entro al mounted de inventory');
+    if (store.getQueryInventory.page != -1) {
+        cargarQuery();
+    } 
     getProductos();
 });
 

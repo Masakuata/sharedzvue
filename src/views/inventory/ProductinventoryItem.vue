@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row w-full h-32 bg-bgBlue mt-3 rounded-lg overflow-hidden" @click="goEditProduct" >
+    <div class="flex flex-row w-full  bg-bgBlue mt-3 rounded-lg overflow-hidden" :class="[{ 'h-40' : alturaGrande}, {'h-36' : !alturaGrande}]" @click="goEditProduct" >
         <div class="w-1/3 bg-bgGray h-full">
             <div class="p-3 h-full w-full">
                 <svg class="w-full h-full" width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,13 +28,13 @@
             </div>
 
             <div class="flex flex-row w-full">
-                <p class="text-white font-semibold text-lg ml-3 mr-2">{{ producto.nombre }}</p>
-                <p class="text-white font-semibold text-lg">{{ producto.presentacion }}</p>
+                <p class="text-white font-semibold text-lg ml-3 mr-2  w-44" :class="[{'line-clamp-2 overflow-hidden' : nombreLargo}]">{{ producto.nombre }}</p>
+                <p class="text-white font-semibold text-sm mt-2 mr-2" :class="[{'line-clamp-2 overflow-hidden' : descripcionLarga}]">{{ producto.presentacion }}</p>
             </div>
 
             <div class="flex flex-row w-full px-3 pt-3">
                 <div class="flex flex-col w-1/2">
-                    <p class="text-white font-semibold text-lg ">{{ '$' + producto.precio }}</p>
+                    <p class="text-white font-semibold text-lg " >{{ '$' + producto.precio }}</p>
                     <p class="text-white text-sm">Precio general</p>
                 </div>
                 <div class="w-1/2">
@@ -53,6 +53,10 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const isDisponible = ref(false);
+const descripcionLarga = ref(false);
+const nombreLargo = ref(false);
+
+const alturaGrande = ref(false);
 
 const props = defineProps({
     producto: Object,
@@ -62,6 +66,20 @@ onMounted(() => {
     if (props.producto.cantidad > 0) {
         isDisponible.value = true;
     }
+    if (props.producto.presentacion.length > 6) {
+        descripcionLarga.value = true;
+        console.log('descripcion larga');
+    }
+    if (props.producto.nombre.length > 15) {
+        nombreLargo.value = true;
+    }
+
+    if (descripcionLarga.value || nombreLargo.value) {
+        alturaGrande.value = true;
+    }else{
+        alturaGrande.value = false;
+    }
+
 });
 
 const goEditProduct = () => {

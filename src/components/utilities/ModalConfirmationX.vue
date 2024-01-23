@@ -19,6 +19,12 @@
             </div>
         </div>
     </div>
+
+    <!-- <ModalConfirmationX :isVisible="isVisibleModalDelete" :mensaje="mensajeModalDelete" titulo="Eliminar producto"
+            @cancelar="cerrarModalDelete" @realizar="confirmarEliminar" :is-important="true"
+            texto-cancelar="Regresar" texto-realizar="Eliminar">
+            >
+        </ModalConfirmationX> -->
 </template>
 
 <script setup>

@@ -50,6 +50,10 @@ const elementoSeleccionado = ref(null);
 
 const props = defineProps({
     elementos: Array,
+    valueItemSelected: {
+        type: Number,
+        default: 0
+    }
 });
 const emit = defineEmits(['selectItem']);
 
@@ -66,11 +70,25 @@ const emitirSelectItem = () => {
     emit('selectItem', elementoSeleccionado.value);
 };
 
+const seleccionarElemento = () => {
+    let pos = 0;
+    console.log('El elemento seleccionado es' ,props.valueItemSelected);
+    props.elementos.forEach((elemento, index) => {
+        if (elemento.value == props.valueItemSelected) {
+            console.log(elemento.value);
+            console.log(props.valueItemSelected);
+            pos = index;
+        }
+    });
+
+    elementoSeleccionado.value = props.elementos[pos];
+    emitirSelectItem();
+};
+
 
 
 onMounted(() => {
-    elementoSeleccionado.value = props.elementos[0];
-    emitirSelectItem();
+    seleccionarElemento();
 });
 
 </script>

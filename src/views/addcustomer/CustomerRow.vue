@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row w-full h-32 bg-bgBlue mt-3 rounded-lg overflow-hidden" @click="goProductDetail">
+    <div class="flex flex-row w-full h-32 bg-bgBlue mt-3 rounded-lg overflow-hidden" @click="goCustomerDetail">
         <div class="w-1/3 bg-bgGray h-full">
             <div class="p-3 h-full w-full">
                 <svg width="100" height="100" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,6 +48,10 @@ const props = defineProps({
         required: true
     }
 });
+const goCustomerDetail = () => {
+    //Ir mediante el nombre
+    router.push({ name: 'detailcustomer', params: { id: props.cliente.id } });
+};
 
 
 

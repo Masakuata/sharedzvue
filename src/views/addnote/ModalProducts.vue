@@ -209,6 +209,8 @@ const confirm = () => {
         subtotal: producto.value.subtotal,
     }
 
+    console.log( 'El producto a emitir es: ',productoEmit);
+
 
     if (productoEmit.cantidad === 0 ) {
         toast("No puedes agregar un producto con cantidad 0", {

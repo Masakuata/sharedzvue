@@ -8,7 +8,8 @@ export const useMyStore = defineStore('miStore', {
             loggedIn: false,
             sidebarStore: false,
             username: 'user',
-            email: 'email'
+            email: 'email',
+            queryInventory: { query: '', page: -1 },
 
         };
     },
@@ -24,12 +25,23 @@ export const useMyStore = defineStore('miStore', {
         },
         toggleSidebarStore() {
             this.sidebarStore = !this.sidebarStore;
+        },
+        setQueryInventory(query) {
+            console.log('Guardando query' , query);
+            console.log(query)
+            this.queryInventory = query;
+        },
+        resetQueryInventory() {
+            this.queryInventory = { query: '', page: -1 };
         }
     },
     // Getters
     getters: {
         isLoggedIn() {
             return this.loggedIn;
-        }
+        },
+        getQueryInventory() {
+            return this.queryInventory;
+        }   
     }
 });
