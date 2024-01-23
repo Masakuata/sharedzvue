@@ -9,14 +9,14 @@ const urlDevEnv = 'http://clayrite.ddns.net:81'
 const env = 'dev'
 
 function getUrl() {
-    //return process.env.VUE_APP_CURRENT
-    if (env === 'prod') {
-        return httpsUrl
-    } else if (env === 'of') {
-        return urlEdsonDell
-    }else if (env === 'dev') {
-        return urlDevEnv
-    }
+    return process.env.VUE_APP_CURRENT
+    // if (env === 'prod') {
+    //     return httpsUrl
+    // } else if (env === 'of') {
+    //     return urlEdsonDell
+    // }else if (env === 'dev') {
+    //     return urlDevEnv
+    // }
 }
 
 
