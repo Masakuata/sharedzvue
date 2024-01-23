@@ -6,16 +6,17 @@ const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
 const urlEdsonDell = 'http://192.168.1.103:8080'
 const urlEdsonOfice = 'http://192.168.1.101:8080'
 const urlDevEnv = 'http://clayrite.ddns.net:81'
-const env = 'prod'
+const env = 'dev'
 
 function getUrl() {
-    if (env === 'prod') {
-        return httpsUrl
-    } else if (env === 'of') {
-        return urlEdsonDell
-    }else if (env === 'dev') {
-        return urlDevEnv
-    }
+    return process.env.VUE_APP_CURRENT
+    // if (env === 'prod') {
+    //     return httpsUrl
+    // } else if (env === 'of') {
+    //     return urlEdsonDell
+    // }else if (env === 'dev') {
+    //     return urlDevEnv
+    // }
 }
 
 
