@@ -66,13 +66,13 @@
                     <p class="w-1/3 font-semibold">Teléfono</p>
                     <p class="w-2/3">{{ numero }}</p>
                 </div>
-                <div class="flex flex-row w-full mt-2">
+                <div class="flex flex-row w-full mt-2 h-fit">
                     <p class="w-1/3 font-semibold">Dirección</p>
                     <p class="w-2/3">{{ direccion }}</p>
                 </div>
-                <div class="flex flex-row w-full mt-2">
+                <div class="flex flex-row w-full mt-2 h-fit">
                     <p class="w-1/3 font-semibold">Correo</p>
-                    <p class="w-2/3">{{ correo }}</p>
+                    <p class="w-2/3 break-words">{{ correo }}</p>
                 </div>
 
                 <!-- <div class="flex flex-row w-full mt-2">

@@ -210,7 +210,8 @@ const confirmModalConfirmacionVenta = (registrada) => {
 const remplazarProducto = (producto) => {
     productosLista.value = productosLista.value.filter(prod => prod.id !== producto.id);
     productosLista.value.push(producto);
-    calcularTotal();
+    console.log('Remplazando producto' ,producto);
+    //calcularTotal();
 };
 
 const confirmModalProducts = (producto) => {
@@ -258,8 +259,12 @@ const mostrarToast = () => {
 
 const calcularTotal = () => {
     let total = 0;
+    console.log('Calculando total');
     productosLista.value.forEach(current => {
+        console.log(current);
+        console.log(current.subtotal);
         total += current.subtotal;
+        console.log( 'El total es ;' + total);
     });
     total = total.toFixed(2);
     totalInt.value = parseFloat(total);

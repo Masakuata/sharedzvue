@@ -331,7 +331,7 @@ export async function getCliente(idCliente) {
     }
 }
 
-export async function actualizarCliente(id, cliente) {
+export async function putCliente(id, cliente) {
     const complemento = '/cliente/' + id;
     let urlnew = getUrl() + complemento;
 
