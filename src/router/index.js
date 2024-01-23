@@ -30,6 +30,22 @@ const routes = [
       return import(/* webpackChunkName: "identificate" */ '../views/addcustomer/AddCustomer.vue')
     }
   },
+
+  {
+    path: '/eddit-customer/:id',
+    name: 'editcustomer',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/addcustomer/EditCustomer.vue')
+    }
+  },
+
+  {
+    path: '/detail-customer/:id',
+    name: 'detailcustomer',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/addcustomer/DetailCustomer.vue')
+    }
+  },
   {
     path: '/add-note',
     name: 'addnote',

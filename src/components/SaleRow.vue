@@ -1,6 +1,6 @@
 <template>
 
-    <div class="flex flex-col  w-full bg-bgProduct h-32 rounded-lg overflow-hidden mt-3" @click="showModal">
+    <div class="flex flex-col  w-full bg-bgProduct h-32 rounded-lg overflow-hidden mt-3" @click="goDetails">
         <div class="flex flex-row w-full">
             <div class="w-1/3 h-10 text-center p-2 text-lg">{{ fecha }}</div>
             <div class="w-2/3 bg-bgBlue h-10 text-white p-2 rounded-bl-lg text-center text-xl font-bold"> {{  sale.cliente.nombre }}</div>
@@ -26,9 +26,12 @@
 <script setup>
 
 import { ref, onMounted, defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
 
-const emit = defineEmits(['showSaleModal']);
+const router = useRouter();
+
+
 
 const restante = ref(0);
 const fecha = ref('');
@@ -59,9 +62,12 @@ const formatearCampos = () => {
     fecha.value = props.sale.fecha.substring(0, 10);
 };
 
-const showModal = () => {
-    emit('showSaleModal', props.sale);
-};
+
+
+const goDetails = () => {
+    router.push({ name: 'salesdetails', params: { id: props.sale.id } });
+    //showSaleModal();
+}
 
 
 

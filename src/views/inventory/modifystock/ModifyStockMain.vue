@@ -1,4 +1,11 @@
 <template>
+    <template v-if="isVisibleModalDelete">
+        <ModalConfirmationX :isVisible="isVisibleModalDelete" :mensaje="mensajeModalDelete" titulo="Eliminar producto"
+            @cancelar="cerrarModalDelete" @realizar="confirmarEliminar" :is-important="true"
+            texto-cancelar="Regresar" texto-realizar="Eliminar">
+            >
+        </ModalConfirmationX>
+    </template>
     <template v-if="isVisibleModalAdd">
         <ModalConfirmacionAdd :isVisible="isVisibleModalAdd" :id="route.params.id" :cantAdd="cantidadAumentar"
             :isSub="isSub" :mensaje="mensaje" @cerrarModal="cerrarModalAdd" @confirmar="confirmarActualizacion">
@@ -6,7 +13,7 @@
     </template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">EXISTENCIAS</h1>
     <template v-if="!loading">
-        <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+        <div @click="clickEnDiv" class="flex flex-col items-center pt-4 px-4  w-full">
             <div class="flex flex-row w-full h-32  mt-3 rounded-lg overflow-hidden" @click="goEditProduct">
                 <div class="w-5/12 bg-bgGray rounded-lg h-full">
                     <div class="p-3 h-full w-full">
@@ -25,15 +32,27 @@
 
                     </div>
                 </div>
-                <div class="flex flex-col w-7/12 pt-3">
-                    <div class="flex flex-row w-full">
-                        <p class=" font-semibold text-lg ml-3 mr-2">{{ producto.nombre }}</p>
+                <div class="flex flex-col w-7/12 border py-3">
+
+                    <div class="flex flex-row w-full items-center">
+                        <p class=" font-semibold text-lg ml-3 mr-2 w-10/12">{{ producto.nombre }}</p>
+                        <div class="w-2/12 h-10 text-red-600 flex flex-row pr-2" @click="mostrarModalDelete">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-trash-2 h-auto">
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                            </svg>
+                        </div>
                     </div>
                     <div class="w-full pl-3">
                         <p class=" font-semibold text-lg">{{ producto.presentacion }}</p>
                     </div>
-                    <div class="w-full px-4 pt-4">
-                        <button @click="goEditar" class="bg-bgPurple rounded-xl  text-white w-full">Editar</button>
+                    <div class="w-full px-4">
+                        <button @click="goEditar" class="bg-bgPurple rounded-xl mt-1 text-white w-full">Editar</button>
                     </div>
 
                 </div>
@@ -87,14 +106,16 @@
 
             </div>
 
-            <div class="w-full mt-10">
-                <ButtonX color="red" @click="regresar">Regresar</ButtonX>
+            <div class="w-full">
+                <SearchSales :id-producto="producto.id" :is-in-details="true"></SearchSales>
             </div>
 
-
-
+            <div class="w-full flex flex-col justify-end ">
+                <ButtonX color="red" @click="regresar">Regresar</ButtonX>
 
         </div>
+        </div>
+        
     </template>
     <template v-else>
         <div>
@@ -113,9 +134,12 @@ import { ref, onMounted, watch } from 'vue';
 import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getProductoId } from '@/api/api.js'
+import { getProductoId, getVentas } from '@/api/api.js'
 import ModalConfirmacionAdd from './ModalConfirmacionAdd.vue';
-
+import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
+import {eliminarProducto} from '@/api/api.js';
+import { toast } from 'vue3-toastify';
+import SearchSales from '@/views/sales/SearchSales.vue';
 
 const loading = ref(true);
 
@@ -136,6 +160,45 @@ const precioMayorista = ref('No definido');
 
 const cantidadAumentar = ref('0');
 
+//variables del modal de connfirmacion al eliminar
+const isVisibleModalDelete = ref(false);
+const mensajeModalDelete = ref('');
+const confirmarEliminar = () => {
+    console.log('eliminando');
+    isVisibleModalDelete.value = false;
+    eliminar();
+};
+const cerrarModalDelete = () => {
+    isVisibleModalDelete.value = false;
+};
+const mostrarModalDelete = async () => {
+
+    if(await hasVentas()){
+        console.log('tiene ventas');
+        mensajeModalDelete.value = 'El producto  ' + producto.value.nombre + ' tiene ventas registradas, ¿Estás seguro de eliminarlo?';
+        isVisibleModalDelete.value = true;
+        return;
+    }
+
+    mensajeModalDelete.value = '¿Está seguro que desea eliminar el producto ' + producto.value.nombre + '?';
+    isVisibleModalDelete.value = true;
+};
+
+const eliminar = async () => {
+    try {
+        loading.value = true;
+        const response = await eliminarProducto(producto.value.id);
+        loading.value = false;
+        toast("Producto eliminado exitosamente", {
+                type: 'success',
+                autoClose: 2000,
+            });
+        router.go(-1);
+    } catch (error) {
+        loading.value = false;
+        console.log(error);
+    }
+};
 
 
 
@@ -193,14 +256,45 @@ const recargar = () => {
     getProducto();
 };
 
+const hasVentas = async () => {
+    const id = route.params.id;
+    try {
+        const params = {
+            'producto': id,
+        };
+        const response = await getVentas(params);
+        const ventas  = response.data;
+        console.log(ventas);
+        
+        console.log(ventas.length);
+
+
+        let longitud = ventas.length;
+
+        if (longitud > 0) {
+            return true;
+        }
+
+
+        return false;
+
+    } catch (error) {
+        console.log(error);
+        return false;
+        
+    }
+};
+
 
 const getProducto = async () => {
-    const id = route.params.id;
+    const idAux = route.params.id;
+    const id = parseInt(idAux);
 
     try {
         loading.value = true;
         const response = await getProductoId(id);
         producto.value = response.data;
+        producto.value.id = id;
         llenarPrecios();
         loading.value = false;
 

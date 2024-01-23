@@ -2,7 +2,14 @@
     <ModalAbonar :isVisible="isVisibleModalAbonar" :sale="saleSelected" @cerrarConfirmarAbono="closeSaleModal"
         @confirmarAbono="confirmarAbono"></ModalAbonar>
     <div class="w-full">
-        <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
+        <template v-if="!isInDetails">
+            <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
+        </template>
+        <template v-else>
+            <label v-if="!isFromCliente" for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las ventas del producto son las siguientes:</label>
+            <label v-else for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las ventas del cliente son las siguientes:</label>
+        </template>
+        
         <div class="py-3">
             <select v-model="opcionSeleccionada" id="miSelect"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -37,10 +44,10 @@
             </div>
         </template>
 
-        <div class="h-[80vh] w-full overflow-scroll">
-            <SaleRow v-for="item in items" :key="item.id" :sale="item" @showSaleModal="showSaleModalComp"></SaleRow>
+        <div class="w-full overflow-scroll" :class="[{'h-72' : isInDetails}, {'h[80vh]' : !isInDetails}] ">
+            <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
 
-            <button v-if="items.length == 10" @click="addItems"
+            <button v-if="isThereMoreResults" @click="addItems"
                 class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
 
             <div v-else-if="!isThereMoreResults && !firstLoading"
@@ -49,18 +56,12 @@
             </div>
         </div>
 
-
-
-
-
-
-
     </div>
 </template>
 
 <script setup>
 
-import { onMounted, ref, watch, defineEmits } from 'vue';
+import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
 import { getVentas } from '@/api/api.js';
 import { isFutureDate } from '@/utils/validator.js';
 import AlertX from '@/components/utilities/AlertX.vue';
@@ -68,12 +69,35 @@ import SaleRow from '@/components/SaleRow.vue';
 import ModalAbonar from '@/views/sales/ModalAbonar.vue';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router';
+import { data } from 'autoprefixer';
+
+
+const props = defineProps({
+    nombreCliente: {
+        type: String,
+        default: '',
+    },
+    idProducto: {
+        type: Number,
+        default: 0,
+    },
+    isFromCliente:{
+        type: Boolean,
+        default: false,
+    },
+    isInDetails: {
+        type: Boolean,
+        default: false,
+    }  
+});
+
 
 
 
 const opciones = [
     { value: 'fecha-dia', texto: 'Fecha - Dia' },
     { value: 'no-pagados', texto: 'No pagados primero' },
+    { value: 'todas', texto: 'Todas' }, 
 ];
 
 const router = useRouter();
@@ -133,16 +157,36 @@ watch(
     }
 )
 
+const agregarQueryProps = () => {
+
+    if(props.nombreCliente !== ''){
+        query.value.cliente = props.nombreCliente;
+    }
+    if(props.idProducto !== 0){
+        query.value.producto = props.idProducto;
+    }
+
+}
+
 const construirQuery = () => {
+    if (opcionSeleccionada.value === 'todas') {
+        query.value = {};
+        agregarQueryProps();
+        getItems();
+        return
+    }
+
     if (opcionSeleccionada.value === '') {
         query.value = {};
         query.value.pagado = 0;
+        agregarQueryProps();
         getItems();
         return
     }
     if (opcionSeleccionada.value === 'no-pagados') {
         query.value = {};
         query.value.pagado = 0;
+        agregarQueryProps();
         getItems();
         return
     }
@@ -162,6 +206,7 @@ const construirQuery = () => {
             mes: mes,
             anio: anio,
         };
+        agregarQueryProps();
         getItems();
         return
     }
@@ -187,11 +232,23 @@ const getItems = async () => {
 }
 
 const addItems = async () => {
+    
+    console.log('Agregando items');
 
     try {
         page.value = page.value + 1;
         query.value.pag = page.value;
-        const { data } = await getVentas(query.value);
+        let response = await getVentas(query.value);
+
+        console.log(response);
+
+        if (response.status !== 200) {
+            console.log('No hay más resultados');
+            isThereMoreResults.value = false;
+            return
+        }
+
+        let data = response.data;
 
         if (data.length === 10) {
             isThereMoreResults.value = true;
@@ -229,15 +286,10 @@ watch(
     }
 )
 
-const showSaleModalComp = (sale) => {
-    saleSelected.value = sale;
-    console.log(sale);
 
-    router.push({ name: 'salesdetails', params: { id: sale.id } });
-    //showSaleModal();
-}
 
 onMounted(() => {
+    opcionSeleccionada.value = opciones[1].value;
     construirQuery();
 });
 

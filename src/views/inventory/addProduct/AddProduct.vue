@@ -320,6 +320,7 @@ const aceptar = () => {
   cantidadProducto.value = '';
   precioProducto.value = '';
   opcionRazaSeleccionada.value = opciones[0].value;
+  precios.value = [];
 };
 
 const aceptarError = () => {

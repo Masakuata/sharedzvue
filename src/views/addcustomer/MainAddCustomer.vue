@@ -8,15 +8,22 @@
 
         <template v-if="noClientes">
             <div class="w-full mt-40">
-                <p class="text-lg font font-semibold w-full text-center">Aún no hay clientes registrados, registra uno y comienza a registrar sus compras</p>
+                <p class="text-lg font font-semibold w-full text-center">Aún no hay clientes registrados, registra uno y
+                    comienza a registrar sus compras</p>
             </div>
         </template>
         <template v-else>
+            <template v-if="loading">
+                <div class="w-full h-96 flex flex-col items-center justify-center">
+                    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
+                    <p class="text-xl font-bold text-gray-900">Cargando...</p>
+                </div>
+            </template>
             <div class="w-full h-[80vh] overflow-scroll mt-2">
-            <CustomerRow v-for="cliente in clientes" :key="cliente.id" :cliente="cliente"></CustomerRow>
-        </div>
+                <CustomerRow v-for="cliente in clientes" :key="cliente.id" :cliente="cliente"></CustomerRow>
+            </div>
         </template>
-        
+
 
 
 
@@ -39,27 +46,26 @@ const noClientes = ref(false);
 
 
 const clientes = ref([]);
-const clienteEjemplo = {
-    nombre: 'Heriberto Sandoval Machuca',
-    direccion: 'Calle 1 # 2 Colonia 3',
-    tipoCliente: 1
-}
+const loading = ref(false);
 
 
 const getClientes = async () => {
 
     try {
+        loading.value = true;
         const response = await getAllClientes();
         clientes.value = response.data;
         if (clientes.value.length == 0) {
             noClientes.value = true;
         }
+        loading.value = false;
 
-    }catch(error){
+    } catch (error) {
+        loading.value = false;
         console.log(error);
         noClientes.value = true;
     }
-    
+
 };
 
 const clickEnDiv = () => {
@@ -67,7 +73,7 @@ const clickEnDiv = () => {
 };
 
 const agregarCliente = () => {
-    
+
 
     //routerpush by name
     router.push({ name: 'createcustomer' });
