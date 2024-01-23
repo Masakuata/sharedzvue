@@ -10,6 +10,10 @@ RUN npm install
 
 COPY . .
 
+ARG VUE_APP_CURRENT
+
+ENV VUE_APP_CURRENT='http://clayrite.ddns.net:81'
+
 RUN npm run build
 
 EXPOSE 80
