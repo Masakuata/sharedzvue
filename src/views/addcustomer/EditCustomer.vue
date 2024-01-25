@@ -1,7 +1,7 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">CLIENTES</h1>
 
-    <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+    <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full overflow-scroll">
         <template v-if="firstLoading">
             <div class="w-full h-96 flex flex-col items-center justify-center">
                 <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
@@ -97,6 +97,7 @@
             <div class="w-full mt-3">
                 <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
             </div>
+            <MultiEditAddressX :direcciones="direcciones" :id-cliente="idCliente" :switch="switchMultiAddress"></MultiEditAddressX>
 
         </template>
 
@@ -121,11 +122,17 @@ import { toast } from 'vue3-toastify';
 import { useRouter, useRoute } from 'vue-router';
 import SelectX from '@/components/utilities/SelectX.vue';
 import { getTiposCliente, getCliente } from '@/api/api.js';
+import MultiEditAddressX from '@/components/utilities/MultiEditAddressX.vue';
+
+
+const switchMultiAddress = ref(false);
+const direcciones = ref([]);
+
 
 
 const firstLoading = ref(false);
 
-
+const idCliente = ref(0);
 const router = useRouter();
 const route = useRoute();
 
@@ -160,11 +167,6 @@ const formatearTipos = () => {
 }
 
 
-const tiposCliente = [
-    { value: 1, name: 'Público' },
-    { value: 2, name: 'Detalle' },
-    { value: 3, name: 'Mayorista' },
-];
 
 const tipoClienteSelected = ref({});
 
@@ -340,6 +342,7 @@ const obternerCliente = async (id) => {
         const response = await getCliente(id);
         await getTipos();
         llenarCampos(response.data);
+        
 
         firstLoading.value = false;
         console.log(response);
@@ -357,6 +360,15 @@ const llenarCampos = (cliente) => {
     telefono.value = cliente.telefono;
     //tipoClienteSelected.value = cliente.tipoCliente;
     tipoCliente.value = cliente.tipoCliente;
+    idCliente.value = route.params.id;
+
+    cliente.direcciones.forEach(element => {
+        let dirAux = {
+            id: element.id,
+            valor: element.direccion,
+        }
+        direcciones.value.push(dirAux);
+    });
 
 }
 

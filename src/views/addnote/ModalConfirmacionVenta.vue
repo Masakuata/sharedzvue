@@ -160,6 +160,7 @@ const construirVenta = () => {
         facturado: true,
         abono: abonoInicialFloat,
         productos: productosAux,
+        total: props.total,
     }
 
     return venta;

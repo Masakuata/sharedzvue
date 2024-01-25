@@ -1,14 +1,14 @@
 <template>
     <template v-if="isVisibleModalDirecciones">
         <ModalAddFieldX :titulo="mensajeModal" :mensaje="mensajeModal" @cerrarModal="isVisibleModalDirecciones = false"
-            @confirmar="agregrarDireccion" @editar="editarDireccion" :is-edit="isEdit" :id="direccionSeleccionada.id" :value="direccionSeleccionada.valor" />
+            @confirmar="agregrarDireccion" @editar="editarDireccion" :is-edit="isEdit" :id="direccionSeleccionada.id"
+            :value="direccionSeleccionada.valor" />
     </template>
 
     <template v-if="isVisibleModalConfirmacion">
         <ModalConfirmationX titulo="¿Desea eliminar la siguiente dirección?" :is-visible="isVisibleModalConfirmacion"
-        :is-important="true" :mensaje="mensajeModalConfirmacion" texto-realizar="Eliminar" texto-cancelar="Cancelar"
-         @cancelar="cancelarEliminarDireccion"
-            @realizar="eliminarDireccion" />
+            :is-important="true" :mensaje="mensajeModalConfirmacion" texto-realizar="Eliminar" texto-cancelar="Cancelar"
+            @cancelar="cancelarEliminarDireccion" @realizar="eliminarDireccion" />
     </template>
     <div class="w-full p-4 border rounded-lg">
         <ButtonX color="purple" :is-slim="true" icon="add" @click="isVisibleModalDirecciones = true">Agregar direcciones
@@ -42,6 +42,7 @@ import ModalAddFieldX from './ModalAddFieldX.vue';
 import ButtonX from './ButtonX.vue';
 import ModalConfirmationX from './ModalConfirmationX.vue';
 import { toast } from 'vue3-toastify';
+import { addDireccion } from '@/api/api.js'
 
 
 const tituloModal = ref('Agregar Dirección');
@@ -57,6 +58,7 @@ const direccionSeleccionada = ref({});
 const props = defineProps({
     switch: Boolean,
     direcciones: Array,
+    idCliente: Number,
 });
 
 const emit = defineEmits(['updateItems']);
@@ -65,25 +67,50 @@ const agregrarDireccion = (direccion) => {
 
     let direccionFormateada = direccion.trim();
 
-    if (verificarDireccionRepedida(direccionFormateada)){
+    if (verificarDireccionRepedida(direccionFormateada)) {
         isVisibleModalDirecciones.value = false;
         toast("La direccion ingresada ya existe", {
-                type: 'error',
-                autoClose: 2000,
-            });
+            type: 'error',
+            autoClose: 2000,
+        });
         return;
     }
 
-    let  direccionAux = {
-        id: direcciones.value.length + 1,
-        valor: direccionFormateada,
-    }
+    let direccionAux = {
+        direccion: direccionFormateada,
+    };
 
-    direcciones.value.push(direccionAux);
-    isVisibleModalDirecciones.value = false;
-    emit('updateItems', direcciones.value);
+    registrarDireccion(direccionAux);
+    //Aqui hacer la peticion
+
+
 
 };
+
+const registrarDireccion = async (direccion) => {
+    try {
+        const response = await addDireccion(props.idCliente, direccion);
+        console.log('La respuesta es', response);
+
+        //eXTRAER EL ID Y DIRECCION DE LA RESPUSTA Y PUSHEARLO AL ARREGLO
+        let direccionAux = {
+            id: response.data.id,
+            valor: response.data.direccion,
+        };
+
+        direcciones.value.push(direccionAux);
+        isVisibleModalDirecciones.value = false;
+        emit('updateItems', direcciones.value);
+
+        return response;
+    } catch (error) {
+        console.log('El error es', error);
+        return error;
+    }
+};
+
+
+
 
 const eliminarDireccion = (direccion) => {
     direcciones.value.pop(direccion);
@@ -133,20 +160,20 @@ const editarDireccion = (direccion) => {
         valor: direccionFormateada,
     };
 
-    if (verificarDireccionRepedidaConId(direccionAux)){
+    if (verificarDireccionRepedidaConId(direccionAux)) {
         isVisibleModalDirecciones.value = false;
         toast("La direccion ingresada ya existe", {
-                type: 'error',
-                autoClose: 2000,
-            });
+            type: 'error',
+            autoClose: 2000,
+        });
         isEdit.value = false;
         return;
     }
 
     direcciones.value.forEach((dir) => {
         if (dir.id === direccion.id) {
-            console.log( 'Se encontro la direccion a editar', dir);
-            console.log( 'Se le asignará el sigueinte valor', direccionFormateada);
+            console.log('Se encontro la direccion a editar', dir);
+            console.log('Se le asignará el sigueinte valor', direccionFormateada);
             dir.valor = direccionFormateada;
         }
     });
