@@ -73,9 +73,9 @@ import { data } from 'autoprefixer';
 
 
 const props = defineProps({
-    nombreCliente: {
-        type: String,
-        default: '',
+    idCliente: {
+        type: Number,
+        default: -1,
     },
     idProducto: {
         type: Number,
@@ -159,8 +159,8 @@ watch(
 
 const agregarQueryProps = () => {
 
-    if(props.nombreCliente !== ''){
-        query.value.cliente = props.nombreCliente;
+    if(props.idCliente !== -1){
+        query.value.id_cliente = props.idCliente;
     }
     if(props.idProducto !== 0){
         query.value.producto = props.idProducto;

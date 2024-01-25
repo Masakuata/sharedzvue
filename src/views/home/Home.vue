@@ -6,6 +6,10 @@
         <div class="flex text-left w-full">
           <p  class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>
+
+        <ErrorX></ErrorX>
+        <MultiRegistAddressX @update-items="actualizarDirecciones"></MultiRegistAddressX>
+
         
        
         
@@ -23,12 +27,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import {toggleSidebar} from '@/utils/sidebarManager.js';
+import ErrorX from '@/components/utilities/ErrorX.vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+import MultiRegistAddressX from '@/components/utilities/MultiRegistAddressX.vue';
 
 
 
 
 const elemento = ref(null);
+
+const actualizarDirecciones = (direcciones) => {
+    console.log('Las direcciones en el home son: ' , direcciones);
+};
 
 
 

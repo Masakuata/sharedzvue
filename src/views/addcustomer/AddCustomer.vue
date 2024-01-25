@@ -26,16 +26,7 @@
             <p v-else-if="faltaName" class="text-red-600">El nombre es un campo requerido</p>
         </div>
 
-        <div class="w-full">
-            <label for="direccion" class="block text-sm font-medium text-bgBlue">Dirección</label>
-            <input id="direccion" v-model="direccion" @input="validarDireccion" maxlength="50"
-                class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-            <template v-if="direccion.length > 0">
-                <p class="text-green-600" v-if="direccionValid">Dirección válida</p>
-                <p v-else class="text-red-600">Ingresa una direccion válida</p>
-            </template>
-            <p v-else-if="faltaDireccion" class="text-red-600">La dirección es un campo requerido</p>
-        </div>
+       
 
 
         <label class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
@@ -81,6 +72,16 @@
             </template>
             <p v-else-if="faltaTelefono" class="text-red-600">La dirección es un campo requerido</p>
         </div>
+        
+        <label class="w-full text-start mt-3 mb-1 text-sm font-medium text-bgBlue">Agrega la/las direcciones del cliente </label>
+        
+        <div class="w-full">
+            <AlertX :flag="faltaDirecciones" message="Agrega al menos una dirección por favor" ></AlertX>
+        </div>    
+        <template v-if="isVisibleMultiAdress">
+            <MultiRegistAddressX @update-items="actualizarDirecciones" :switch="switchMultiAdress"></MultiRegistAddressX>
+        </template>
+        
 
         <div class="w-full mt-3">
             <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
@@ -109,11 +110,23 @@ import { toast } from 'vue3-toastify';
 import { useRouter } from 'vue-router';
 import SelectX from '@/components/utilities/SelectX.vue';
 import {getTiposCliente} from '@/api/api.js';
+import MultiRegistAddressX from '@/components/utilities/MultiRegistAddressX.vue';
+import AlertX from '@/components/utilities/AlertX.vue';
+
 
 const router = useRouter();
 
 const tipos = ref([]);
 const tiposFormato = ref([]);
+const direcciones = ref([]);
+
+const isVisibleMultiAdress = ref(true);
+const switchMultiAdress = ref(false);   
+
+const actualizarDirecciones = (direccionesEmit) => {
+    faltaDirecciones.value = false;
+    direcciones.value = direccionesEmit;
+};
 
 const getTipos = async () => {
     try {
@@ -162,9 +175,7 @@ const rfc = ref('');
 const rfcValid = ref(false);
 const faltaRfc = ref(false);
 
-const direccion = ref('');
-const direccionValid = ref(false);
-const faltaDireccion = ref(false);
+
 
 const telefono = ref('');
 const telefonoValid = ref(false);
@@ -177,10 +188,7 @@ const closeSidebar = () => {
 };
 
 
-const validarDireccion = () => {
-    faltaDireccion.value = false;
-    direccionValid.value = validateName(direccion.value);
-};
+
 
 const validarName = () => {
     faltaName.value = false;
@@ -227,12 +235,7 @@ watch(
     }
 )
 
-watch(
-    () => direccion.value,
-    () => {
-        validarDireccion();
-    }
-)
+
 
 watch(
     () => telefono.value,
@@ -245,22 +248,35 @@ const validateForm = () => {
     //faltaEmail.value = email.length === undefined;
     faltaName.value = name.length === undefined;
     //faltaRfc.value = rfc.length === undefined;
-    faltaDireccion.value = direccion.length === undefined;
     //faltaTelefono.value = telefono.length === undefined;
 
-    return nameValid.value && direccionValid.value;
+    return nameValid.value && validateDirecciones();
+}
+
+const faltaDirecciones = ref(false);
+
+
+const validateDirecciones = () => {
+    console.log('Validando las direcciones');
+    console.log(direcciones.value.length);
+    console.log(direcciones.value.length > 0);
+    faltaDirecciones.value = !(direcciones.value.length > 0);
+    return !faltaDirecciones.value;
 }
 
 const resgistrarCliente = () => {
     if (validateForm()) {
-        let direcciones = []
-        direcciones.push(direccion.value);
+        let direccionesAux = []
+        direcciones.value.forEach(element => {
+            console.log(element.valor);
+            direccionesAux.push(element.valor);
+        });
 
         let cliente = {
             email: email.value,
             nombre: name.value,
             RFC: rfc.value,
-            direcciones: direcciones,
+            direcciones: direccionesAux,
             telefono: telefono.value,
             tipoCliente: tipoClienteSelected.value.value,
         }
@@ -307,8 +323,8 @@ const cleanfields = () => {
     email.value = '';
     name.value = '';
     rfc.value = '';
-    direccion.value = '';
     telefono.value = '';
+    switchMultiAdress.value = !switchMultiAdress.value;
 }
 
 
