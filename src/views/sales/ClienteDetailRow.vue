@@ -26,8 +26,8 @@
 
             <div class="flex flex-row w-full px-3 ">
                 <div class="flex flex-col w-full">
-                    <template v-if="cliente.direcciones ">
-                        <p class="text-white text-sm">{{ cliente.direcciones[0] }}</p>
+                    <template v-if="cliente.direccion ">
+                        <p class="text-white text-sm">{{ cliente.direccion }}</p>
                     </template>
                     
                 </div>
@@ -43,7 +43,7 @@
 <script setup>
 import { defineProps, ref, onMounted } from 'vue';
 
-const direccion = ref('');
+
 
 
 const props = defineProps({
@@ -53,6 +53,9 @@ const props = defineProps({
     }
 });
 
+onMounted(() => {
+    console.log(props.cliente);
+});
 
 
 

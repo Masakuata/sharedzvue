@@ -22,7 +22,7 @@ import ButtonX from './ButtonX.vue';
 const props = defineProps({
     message: {
         type: String,
-        default: 'Error...!'
+        default: 'Error... Algo ha ocurrido. Inténtelo más tarde!'
     },
     buttonMessage: {
         type: String,

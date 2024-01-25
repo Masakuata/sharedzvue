@@ -86,7 +86,7 @@
 
                 </template>
                 <template v-else>
-                    <div class="flex  flex-col  h-[60vh]" id="contenedorRegresar">
+                    <div class="flex  flex-col  h-[50vh]" id="contenedorRegresar">
                         <button @click="cancel"
                             class="w-full text-white text-lg font-semibold h-12 mt-auto bg-red-500 rounded-lg">Regresar</button>
                     </div>
@@ -99,7 +99,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue';
+import { defineProps, defineEmits, ref, watch, onMounted, onUnmounted } from 'vue';
 import SearchProduct from '@/components/utilities/SearchProduct.vue';
 import ProductDetails from '@/components/utilities/ProductDetails.vue';
 import { toast } from 'vue3-toastify';
@@ -108,15 +108,18 @@ import ButtonX from '@/components/utilities/ButtonX.vue';
 const errorCantidadCero = ref(false);
 const errorCantidadMayor = ref(false);
 
+const productoEnLista = ref(null);
+
 const isDisponible = ref(true);
 
-const emit = defineEmits(['confirmAddProduct', 'cancelAddProduct']);
+const emit = defineEmits(['confirmAddProduct', 'cancelAddProduct', 'editProduct']);
 const producto = ref(null);
+
+
 const isProductSelected = ref(false);
 const cantidad = ref('0');
 let cantidadDisponible = 0;
 
-const productoEnLista = ref({});
 const isProductInList = ref(false);
 const editCantidadMode = ref(false);
 
@@ -134,7 +137,7 @@ const selectProduct = (item) => {
         isProductSelected.value = true
         producto.value = item;
         cantidadDisponible = item.cantidad;
-
+        validarProductoEnLista();
 
     } else {
         isProductSelected.value = false
@@ -147,38 +150,55 @@ const selectProduct = (item) => {
 
 
 
-const clearComponent = () => {
-    producto.value = null;
-    isProductSelected.value = false;
-    cantidad.value = '0';
-    nuevaCantidad.value = '0';
-    isProductInList.value = false;
-    editCantidadMode.value = false;
-    productoEnLista.value = null;
-    cantidadDisponible = 0;
-    errorCantidadCero.value = false;
-    errorCantidadMayor.value = false;
-};
+
+
+const emitEditProduct = () => {
+    console.log('El producto ya esta en la lista');
+    let nuevaCantidadInt = parseInt(nuevaCantidad.value);
+    if (nuevaCantidadInt == 0 || nuevaCantidad.value == '') {
+        toast("No puedes editar un producto con cantidad 0", {
+            type: 'warning',
+            autoClose: 2000,
+        });
+        errorCantidadCero.value = true;
+        return;
+    }
+
+    console.log('La nueva cantidad es: ', nuevaCantidadInt);
+
+    let subtotal = nuevaCantidadInt * producto.value.precio;
+
+    console.log('El subtotal es: ', subtotal);
+
+    subtotal = subtotal.toFixed(2);
+    subtotal = parseFloat(subtotal);
+
+
+
+    let productoEmit = {
+        nombre: producto.value.nombre,
+        presentacion: producto.value.presentacion,
+        tipoMascota: producto.value.tipoMascota,
+        raza: producto.value.raza,
+        precio: producto.value.precio,
+        cantidad: producto.value.cantidad,
+        cantidadCompra: nuevaCantidadInt,
+        id: producto.value.id,
+        subtotal: subtotal,
+    }
+
+    emit('editProduct', productoEmit);
+}
 
 const confirm = () => {
     if (producto.value != null) {
         if (isProductInList.value) {
-            let nuevaCantidadInt = parseInt(nuevaCantidad.value);
-            if (nuevaCantidadInt == 0 || nuevaCantidad.value == '') {
-                toast("No puedes editar un producto con cantidad 0", {
-                    type: 'warning',
-                    autoClose: 2000,
-                });
-                errorCantidadCero.value = true;
-                return;
-            }
-
-            producto.value.cantidadCompra = nuevaCantidadInt;
-            let subtotal = nuevaCantidad * producto.value.precio;
-            subtotal = subtotal.toFixed(2);
-            subtotal = parseFloat(subtotal);
-            producto.value.subtotal = subtotal;
+            emitEditProduct();
+            return;
         } else {
+
+            console.log('El producto no esta en la lista');
+
             if (cantidad.value == '0' || cantidad.value == '') {
                 toast("No puedes agregar un producto con una cantidad de 0", {
                     type: 'warning',
@@ -194,7 +214,6 @@ const confirm = () => {
             subtotal = parseFloat(subtotal);
             producto.value.subtotal = subtotal;
         }
-
     }
 
     let productoEmit = {
@@ -209,10 +228,7 @@ const confirm = () => {
         subtotal: producto.value.subtotal,
     }
 
-    console.log( 'El producto a emitir es: ',productoEmit);
-
-
-    if (productoEmit.cantidad === 0 ) {
+    if (productoEmit.cantidad === 0) {
         toast("No puedes agregar un producto con cantidad 0", {
             type: 'warning',
             autoClose: 2000,
@@ -220,17 +236,15 @@ const confirm = () => {
         return;
     }
 
-    if (productoEmit.cantidadCompra > productoEmit.cantidad ) {
+    if (productoEmit.cantidadCompra > productoEmit.cantidad) {
         notifyCantidadExcedida();
         return;
     }
 
     emit('confirmAddProduct', productoEmit);
-    clearComponent();
 };
 
 const cancel = () => {
-    clearComponent();
     emit('cancelAddProduct');
 };
 
@@ -244,33 +258,29 @@ watch(
 
         cantidad.value = cantidad.value.replace(/\D/g, '');
         let cantidadInt = parseInt(cantidad.value);
-        
-        if (cantidadInt != 0){
+
+        if (cantidadInt != 0) {
             errorCantidadCero.value = false;
-        } 
-            
+        }
+
 
         if (cantidadInt > cantidadDisponible) {
-
-            //cantidad.value = cantidadDisponible.toString();
-            //notifyCantidadExcedida();
             errorCantidadMayor.value = true;
-
-        }else{
+        } else {
             errorCantidadMayor.value = false;
         }
     }
 )
 
 const calcularNuevaCantidad = () => {
-    if (productoEnLista.value == null) {
+    if (!isProductInList.value) {
         return;
     }
 
     nuevaCantidad.value = nuevaCantidad.value.replace(/\D/g, '');
     let nuevaCantidadInt = parseInt(nuevaCantidad.value);
 
-    if (nuevaCantidadInt != 0){
+    if (nuevaCantidadInt != 0) {
         errorCantidadCero.value = false;
     }
 
@@ -283,47 +293,15 @@ const calcularNuevaCantidad = () => {
     }
 }
 
-const validarProductoEnLista = () => {
-    if (producto.value != null) {
 
-        isDisponible.value = producto.value.cantidad > 0;
 
-        let productoAux = props.productosLista.find(item => item.id == producto.value.id);
-        if (productoAux != null) {
-            isProductInList.value = true;
-            productoEnLista.value = productoAux;
-        } else {
-            isProductInList.value = false;
-            productoEnLista.value = null;
-        }
-    }
-}
 const toggleEditCantidadMode = () => {
     editCantidadMode.value = !editCantidadMode.value;
 }
 
 
-watch(
-    () => producto.value,
-    () => {
-        validarProductoEnLista();
-    }
-)
 
-watch(
-    () => productoEnLista.value,
-    () => {
-        if (productoEnLista.value != null) {
-            nuevaCantidad.value = productoEnLista.value.cantidadCompra.toString();
-        }
-    }
-)
-watch(
-    () => nuevaCantidad.value,
-    () => {
-        calcularNuevaCantidad();
-    }
-)
+
 
 
 
@@ -335,6 +313,36 @@ const notifyCantidadExcedida = () => {
         autoClose: 2000,
     });
 }
+
+const validarProductoEnLista = () => {
+    if (producto.value != null) {
+
+        isDisponible.value = producto.value.cantidad > 0;
+
+        let productoAux = props.productosLista.find(item => item.id == producto.value.id);
+
+        console.log('El producto auxiliar a editar es es: ', productoAux);
+
+        if (productoAux) {
+            console.log('El producto ya esta en la lista');
+            isProductInList.value = true;
+            productoEnLista.value = productoAux;
+        } else {
+            isProductInList.value = false;
+        }
+    }
+}
+
+
+
+onUnmounted(() => {
+    console.log('Se desmonto el componente');
+})
+
+onMounted(() => {
+    console.log('Se monto el componente');
+})
+
 </script>
 
 <style>

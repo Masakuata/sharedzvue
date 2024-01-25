@@ -263,13 +263,14 @@ const registrarAbono = async () => {
     }
 
     if (!errorAbono.value) {
+        console.log('Registrando abono');
         let payload = construirPayloadAbono();
 
 
         try {
             requestSent.value = true;
             loadingSendAbono.value = true;
-            let response = await postAbono(props.sale.id, payload);
+            let response = await postAbono(route.params.id, payload);
 
             loadingSendAbono.value = false;
         } catch (error) {
@@ -301,6 +302,10 @@ const construirPayloadAbono = () => {
 
 
 const aceptar = () => {
+    requestSent.value = false;
+    error.value = false;
+    errorMessage.value = '';
+    getDetailsVenta(route.params.id);
 };
 
 
@@ -353,6 +358,9 @@ const getDetailsVenta = async (ventaId) => {
 
         sale.value = data;
         cliente.value = data.cliente;
+        console.log('En detalles', cliente.value);
+        cliente.value.direccion = sale.value.direccion
+        console.log( 'En detalles', cliente.value);
         productos.value = data.productos;
 
 

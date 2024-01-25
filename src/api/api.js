@@ -358,3 +358,40 @@ export async function eliminarCliente(id) {
 
 }
 
+export async function addDireccion(idCliente, direcion) {
+    const complemento = '/cliente/' + idCliente + '/direccion';
+    let urlnew = getUrl() + complemento;
+    try {
+        let respuesta = await axiosInstance.post(urlnew, direcion);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function updateDireccion(idCliente, direcion){
+    const complemento = '/cliente/' + idCliente + '/direccion/' + direcion.id;
+
+    let urlnew = getUrl() + complemento;
+    try {
+        let respuesta = await axiosInstance.put(urlnew, direcion);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function deleteDireccion(idCliente, idDireccion){
+    const complemento = '/cliente/' + idCliente + '/direccion/' + idDireccion;
+
+    let urlnew = getUrl() + complemento;
+    try {
+        let respuesta = await axiosInstance.delete(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+

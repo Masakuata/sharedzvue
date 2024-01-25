@@ -3,15 +3,20 @@
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full bg-gray-50">
         <ModalConfirmacionVenta :is-visible="modalConfirmacionVentalVisible" :productos="productosLista" :cliente="cliente"
             :abonoInicial="abonoInicial" :pagado="pagado" :total="totalInt"
-            @cerrarConfirmarVenta="cancelModalConfirmacionVenta" @confirmarVenta="confirmModalConfirmacionVenta">
+            @cerrarConfirmarVenta="cancelModalConfirmacionVenta" @confirmarVenta="confirmModalConfirmacionVenta"
+            @emitError="errorRegistrarVenta">
+            >
         </ModalConfirmacionVenta>
 
         <ModalCancelVenta :is-visible="modalCancelVentaVisible" @cerrarModalCancelarVenta="closeModalCancelVenta"
             @cancelarVenta="cancelVenta"></ModalCancelVenta>
 
-        <ModalProducts :is-visible="modalProductsVisible" @cancelAddProduct="cancelModalProducts"
-            @confirmAddProduct="confirmModalProducts" :productos-lista="productosLista" :tipoCliente="tipoCliente">
-        </ModalProducts>
+        <template v-if="modalProductsVisible">
+            <ModalProducts :is-visible="modalProductsVisible" @cancelAddProduct="cancelModalProducts"
+                @confirmAddProduct="confirmModalProducts" @editProduct="editarProducto" :productos-lista="productosLista" :tipoCliente="tipoCliente">
+            </ModalProducts>
+        </template>
+
         <template v-if="modalProductDetailVisible">
             <ModalProducDetail @confirmEditProduct="editProductDetail" @cancelEditProduct="cancelModalProductDetail"
                 :is-visible="modalProductDetailVisible" :producto="productSelected"></ModalProducDetail>
@@ -83,8 +88,6 @@
                         required>
 
                 </div>
-                <!-- <input :disabled="finiquitarVenta" class="h-14 border border-gray-200 rounded-lg px-2 w-28 "
-                    v-model="abonoInicial"> -->
             </div>
 
 
@@ -186,6 +189,12 @@ const selectProduct = (producto) => {
 };
 
 //Metodos del ModalConfirmacionVenta
+const errorRegistrarVenta = (error) => {
+    limpiarCampos();
+    cancelModalConfirmacionVenta();
+};
+
+
 const showModalConfirmacionVenta = () => {
     modalConfirmacionVentalVisible.value = true;
 };
@@ -207,19 +216,16 @@ const confirmModalConfirmacionVenta = (registrada) => {
     }
 };
 
-const remplazarProducto = (producto) => {
-    productosLista.value = productosLista.value.filter(prod => prod.id !== producto.id);
-    productosLista.value.push(producto);
-    console.log('Remplazando producto' ,producto);
-    //calcularTotal();
-};
+
 
 const confirmModalProducts = (producto) => {
     modalProductsVisible.value = false;
 
     if (productosLista.value.some(prod => prod.id === producto.id)) {
-        remplazarProducto(producto);
+        console.log('Se encontró en la lista el producto');
+        //(producto);
     } else {
+        console.log('agregando un nuevo producto');
         productosLista.value.push(producto);
     }
 
@@ -257,18 +263,37 @@ const mostrarToast = () => {
 
 };
 
+
 const calcularTotal = () => {
-    let total = 0;
-    console.log('Calculando total');
+    let total = 0; 
     productosLista.value.forEach(current => {
-        console.log(current);
-        console.log(current.subtotal);
         total += current.subtotal;
-        console.log( 'El total es ;' + total);
     });
     total = total.toFixed(2);
     totalInt.value = parseFloat(total);
     totalString.value = `$ ${total}`;
+};
+
+const editarProducto = (producto) => {
+    //remplazarProducto(producto);
+    console.log('Producto emit es', producto);
+
+    console.log('Productos lista', productosLista.value);
+
+    productosLista.value.forEach(prod => {
+        console.log('Producto actual', prod);
+    });
+
+    remplazarProducto(producto);
+    modalProductsVisible.value = false;
+};
+
+
+const remplazarProducto = (producto) => {
+    productosLista.value = productosLista.value.filter(prod => prod.id !== producto.id);
+    productosLista.value.push(producto);
+    console.log('Remplazando producto' ,producto);
+    calcularTotal();
 };
 
 watch(
@@ -333,16 +358,15 @@ const limpiarCampos = () => {
 };
 
 const seleccionarCliente = (clienteEmit) => {
-    
     cliente.value = clienteEmit;
 
     if (tipoCliente.value !== clienteEmit.tipoCliente) {
-        
+
         tipoCliente.value = clienteEmit.tipoCliente;
         recargarProductos(clienteEmit.tipoCliente);
     } else {
         recargarProductos(clienteEmit.tipoCliente);
-        
+
     }
     isClienteSelected.value = true;
 };

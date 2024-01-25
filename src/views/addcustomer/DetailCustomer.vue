@@ -1,4 +1,10 @@
 <template>
+    <template v-if="isVisibleModalInfo">
+        <ModalInfoX mensaje="Cliente eliminado exitosamente" titulo="Eliminación cliente" @aceptar="cerrarModalInfo"
+            >
+        </ModalInfoX>
+    </template>
+
     <template v-if="isVisibleModalDelete">
         <ModalConfirmationX :isVisible="isVisibleModalDelete" :mensaje="mensajeModalDelete" titulo="Eliminar producto"
             @cancelar="cerrarModalDelete" @realizar="confirmarEliminar" :is-important="true" texto-cancelar="Regresar"
@@ -82,7 +88,7 @@
             </div>
 
             <div class="w-full mt-3">
-                <SearchSales :nombre-cliente="cliente.nombre"   :is-from-cliente="true" :is-in-details="true"></SearchSales>
+                <SearchSales :id-cliente="cliente.id"   :is-from-cliente="true" :is-in-details="true"></SearchSales>
             </div>
 
 
@@ -114,6 +120,16 @@ import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
 import SaleRow from '@/components/SaleRow.vue';
 import { getVentas } from '@/api/api.js';
 import SearchSales from '../sales/SearchSales.vue';
+import { toast } from 'vue3-toastify';
+import ModalInfoX from '@/components/utilities/ModalInfoX.vue';
+
+
+const isVisibleModalInfo = ref(false);
+
+const cerrarModalInfo = () => {
+    isVisibleModalInfo.value = false;
+    router.go(-1);
+};
 
 
 const loadingInfoCliente = ref(false);
@@ -166,6 +182,9 @@ const obtenerCliente = async () => {
         loadingInfoCliente.value = true;
         const response = await getCliente(route.params.id);
         cliente.value = response.data;
+        //castear un string a un int
+    
+        cliente.value.id = parseInt(cliente.value.id)
         console.log(response.data);
         obtenerTipoCliente();
         llenarCampos();
@@ -249,10 +268,8 @@ const llenarCampos = () => {
 const deleteCliente = async () => {
     try {
         const response = await eliminarCliente(route.params.id);
+        isVisibleModalInfo.value = true;    
         console.log(response.data);
-        router.push({
-            name: 'customers',
-        });
     } catch (error) {
         console.log(error);
     }

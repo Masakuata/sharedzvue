@@ -64,17 +64,7 @@
 
                         <template v-else>
                             <div class="w-full">
-                                <p class="text-2xl font-semibold text-center text-bgBlue">Error al registrar la venta</p>
-                                <p class="text-center text-red-600">{{ errorMessage }}</p>
-                                <div class="w-full flex justify-center mt-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-x-circle text-red-600 w-16 h-16">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <path d="m15 9-6 6" />
-                                        <path d="m9 9 6 6" />
-                                    </svg>
-                                </div>
+                                <ErrorX @aceptar="aceptarErrror" :message="errorMessage"></ErrorX>
                             </div>
                         </template>
                     </template>
@@ -96,6 +86,7 @@
 import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import ProductoVenderRow from './ProductoVenderRow.vue';
+import ErrorX from '@/components/utilities/ErrorX.vue';
 import { postVenta } from '@/api/api.js';
 
 
@@ -105,6 +96,7 @@ const loading = ref(false);
 
 const error = ref(false);
 const errorMessage = ref('');
+const errorObject = ref(null);
 
 const limpiarComponente = () => {
     requestSent.value = false;
@@ -114,7 +106,7 @@ const limpiarComponente = () => {
 };
 
 
-const emit = defineEmits(['confirmarVenta', 'cerrarConfirmarVenta']);
+const emit = defineEmits(['confirmarVenta', 'cerrarConfirmarVenta' , 'emitError']);
 const props = defineProps({
     isVisible: Boolean,
     productos: Array,
@@ -132,6 +124,15 @@ const emitirConfirmarVenta = (bandera) => {
 const emitirCerrarConfirmarVenta = () => {
     emit('cerrarConfirmarVenta');
     limpiarComponente();
+};
+
+const emitirError = () => {
+    emit('emitError', errorObject.value);
+    limpiarComponente();
+};
+
+const aceptarErrror = () => {
+    emitirError();
 };
 
 
@@ -153,6 +154,7 @@ const construirVenta = () => {
 
     let venta = {
         cliente: props.cliente.id,
+        direccion: props.cliente.direccionSelected.id,
         pagado: props.pagado,
         fecha: fecha,
         facturado: true,
@@ -172,8 +174,18 @@ const registrarVentaApi = async () => {
         loading.value = false;
         //emitirConfirmarVenta();
     } catch (errorResponse) {
+
+
         loading.value = false;
         error.value = true;
+
+        errorObject.value = errorResponse
+        //Se obtiene el status del error
+        if (errorResponse.response.status == 409) {
+            errorMessage.value = "Ups.. Uno de los productos seleccionos fue actualizado y su disponobilidad no es suficiente."
+            return;
+        }
+
         errorMessage.value = errorResponse.response.data.detail;
         console.log(errorResponse);
     }
