@@ -1,13 +1,10 @@
 <template>
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">EDITAR PRODUCTO</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">ACTUALIZAR PRODUCTO</h1>
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
 
         <template v-if="!requestSent">
             <template v-if="!loading">
                 <div class="w-full">
-                    <p class="w-full text-bgPurple font-semibold text-xl text-center">Actualiza la informacion del producto
-                    </p>
-
                     <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
                     <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
                         class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />

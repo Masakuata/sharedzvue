@@ -51,6 +51,8 @@ const isVisibleModalDirecciones = ref(false);
 const isVisibleModalConfirmacion = ref(false);
 const direcciones = ref([]);
 
+let idDireccionEliminar = 0;
+
 const isEdit = ref(false);
 const direccionSeleccionada = ref({});
 
@@ -58,7 +60,7 @@ const props = defineProps({
     switch: Boolean,
 });
 
-const emit = defineEmits(['updateItems']);
+const emit = defineEmits(['updateItems', ]);
 
 const agregrarDireccion = (direccion) => {
 
@@ -84,8 +86,8 @@ const agregrarDireccion = (direccion) => {
 
 };
 
-const eliminarDireccion = (direccion) => {
-    direcciones.value.pop(direccion);
+const eliminarDireccion = () => {
+    direcciones.value = direcciones.value.filter((dir) => dir.id !== idDireccionEliminar);
     emit('updateItems', direcciones.value);
 };
 
@@ -93,6 +95,7 @@ const cancelarEliminarDireccion = () => {
     isVisibleModalConfirmacion.value = false;
 };
 const mostrarModalEliminar = (direccion) => {
+    idDireccionEliminar = direccion.id;
     mensajeModalConfirmacion.value = `¿Desea eliminar la siguiente dirección? ${direccion.valor}`;
     isVisibleModalConfirmacion.value = true;
 };

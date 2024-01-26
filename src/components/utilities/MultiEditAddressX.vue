@@ -52,19 +52,20 @@ const isVisibleModalDirecciones = ref(false);
 const isVisibleModalConfirmacion = ref(false);
 const direcciones = ref([]);
 
+let idDireccionEliminar = 0;
+
 const isEdit = ref(false);
 const direccionSeleccionada = ref({});
 
 const props = defineProps({
     switch: Boolean,
     direcciones: Array,
-    idCliente: Number,
+    idCliente: String,
 });
 
-const emit = defineEmits(['updateItems']);
+const emit = defineEmits(['updateItems' , 'deleleItem', 'actualizarDireccion']);
 
 const agregrarDireccion = (direccion) => {
-
     let direccionFormateada = direccion.trim();
 
     if (verificarDireccionRepedida(direccionFormateada)) {
@@ -75,16 +76,12 @@ const agregrarDireccion = (direccion) => {
         });
         return;
     }
-
     let direccionAux = {
         direccion: direccionFormateada,
     };
 
     registrarDireccion(direccionAux);
     //Aqui hacer la peticion
-
-
-
 };
 
 const registrarDireccion = async (direccion) => {
@@ -110,18 +107,27 @@ const registrarDireccion = async (direccion) => {
 };
 
 
+//
+const eliminarDireccion = () => {
+    
+    //Se elimina la direccion que coincida con el id
+    let direccionEliminar = direcciones.value.find((dir) => dir.id === idDireccionEliminar);
 
+    //Se elimina la direccion del arreglo
+    direcciones.value = direcciones.value.filter((dir) => dir.id !== idDireccionEliminar);
 
-const eliminarDireccion = (direccion) => {
-    direcciones.value.pop(direccion);
+    emit('deleleItem',direccionEliminar);
     emit('updateItems', direcciones.value);
 };
+
 
 const cancelarEliminarDireccion = () => {
     isVisibleModalConfirmacion.value = false;
 };
 const mostrarModalEliminar = (direccion) => {
     mensajeModalConfirmacion.value = `¿Desea eliminar la siguiente dirección? ${direccion.valor}`;
+    idDireccionEliminar = direccion.id;
+
     isVisibleModalConfirmacion.value = true;
 };
 
@@ -152,6 +158,7 @@ const verificarDireccionRepedidaConId = (direccion) => {
 
 //Editar una direccion del arreglo por su id
 const editarDireccion = (direccion) => {
+
     console.log('Se recibio la siguiente direccion', direccion);
 
     let direccionFormateada = direccion.valor.trim();
@@ -178,7 +185,7 @@ const editarDireccion = (direccion) => {
         }
     });
     isEdit.value = false;
-    emit('updateItems', direcciones.value);
+    emit('actualizarDireccion', direccionAux);
     isVisibleModalDirecciones.value = false;
 };
 

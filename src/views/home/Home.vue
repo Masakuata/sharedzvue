@@ -7,8 +7,7 @@
           <p  class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>
 
-        <ErrorX></ErrorX>
-        <MultiRegistAddressX @update-items="actualizarDirecciones"></MultiRegistAddressX>
+       
 
         
        

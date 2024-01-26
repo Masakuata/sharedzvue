@@ -1,7 +1,6 @@
 <template>
     <template v-if="isVisibleModalInfo">
-        <ModalInfoX mensaje="Cliente eliminado exitosamente" titulo="Eliminación cliente" @aceptar="cerrarModalInfo"
-            >
+        <ModalInfoX mensaje="Cliente eliminado exitosamente" titulo="Eliminación cliente" @aceptar="cerrarModalInfo">
         </ModalInfoX>
     </template>
 
@@ -14,8 +13,8 @@
     </template>
 
 
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">CLIENTE</h1>
-    <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">DETALLE CLIENTE</h1>
+    <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full">
 
         <template v-if="loadingInfoCliente">
             <div class="w-full h-40 flex flex-col items-center justify-center">
@@ -24,10 +23,10 @@
             </div>
         </template>
         <template v-else="!loadingInfoCliente && !error">
-            <div class="flex flex-row w-full h-32  mt-3 rounded-lg overflow-hidden">
+            <div class="flex flex-row w-full  mt-3 rounded-lg overflow-hidden">
                 <div class="w-4/12 rounded-lg h-full">
                     <div class="p-3 h-full w-full">
-                        <svg width="100" height="100" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="h-24" width="100" height="100" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <mask id="mask0_259_34" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
                                 width="200" height="200">
                                 <rect width="200" height="200" fill="#D9D9D9" />
@@ -72,14 +71,31 @@
                     <p class="w-1/3 font-semibold">Teléfono</p>
                     <p class="w-2/3">{{ numero }}</p>
                 </div>
-                <div class="flex flex-row w-full mt-2 h-fit">
-                    <p class="w-1/3 font-semibold">Dirección</p>
-                    <p class="w-2/3">{{ direccion }}</p>
-                </div>
+
                 <div class="flex flex-row w-full mt-2 h-fit">
                     <p class="w-1/3 font-semibold">Correo</p>
                     <p class="w-2/3 break-words">{{ correo }}</p>
                 </div>
+
+                <div class="flex flex-row w-full mt-2 h-fit">
+                    <p class="w-1/3 font-semibold">Direcciones</p>
+                    <div class="w-2/3">
+                        <div v-for="direccionFor in cliente.direcciones" :key="direccionFor.id"
+                            class="flex flex-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-map-pinned w-2/12 text-bgBlue">
+                                <path d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9a6 6 0 0 1 12 0" />
+                                <circle cx="12" cy="8" r="2" />
+                                <path
+                                    d="M8.835 14H5a1 1 0 0 0-.9.7l-2 6c-.1.1-.1.2-.1.3 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.1 0-.2-.1-.3l-2-6a1 1 0 0 0-.9-.7h-3.835" />
+                            </svg>
+                            <p class="text-gray-900 w-10/12">{{
+                                direccionFor.direccion }}</p>
+                        </div>
+                    </div>
+                </div>
+                
 
                 <!-- <div class="flex flex-row w-full mt-2">
                 <p class="w-1/3 font-semibold">Adeudo</p>
@@ -88,7 +104,7 @@
             </div>
 
             <div class="w-full mt-3">
-                <SearchSales :id-cliente="cliente.id"   :is-from-cliente="true" :is-in-details="true"></SearchSales>
+                <SearchSales :id-cliente="cliente.id" :is-from-cliente="true" :is-in-details="true"></SearchSales>
             </div>
 
 
@@ -183,7 +199,7 @@ const obtenerCliente = async () => {
         const response = await getCliente(route.params.id);
         cliente.value = response.data;
         //castear un string a un int
-    
+
         cliente.value.id = parseInt(cliente.value.id)
         console.log(response.data);
         obtenerTipoCliente();
@@ -268,7 +284,7 @@ const llenarCampos = () => {
 const deleteCliente = async () => {
     try {
         const response = await eliminarCliente(route.params.id);
-        isVisibleModalInfo.value = true;    
+        isVisibleModalInfo.value = true;
         console.log(response.data);
     } catch (error) {
         console.log(error);

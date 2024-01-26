@@ -30,12 +30,12 @@
 
         </div>
         <!-- Contenido del desplegable -->
-        <div v-show="isOpen" class="absolute  w-full bg-gray-200 shadow-xl rounded max-h-40 overflow-scroll "
+        <div v-show="isOpen" class="absolute  w-full bg-white border-b border-r border-l border-bgBlue shadow-xl rounded max-h-40 overflow-scroll "
             :class="{ 'pb-3': isOpen }">
             <div class="flex flex-col">
                 <!-- Iteramos sobre el array de tipos de cliente -->
                 <div v-for="elemento in props.elementos" :key="elemento.value"
-                    class="p-1  cursor-pointer border border-gray-600 rounded-lg mt-1" @click="selectItem(elemento)">
+                    class="py-1 mx-2  cursor-pointer border-b border-gray-600  mt-1" @click="selectItem(elemento)">
                     {{ elemento.text }}
                 </div>
             </div>
