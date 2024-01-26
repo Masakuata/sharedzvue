@@ -142,9 +142,7 @@ const iniciarSesion = () => {
             password: password.value
         }
         loginUsuario(miembro);
-    } else {
-        console.log('Errores en el formulario:');
-    }
+    } 
 };
 
 const loginUsuario = async (miembro) => {

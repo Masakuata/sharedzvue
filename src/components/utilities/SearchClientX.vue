@@ -19,28 +19,41 @@
         </template>
         <template v-else>
             <div>
-                <div class="flex flex-row w-full h-14 bg-bgBlue  rounded-t-lg overflow-hidden">
+                <div class="flex flex-row w-full h-14 bg-gray-200 pt-2  rounded-t-lg overflow-hidden">
 
-                    <div class="flex flex-col w-11/12">
 
-                        <div class="flex flex-row w-full mt-2">
-                            <p class="text-white font-semibold text-lg ml-3 mr-2">{{ selectedItem.nombre }}</p>
+
+                    <div class="flex flex-row w-11/12 items-center">
+                        <div class="w-1/12 flex flex-row justify-end">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-store">
+                                <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+                                <path d="M2 7h20" />
+                                <path
+                                    d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7" />
+                            </svg>
                         </div>
+                        <p class="text-black font-semibold w-10/12 text-lg ml-3 turncate">{{ selectedItem.nombre }}</p>
                     </div>
-                    <div class="flex flex-row w-1/12 h-full items-center justify-center">
-                        <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-x-circle text-red-400">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="m15 9-6 6" />
-                            <path d="m9 9 6 6" />
+
+                    <div class="flex flex-row w-1/12 h-full items-center " @click="unselectItem">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-arrow-left">
+                            <path d="m12 19-7-7 7-7" />
+                            <path d="M19 12H5" />
                         </svg>
                     </div>
 
                 </div>
                 <div class="w-full">
                     <template v-if="selectedItem.direcciones.length > 0">
-                        <SelectXDirecciones :elementos="selectedItem.direcciones" @select-item="seleccionarDireccion"></SelectXDirecciones>
+
+                        <SelectXDirecciones :elementos="selectedItem.direcciones" @select-item="seleccionarDireccion">
+                        </SelectXDirecciones>
                     </template>
                 </div>
             </div>
@@ -78,7 +91,6 @@ const items = ref([]);
 
 const seleccionarDireccion = (direccion) => {
     selectedItem.value.direccionSelected = direccion;
-    console.log(selectedItem.value);
     selectItem(selectedItem.value);
 };
 
@@ -87,7 +99,7 @@ const selectItem = (item) => {
     searchQuery.value = item.nombre;
     isSelected.value = true;
 
-    
+
 
     let cliente = {
         id: item.id,

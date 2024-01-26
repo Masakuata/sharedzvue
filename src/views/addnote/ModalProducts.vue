@@ -153,7 +153,6 @@ const selectProduct = (item) => {
 
 
 const emitEditProduct = () => {
-    console.log('El producto ya esta en la lista');
     let nuevaCantidadInt = parseInt(nuevaCantidad.value);
     if (nuevaCantidadInt == 0 || nuevaCantidad.value == '') {
         toast("No puedes editar un producto con cantidad 0", {
@@ -163,15 +162,12 @@ const emitEditProduct = () => {
         errorCantidadCero.value = true;
         return;
     }
-
-    console.log('La nueva cantidad es: ', nuevaCantidadInt);
-
     let subtotal = nuevaCantidadInt * producto.value.precio;
-
-    console.log('El subtotal es: ', subtotal);
 
     subtotal = subtotal.toFixed(2);
     subtotal = parseFloat(subtotal);
+
+    let pesoTotal = nuevaCantidadInt * producto.value.peso;
 
 
 
@@ -184,6 +180,8 @@ const emitEditProduct = () => {
         cantidad: producto.value.cantidad,
         cantidadCompra: nuevaCantidadInt,
         id: producto.value.id,
+        peso: producto.value.peso,
+        pesoTotal: pesoTotal,
         subtotal: subtotal,
     }
 
@@ -196,9 +194,6 @@ const confirm = () => {
             emitEditProduct();
             return;
         } else {
-
-            console.log('El producto no esta en la lista');
-
             if (cantidad.value == '0' || cantidad.value == '') {
                 toast("No puedes agregar un producto con una cantidad de 0", {
                     type: 'warning',
@@ -216,6 +211,8 @@ const confirm = () => {
         }
     }
 
+    let pesoTotal = producto.value.cantidadCompra * producto.value.peso;
+
     let productoEmit = {
         nombre: producto.value.nombre,
         presentacion: producto.value.presentacion,
@@ -226,6 +223,8 @@ const confirm = () => {
         cantidadCompra: producto.value.cantidadCompra,
         id: producto.value.id,
         subtotal: producto.value.subtotal,
+        peso: producto.value.peso,
+        pesoTotal: pesoTotal,
     }
 
     if (productoEmit.cantidad === 0) {
@@ -321,10 +320,7 @@ const validarProductoEnLista = () => {
 
         let productoAux = props.productosLista.find(item => item.id == producto.value.id);
 
-        console.log('El producto auxiliar a editar es es: ', productoAux);
-
         if (productoAux) {
-            console.log('El producto ya esta en la lista');
             isProductInList.value = true;
             productoEnLista.value = productoAux;
         } else {
@@ -335,13 +331,7 @@ const validarProductoEnLista = () => {
 
 
 
-onUnmounted(() => {
-    console.log('Se desmonto el componente');
-})
 
-onMounted(() => {
-    console.log('Se monto el componente');
-})
 
 </script>
 

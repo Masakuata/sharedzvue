@@ -141,7 +141,6 @@ const actualizarDirecciones = (direccionesEmit) => {
 
 const eliminarDireccion = (direccion) => {;
     direccionesEliminar.value.push(direccion.id);
-    console.log(direccionesEliminar.value);
 }
 
 const eliminarDireccionesServer = async () => {
@@ -171,7 +170,6 @@ const actualizarDireccion = ( direccion) => {
         direccion: direccion.valor,
     }
     direccionesActualizar.value.push(direccionAux); 
-    console.log(direccionesActualizar.value);
 }
 
 
@@ -211,7 +209,6 @@ const formatearTipos = () => {
         tiposFormato.value.push({ value: element.id, text: element.tipoCliente });
     });
 
-    console.log(tiposFormato.value);
 
 }
 
@@ -326,6 +323,7 @@ const resgistrarCliente = () => {
             tipoCliente: tipoClienteSelected.value.value,
         }
         actualizarCliente(cliente);
+        
     }
 }
 
@@ -389,7 +387,6 @@ const obternerCliente = async (id) => {
 
 
         firstLoading.value = false;
-        console.log(response);
     } catch (error) {
         firstLoading.value = false;
         console.log(error);

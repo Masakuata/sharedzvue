@@ -164,7 +164,6 @@ const cantidadAumentar = ref('0');
 const isVisibleModalDelete = ref(false);
 const mensajeModalDelete = ref('');
 const confirmarEliminar = () => {
-    console.log('eliminando');
     isVisibleModalDelete.value = false;
     eliminar();
 };
@@ -174,7 +173,6 @@ const cerrarModalDelete = () => {
 const mostrarModalDelete = async () => {
 
     if(await hasVentas()){
-        console.log('tiene ventas');
         mensajeModalDelete.value = 'El producto  ' + producto.value.nombre + ' tiene ventas registradas, ¿Estás seguro de eliminarlo?';
         isVisibleModalDelete.value = true;
         return;
@@ -264,11 +262,6 @@ const hasVentas = async () => {
         };
         const response = await getVentas(params);
         const ventas  = response.data;
-        console.log(ventas);
-        
-        console.log(ventas.length);
-
-
         let longitud = ventas.length;
 
         if (longitud > 0) {

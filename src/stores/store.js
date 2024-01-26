@@ -27,8 +27,6 @@ export const useMyStore = defineStore('miStore', {
             this.sidebarStore = !this.sidebarStore;
         },
         setQueryInventory(query) {
-            console.log('Guardando query' , query);
-            console.log(query)
             this.queryInventory = query;
         },
         resetQueryInventory() {
