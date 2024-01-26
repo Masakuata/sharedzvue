@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row w-full h-32 bg-bgBlue mt-3 rounded-lg overflow-hidden" @click="goCustomerDetail">
+    <div class="flex flex-row w-full bg-bgBlue mt-3 rounded-lg overflow-hidden" :class="[{'h-40' : tieneNombreGrande}, {'h-32' : !tieneNombreGrande}]" @click="goCustomerDetail">
         <div class="w-1/3 bg-bgGray h-full">
             <div class="p-3 h-full w-full">
                 <svg width="100" height="100" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,8 +25,19 @@
             </div>
 
             <div class="flex flex-row w-full px-3 pt-3">
-                <div class="flex flex-col w-full">
-                    <p class="text-white text-sm">{{direccion }}</p>
+                <div class="flex flex-col w-full text-sm text-white">
+                    <div  v-if="tieneDirecciones" class="flex flex-row items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-map-pinned w-2/12 text-white">
+                            <path d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9a6 6 0 0 1 12 0" />
+                            <circle cx="12" cy="8" r="2" />
+                            <path
+                                d="M8.835 14H5a1 1 0 0 0-.9.7l-2 6c-.1.1-.1.2-.1.3 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.1 0-.2-.1-.3l-2-6a1 1 0 0 0-.9-.7h-3.835" />
+                        </svg>
+                        <p class="text-white text-sm truncate">{{ textoDirecciones }}</p>
+                    </div>
+                   <p v-if="cliente.telefono"  class="ml-2">{{ cliente.telefono }}</p>
                 </div>
 
             </div>
@@ -38,7 +49,9 @@
 import { defineProps, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
-
+const textoDirecciones = ref('');
+const tieneDirecciones = ref(false);
+const tieneNombreGrande = ref(false);
 
 const direccion = ref('');
 
@@ -53,13 +66,35 @@ const goCustomerDetail = () => {
     router.push({ name: 'detailcustomer', params: { id: props.cliente.id } });
 };
 
+const construirTextoDirecciones = () => {
+    if (props.cliente.direcciones.length > 1) {
+        tieneDirecciones.value = true;
+        textoDirecciones.value = props.cliente.direcciones.length + ' direcciones';
+    } else if (props.cliente.direcciones.length == 1) {
+        tieneDirecciones.value = true;
+        textoDirecciones.value = props.cliente.direcciones[0].direccion;
+    } else[
+        tieneDirecciones.value = false
+
+    ]
+};
+
+const medirDimenciones = () => {
+    if (props.cliente.nombre.length > 20) {
+        tieneNombreGrande.value = true;
+    } else {
+        tieneNombreGrande.value = false;
+    }
+};
+
 
 
 
 onMounted(() => {
 
-    direccion.value = props.cliente.direcciones[0];
-    
+    construirTextoDirecciones();
+    medirDimenciones();
+
 });
 
 </script>

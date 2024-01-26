@@ -14,7 +14,7 @@
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">EXISTENCIAS</h1>
     <template v-if="!loading">
         <div @click="clickEnDiv" class="flex flex-col items-center pt-4 px-4  w-full">
-            <div class="flex flex-row w-full h-32  mt-3 rounded-lg overflow-hidden" @click="goEditProduct">
+            <div class="flex flex-row w-full mt-3 rounded-lg overflow-hidden">
                 <div class="w-5/12 bg-bgGray rounded-lg h-full">
                     <div class="p-3 h-full w-full">
                         <svg class="w-full h-full" width="400" height="400" viewBox="0 0 200 200" fill="none"
@@ -61,7 +61,7 @@
             <div class="w-full text-lg">
                 <div class="flex flex-row">
                     <p class="w-2/3 font-semibold">Cantidad en inventario</p>
-                    <p class="w-1/3">{{ producto.cantidad }}</p>
+                    <p class="w-1/3 font-semibold" :class="[{'text-green-800' : producto.cantidad > 0} , {'text-red-800' : producto.cantidad <= 0}]">{{ producto.cantidad }}</p>
                 </div>
                 <div class="flex flex-row">
                     <p class="w-2/3 font-semibold">Precio público</p>

@@ -273,6 +273,7 @@ const registrarAbono = async () => {
             let response = await postAbono(route.params.id, payload);
 
             loadingSendAbono.value = false;
+            abono.value = '';
         } catch (error) {
             loadingSendAbono.value = false;
             console.log(error);

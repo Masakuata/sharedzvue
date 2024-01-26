@@ -44,7 +44,7 @@
             </div>
         </template>
 
-        <div class="w-full overflow-scroll" :class="[{'h-72' : isInDetails}, {'h[80vh]' : !isInDetails}] ">
+        <div class="w-full overflow-scroll" :class="[{'min-h-24 max-h-72' : isInDetails}, {'h[80vh]' : !isInDetails}] ">
             <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
 
             <button v-if="isThereMoreResults" @click="addItems"

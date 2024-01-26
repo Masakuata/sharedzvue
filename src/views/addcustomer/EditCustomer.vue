@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">CLIENTES</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">ACTUALIZAR CLIENTE</h1>
 
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full overflow-scroll">
         <template v-if="firstLoading">
@@ -10,7 +10,7 @@
 
         </template>
         <template v-else>
-            <div class="flex flex-row">
+            <div class="flex flex-row w-full text-left items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-user-round-plus w-10 h-10 text-bgBlue">
@@ -19,7 +19,7 @@
                     <path d="M19 16v6" />
                     <path d="M22 19h-6" />
                 </svg>
-                <p class="w-full ml-2 text-lg">Registra un cliente y comienza a registrar sus compras</p>
+                <p class="w-full  ml-2 text-lg">Actualiza la información del cliente</p>
             </div>
 
             <div class="w-full">
@@ -33,16 +33,6 @@
                 <p v-else-if="faltaName" class="text-red-600">El nombre es un campo requerido</p>
             </div>
 
-            <div class="w-full">
-                <label for="direccion" class="block text-sm font-medium text-bgBlue">Dirección</label>
-                <input id="direccion" v-model="direccion" @input="validarDireccion" maxlength="50"
-                    class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                <template v-if="direccion.length > 0">
-                    <p class="text-green-600" v-if="direccionValid">Dirección válida</p>
-                    <p v-else class="text-red-600">Ingresa una direccion válida</p>
-                </template>
-                <p v-else-if="faltaDireccion" class="text-red-600">La dirección es un campo requerido</p>
-            </div>
 
 
             <label class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
@@ -89,6 +79,13 @@
                 </template>
                 <p v-else-if="faltaTelefono" class="text-red-600">La dirección es un campo requerido</p>
             </div>
+            <div class="mt-3 w-full">
+                <p class="text-sm font-medium text-bgBlue pb-1">Agrega, elimina o edita sus direcciones</p>
+                <AlertX :flag="faltanDirecciones" message="El cliente debe tener al menos una direccion registrada"></AlertX>
+                <MultiEditAddressX  @actualizarDireccion="actualizarDireccion" @deleleItem="eliminarDireccion" @update-items="actualizarDirecciones" :direcciones="direcciones" :id-cliente="idCliente" :switch="switchMultiAddress">
+                </MultiEditAddressX>
+            </div>
+
 
             <div class="w-full mt-3">
                 <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
@@ -97,7 +94,7 @@
             <div class="w-full mt-3">
                 <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
             </div>
-            <MultiEditAddressX :direcciones="direcciones" :id-cliente="idCliente" :switch="switchMultiAddress"></MultiEditAddressX>
+
 
         </template>
 
@@ -121,12 +118,64 @@ import ButtonX from '@/components/utilities/ButtonX.vue';
 import { toast } from 'vue3-toastify';
 import { useRouter, useRoute } from 'vue-router';
 import SelectX from '@/components/utilities/SelectX.vue';
-import { getTiposCliente, getCliente } from '@/api/api.js';
+import { getTiposCliente, getCliente, deleteDireccion, updateDireccion } from '@/api/api.js';
 import MultiEditAddressX from '@/components/utilities/MultiEditAddressX.vue';
+import AlertX from '@/components/utilities/AlertX.vue';
+
 
 
 const switchMultiAddress = ref(false);
 const direcciones = ref([]);
+
+const faltanDirecciones = ref(false);
+
+const direccionesEliminar = ref([]);
+const errorEliminarDirecciones = ref(false);  
+
+const direccionesActualizar = ref([]);
+const errorActualizarDirecciones = ref(false);
+
+const actualizarDirecciones = (direccionesEmit) => {
+    direcciones.value = direccionesEmit;
+}
+
+const eliminarDireccion = (direccion) => {;
+    direccionesEliminar.value.push(direccion.id);
+    console.log(direccionesEliminar.value);
+}
+
+const eliminarDireccionesServer = async () => {
+    try {
+        direccionesEliminar.value.forEach(async (element) => {
+            await deleteDireccion(idCliente.value, element);
+        });
+    } catch (error) {
+        errorEliminarDirecciones.value = true;
+        console.log(error);
+    }
+}
+const actualizarDireccionesServer = async () => {
+    try {
+        direccionesActualizar.value.forEach(async (element) => {
+            await updateDireccion(idCliente.value, element);
+        });
+    } catch (error) {
+        errorActualizarDirecciones.value = true;
+        console.log(error);
+    }
+}
+
+const actualizarDireccion = ( direccion) => {
+    let direccionAux = {
+        id: direccion.id,
+        direccion: direccion.valor,
+    }
+    direccionesActualizar.value.push(direccionAux); 
+    console.log(direccionesActualizar.value);
+}
+
+
+
 
 
 
@@ -186,8 +235,7 @@ const rfc = ref('');
 const rfcValid = ref(false);
 const faltaRfc = ref(false);
 
-const direccion = ref('');
-const direccionValid = ref(false);
+
 const faltaDireccion = ref(false);
 
 const telefono = ref('');
@@ -201,10 +249,6 @@ const closeSidebar = () => {
 };
 
 
-const validarDireccion = () => {
-    faltaDireccion.value = false;
-    direccionValid.value = validateName(direccion.value);
-};
 
 const validarName = () => {
     faltaName.value = false;
@@ -251,12 +295,7 @@ watch(
     }
 )
 
-watch(
-    () => direccion.value,
-    () => {
-        validarDireccion();
-    }
-)
+
 
 watch(
     () => telefono.value,
@@ -268,23 +307,21 @@ watch(
 const validateForm = () => {
     //faltaEmail.value = email.length === undefined;
     faltaName.value = name.length === undefined;
+    faltanDirecciones.value = direcciones.value.length === 0;
     //faltaRfc.value = rfc.length === undefined;
-    faltaDireccion.value = direccion.length === undefined;
+
+
     //faltaTelefono.value = telefono.length === undefined;
 
-    return nameValid.value && direccionValid.value;
+    return nameValid.value && !faltanDirecciones.value;
 }
 
 const resgistrarCliente = () => {
     if (validateForm()) {
-        let direcciones = []
-        direcciones.push(direccion.value);
-
         let cliente = {
             email: email.value,
             nombre: name.value,
             RFC: rfc.value,
-            direcciones: direcciones,
             telefono: telefono.value,
             tipoCliente: tipoClienteSelected.value.value,
         }
@@ -293,12 +330,13 @@ const resgistrarCliente = () => {
 }
 
 const actualizarCliente = async (cliente) => {
+    let pudoActualizarCliente = false;
     loading.value = true;
     let id = route.params.id;
     try {
         await putCliente(id, cliente);
-        notify();
-        cleanfields();
+        pudoActualizarCliente = true;
+        
     } catch (error) {
         console.log(error);
         if (error.response.status === 409) {
@@ -313,6 +351,13 @@ const actualizarCliente = async (cliente) => {
             });
         }
 
+    }
+
+    if (pudoActualizarCliente) {
+        await eliminarDireccionesServer();
+        await actualizarDireccionesServer();
+        notify();
+        cleanfields();
     }
     loading.value = false;
 };
@@ -332,7 +377,6 @@ const cleanfields = () => {
     email.value = '';
     name.value = '';
     rfc.value = '';
-    direccion.value = '';
     telefono.value = '';
 }
 
@@ -342,7 +386,7 @@ const obternerCliente = async (id) => {
         const response = await getCliente(id);
         await getTipos();
         llenarCampos(response.data);
-        
+
 
         firstLoading.value = false;
         console.log(response);
@@ -356,7 +400,6 @@ const llenarCampos = (cliente) => {
     email.value = cliente.email;
     name.value = cliente.nombre;
     rfc.value = cliente.RFC;
-    direccion.value = cliente.direcciones[0];
     telefono.value = cliente.telefono;
     //tipoClienteSelected.value = cliente.tipoCliente;
     tipoCliente.value = cliente.tipoCliente;
