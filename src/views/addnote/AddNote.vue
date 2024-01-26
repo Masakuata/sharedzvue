@@ -1,19 +1,23 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">NOTAS</h1>
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full bg-gray-50">
-        <ModalConfirmacionVenta :is-visible="modalConfirmacionVentalVisible" :productos="productosLista" :cliente="cliente"
-            :abonoInicial="abonoInicial" :pagado="pagado" :total="totalInt"
-            @cerrarConfirmarVenta="cancelModalConfirmacionVenta" @confirmarVenta="confirmModalConfirmacionVenta"
-            @emitError="errorRegistrarVenta">
-            >
-        </ModalConfirmacionVenta>
+        <template v-if="modalConfirmacionVentalVisible">
+            <ModalConfirmacionVenta :is-visible="modalConfirmacionVentalVisible" :productos="productosLista"
+                :cliente="cliente" :total="totalInt" @cerrarConfirmarVenta="cancelModalConfirmacionVenta"
+                @confirmarVenta="confirmModalConfirmacionVenta" @emitError="errorRegistrarVenta">
+                >
+            </ModalConfirmacionVenta>
+        </template>
+
+
 
         <ModalCancelVenta :is-visible="modalCancelVentaVisible" @cerrarModalCancelarVenta="closeModalCancelVenta"
             @cancelarVenta="cancelVenta"></ModalCancelVenta>
 
         <template v-if="modalProductsVisible">
             <ModalProducts :is-visible="modalProductsVisible" @cancelAddProduct="cancelModalProducts"
-                @confirmAddProduct="confirmModalProducts" @editProduct="editarProducto" :productos-lista="productosLista" :tipoCliente="tipoCliente">
+                @confirmAddProduct="confirmModalProducts" @editProduct="editarProducto" :productos-lista="productosLista"
+                :tipoCliente="tipoCliente">
             </ModalProducts>
         </template>
 
@@ -34,13 +38,21 @@
             <ProductoVenderRow v-for="product in productosLista" :key=product.id :producto="product"
                 @unselect-item="unselectProduct" :is-deletable="true" @showDetails="selectProduct"></ProductoVenderRow>
         </div>
+        <div class="w-full mt-2">
+            <ButtonX color="purple" :is-slim="true" icon="add" @click="showModalProducts">Agregar producto</ButtonX>
+        </div>
+
         <div class=" flex flex-row w-full items-center mt-3 pt-3">
             <div class=" flex flex-col w-1/2">
-                <p class="w-full  text-start  text-xl">Costo Total</p>
-                <p class="w-full text-start  text-lg font-semibold text-green-700">{{ totalString }}</p>
+                <p class="w-full  text-center  text-xl">Costo Total</p>
+                <p class="w-full text-center  text-lg font-bold">{{ totalString }}</p>
             </div>
-            <button @click="showModalProducts" class="w-1/2 h-10 bg-bgPurple text-white rounded-xl">Agregar
-                producto</button>
+
+            <div class=" flex flex-col w-1/2">
+                <p class="w-full  text-center  text-xl">Peso Total</p>
+                <p class="w-full text-center  text-lg font-bold">{{ pesoTotalString }}</p>
+            </div>
+
         </div>
         <div v-if="errorCantidadMayor" class="flex flex-row py-1 my-2 h-fit border-2 border-orange-500 rounded-xl">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -52,54 +64,15 @@
             </svg>
             <p>La cantidad no puede ser mayor que la de inventario</p>
         </div>
-        <div v-if="productosLista.length > 0" class="flex flex-row w-full h-10  items-center border-t border-bgBlue ">
-            <!-- <label class="text-gray-700 mr-10 font-semibold w-1/2" for="checkbox">Finiquitar venta</label>
-            <div class="w-1/2 text-right">
-                <input type="checkbox" v-model="finiquitarVenta"
-                class="w-6 h-6 text-blue-600 border-gray-300 rounded focus:ring-blue-500 " id="checkbox">
-            </div> -->
-            <div class="flex flex-row w-full h-10  items-center bg-blueLetters rounded-lg px-2 mt-2"
-                @click="togleFiniquitarRestante">
-                <div class="w-3/4">
-                    <label class="text-white mr-10 text-xl" for="checkbox">Finiquitar venta</label>
-                </div>
-                <div class="w-1/4 flex flex-row  justify-end">
-                    <input type="checkbox" v-model="finiquitarVenta"
-                        class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500" id="checkbox">
-                </div>
-            </div>
 
-        </div>
-
-        <div class="flex flex-row w-full  items-center space-x-2 pt-2">
-            <p class="font-semibold text-lg w-1/2">Abono Inicial</p>
-            <div class="w-1/2 text-right pr-2">
-                <div class="relative">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-dollar-sign">
-                            <line x1="12" x2="12" y1="2" y2="22" />
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                        </svg>
-                    </div>
-                    <input  :disabled="finiquitarVenta" v-model="abonoInicial" id="default-search"
-                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                        required>
-
-                </div>
-            </div>
-
-
-        </div>
 
         <div class="flex flex-row w-full mt-3">
             <div class="w-1/2 pr-1">
                 <ButtonX color="red" @click="showModalCancelVenta">Cancelar</ButtonX>
             </div>
             <div class="w-1/2 pl-1">
-                <button class="w-full rounded-lg h-12 text-white font-semibold bg-bgBlue" @click="registrarCompra">Registrar
-                    venta</button>
+                <button class="w-full rounded-lg h-12 text-white font-semibold bg-bgBlue"
+                    @click="registrarCompra">Crear</button>
             </div>
         </div>
     </div>
@@ -131,7 +104,7 @@ const modalConfirmacionVentalVisible = ref(false);
 //Varables del ModalCancelVenta
 const modalCancelVentaVisible = ref(false);
 
-const finiquitarVenta = ref(false);
+
 
 const productosLista = ref([]);
 const cliente = ref(null);
@@ -139,12 +112,13 @@ const isClienteSelected = ref(false);
 
 const reloadSearch = ref(false);
 
-const abonoInicial = ref('0');
-const pagado = ref(false);
 
 const modalProductsVisible = ref(false);
 const totalInt = ref(0);
 const totalString = ref('$ 0.00');
+
+const pesoTotalFloat = ref(0);
+const pesoTotalString = ref('0.00 kg');
 
 const tipoCliente = ref(0);
 
@@ -222,10 +196,8 @@ const confirmModalProducts = (producto) => {
     modalProductsVisible.value = false;
 
     if (productosLista.value.some(prod => prod.id === producto.id)) {
-        console.log('Se encontró en la lista el producto');
         //(producto);
     } else {
-        console.log('agregando un nuevo producto');
         productosLista.value.push(producto);
     }
 
@@ -265,7 +237,7 @@ const mostrarToast = () => {
 
 
 const calcularTotal = () => {
-    let total = 0; 
+    let total = 0;
     productosLista.value.forEach(current => {
         total += current.subtotal;
     });
@@ -274,16 +246,18 @@ const calcularTotal = () => {
     totalString.value = `$ ${total}`;
 };
 
+const calcularPesoTotal = () => {
+    let total = 0;
+    productosLista.value.forEach(current => {
+        total += current.pesoTotal;
+    });
+    total = total.toFixed(2);
+    pesoTotalFloat.value = parseFloat(total);
+    pesoTotalString.value = `${total} kg`;
+};
+
 const editarProducto = (producto) => {
     //remplazarProducto(producto);
-    console.log('Producto emit es', producto);
-
-    console.log('Productos lista', productosLista.value);
-
-    productosLista.value.forEach(prod => {
-        console.log('Producto actual', prod);
-    });
-
     remplazarProducto(producto);
     modalProductsVisible.value = false;
 };
@@ -292,14 +266,15 @@ const editarProducto = (producto) => {
 const remplazarProducto = (producto) => {
     productosLista.value = productosLista.value.filter(prod => prod.id !== producto.id);
     productosLista.value.push(producto);
-    console.log('Remplazando producto' ,producto);
     calcularTotal();
+    calcularPesoTotal();
 };
 
 watch(
     () => productosLista.value.length,
     () => {
         calcularTotal();
+        calcularPesoTotal();
     }
 )
 
@@ -319,27 +294,12 @@ const validarCompra = () => {
         });
         return false;
     }
-    let abonoInicialInt = parseInt(abonoInicial.value);
-
-    if (abonoInicialInt > totalInt.value) {
-        toast("El abono inicial no puede ser mayor al total", {
-            type: 'warning',
-            autoClose: 2000,
-        });
-        return false;
-    }
-
-    pagado.value = finiquitarVenta.value;
-
     return true;
 };
 
 const registrarCompra = async () => {
     if (!validarCompra()) {
         return;
-    }
-    if (abonoInicial.value == '') {
-        abonoInicial.value = '0';
     }
     showModalConfirmacionVenta();
 
@@ -350,11 +310,8 @@ const limpiarCampos = () => {
     reloadSearch.value = !reloadSearch.value;
     productosLista.value = [];
     cliente.value = null;
-    abonoInicial.value = '0';
-    pagado.value = false;
     isClienteSelected.value = false;
     errorCantidadMayor.value = false;
-    finiquitarVenta.value = false;
 };
 
 const seleccionarCliente = (clienteEmit) => {
@@ -389,35 +346,11 @@ const recargarProductos = (tipoCliente) => {
 };
 
 
-watch(
-    () => abonoInicial.value,
-    () => {
-        abonoInicial.value = filtrarEntrada(abonoInicial.value);
 
-        let abonoInicialInt = parseInt(abonoInicial.value);
 
-        if (abonoInicialInt > totalInt.value) {
-            errorCantidadMayor.value = true;
-        } else {
-            errorCantidadMayor.value = false;
-        }
-    }
-)
 
-watch(
-    () => finiquitarVenta.value,
-    () => {
-        if (finiquitarVenta.value) {
-            abonoInicial.value = totalInt.value.toString();
-        } else {
-            abonoInicial.value = '0';
-        }
-    }
-)
 
-const togleFiniquitarRestante = () => {
-    finiquitarVenta.value = !finiquitarVenta.value;
-};
+
 
 const filtrarEntrada = (input) => {
     // Primero, quitar todos los caracteres que no sean dígitos o puntos
@@ -444,3 +377,4 @@ onMounted(() => {
 });
 
 </script>
+

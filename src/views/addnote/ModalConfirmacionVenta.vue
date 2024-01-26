@@ -4,16 +4,79 @@
         <div class="bg-gray-100 h-[90vh] rounded-lg  w-full mx-4 z-50">
 
             <template v-if="!requestSent">
-                <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la venta</p>
-                <div class="w-full p-4 h-[80vh]">
-                    <div class="w-full h-[50vh] border border-gray-400 rounded-lg mt-3 p-3 overflow-scroll">
-                        <p>Productos a vender</p>
+                <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la venta
+                </p>
+                <div class="w-full p-4 h-[80vh] overflow-scroll">
+                    <p>Productos a vender</p>
+                    <div class="w-full h-96 border border-gray-400 rounded-lg  p-3 overflow-scroll">
                         <ProductoVenderRow v-for="product in productos" :key=product.id :producto="product">
                         </ProductoVenderRow>
                     </div>
-                    <p class="font-semibold">{{ 'Cliente: ' + cliente.nombre }}</p>
-                    <p class="text-bgBlue">{{ 'Total: $' + total }}</p>
-                    <p class="text-green-600">{{ 'Abono Inicial: $' + abonoInicial }}</p>
+                    <div class="w-full flex flex-row items-center border-b border-gray-400 py-3">
+                        <div class="w-1/12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-store">
+                                <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+                                <path d="M2 7h20" />
+                                <path
+                                    d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7" />
+                            </svg>
+                        </div>
+                        <p class="font-semibold pl-3 w-11/12 ">{{ cliente.nombre }}</p>
+                    </div>
+
+                    <div class="flex flex-row w-full border-b border-gray-400">
+                        <div class="flex flex-col w-1/2">
+                            <p class="w-full text-center">Monto total</p>
+                            <p class="w-full text-center font-semibold">{{ '$' + total }}</p>
+                        </div>
+                        <div class="flex flex-col w-1/2">
+                            <p class="w-full text-center">Peso total</p>
+                            <p class="w-full text-center font-semibold">{{ total + 'KG' }}</p>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="flex flex-row w-full h-10  items-center border-t border-bgBlue ">
+                        <div class="flex flex-row w-full h-10  items-center bg-blueLetters rounded-lg px-2 mt-2"
+                            @click="togleFiniquitarRestante">
+                            <div class="w-3/4">
+                                <label class="text-white mr-10 text-xl" for="checkbox">Finiquitar venta</label>
+                            </div>
+                            <div class="w-1/4 flex flex-row  justify-end">
+                                <input type="checkbox" v-model="finiquitarVenta"
+                                    class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500" id="checkbox">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <AlertX message="El abono no puede ser mayor que el monto total" :flag="errorCantidadMayor"></AlertX>
+
+                    <div class="flex flex-row w-full  items-center justify-between space-x-2 pt-2">
+                        <p class="font-semibold text-lg w-1/2">Abono Inicial</p>
+                        <div class="w-1/2 text-right">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-dollar-sign">
+                                        <line x1="12" x2="12" y1="2" y2="22" />
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    </svg>
+                                </div>
+                                <input :disabled="finiquitarVenta" v-model="abonoInicial"
+                                    class="block w-full ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                    required>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+
 
                     <div class="flex flex-row w-full mt-3">
                         <div class="w-1/2 pr-1">
@@ -51,13 +114,16 @@
                                 <div class="w-full flex justify-center mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="currentFill" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-check-check w-16 h-auto text-green-600 fill-gray-100">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-check-check w-16 h-auto text-green-600 fill-gray-100">
                                         <path d="M18 6 7 17l-5-5" />
                                         <path d="m22 10-7.5 7.5L13 16" />
                                     </svg>
                                 </div>
-                                <div class="p-2 w-full"><ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX></div>
-                                
+                                <div class="p-2 w-full">
+                                    <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
+                                </div>
+
                             </div>
 
                         </template>
@@ -88,8 +154,17 @@ import ButtonX from '@/components/utilities/ButtonX.vue';
 import ProductoVenderRow from './ProductoVenderRow.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
 import { postVenta } from '@/api/api.js';
+import { filtrarEntrada } from '@/utils/validator.js'
+import AlertX from '@/components/utilities/AlertX.vue';
 
 
+
+
+const finiquitarVenta = ref(false);
+const abonoInicial = ref('');
+
+const totalInt = ref(0);
+const errorCantidadMayor = ref(false);
 
 const requestSent = ref(false);
 const loading = ref(false);
@@ -106,13 +181,11 @@ const limpiarComponente = () => {
 };
 
 
-const emit = defineEmits(['confirmarVenta', 'cerrarConfirmarVenta' , 'emitError']);
+const emit = defineEmits(['confirmarVenta', 'cerrarConfirmarVenta', 'emitError']);
 const props = defineProps({
     isVisible: Boolean,
     productos: Array,
     cliente: Object,
-    abonoInicial: String,
-    pagado: Boolean,
     total: Number,
 });
 
@@ -143,19 +216,23 @@ const construirVenta = () => {
         let productoAux = {
             producto: producto.id,
             cantidad: producto.cantidadCompra,
+            precio: producto.precio,
         }
         productosAux.push(productoAux);
     });
 
-    let abonoInicialFloat = parseFloat(props.abonoInicial);
+    let abonoInicialFloat = parseFloat(abonoInicial.value);
 
     let hoy = new Date();
-    let fecha =  hoy.getDate()+ '-' + (hoy.getMonth() + 1) + '-' + hoy.getFullYear();
+    let fecha = hoy.getDate() + '-' + (hoy.getMonth() + 1) + '-' + hoy.getFullYear();
+    if (!finiquitarVenta.value) {
+        finiquitarVenta.value = abonoInicialFloat === totalInt.value;
+    }
 
     let venta = {
         cliente: props.cliente.id,
         direccion: props.cliente.direccionSelected.id,
-        pagado: props.pagado,
+        pagado: finiquitarVenta.value,
         fecha: fecha,
         facturado: true,
         abono: abonoInicialFloat,
@@ -167,13 +244,16 @@ const construirVenta = () => {
 };
 
 const registrarVentaApi = async () => {
+    if(errorCantidadMayor.value){
+        return;
+    }
     try {
         loading.value = true;
         requestSent.value = true;
         let venta = construirVenta();
         await postVenta(venta);
         loading.value = false;
-        //emitirConfirmarVenta();
+        
     } catch (errorResponse) {
 
 
@@ -193,6 +273,36 @@ const registrarVentaApi = async () => {
 
 };
 
+const togleFiniquitarRestante = () => {
+    finiquitarVenta.value = !finiquitarVenta.value;
+};
+
+watch(
+    () => abonoInicial.value,
+    () => {
+        abonoInicial.value = filtrarEntrada(abonoInicial.value);
+
+        let abonoInicialInt = parseInt(abonoInicial.value);
+
+        if (abonoInicialInt > totalInt.value) {
+            errorCantidadMayor.value = true;
+        } else {
+            errorCantidadMayor.value = false;
+        }
+    }
+)
+
+watch(
+    () => finiquitarVenta.value,
+    () => {
+        if (finiquitarVenta.value) {
+            abonoInicial.value = totalInt.value.toString();
+        } else {
+            abonoInicial.value = '0';
+        }
+    }
+)
+
 
 
 
@@ -210,6 +320,11 @@ const clickOut = () => {
 const cerrarModal = () => {
     emit('cerrarConfirmarVenta');
 };
+
+onMounted(() => {
+    totalInt.value = parseInt(props.total);
+    abonoInicial.value = '0';
+});
 
 
 </script>

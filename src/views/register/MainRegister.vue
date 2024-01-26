@@ -146,8 +146,6 @@ const submitForm = () => {
             password: password.value
         }
         postUsuario(miembro);
-    } else {
-        console.log('Errores en el formulario:');
     }
 };
 

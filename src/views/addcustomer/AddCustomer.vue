@@ -257,9 +257,6 @@ const faltaDirecciones = ref(false);
 
 
 const validateDirecciones = () => {
-    console.log('Validando las direcciones');
-    console.log(direcciones.value.length);
-    console.log(direcciones.value.length > 0);
     faltaDirecciones.value = !(direcciones.value.length > 0);
     return !faltaDirecciones.value;
 }
@@ -268,7 +265,6 @@ const resgistrarCliente = () => {
     if (validateForm()) {
         let direccionesAux = []
         direcciones.value.forEach(element => {
-            console.log(element.valor);
             direccionesAux.push(element.valor);
         });
 

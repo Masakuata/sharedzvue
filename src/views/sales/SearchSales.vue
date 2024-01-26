@@ -136,7 +136,6 @@ const closeSaleModal = () => {
 const confirmarAbono = () => {
     isVisibleDatePicker.value = true;
     isVisibleModalAbonar.value = false;
-    console.log('Confirmar abono');
     items.value = [];
     construirQuery();
 }
@@ -233,17 +232,14 @@ const getItems = async () => {
 
 const addItems = async () => {
     
-    console.log('Agregando items');
 
     try {
         page.value = page.value + 1;
         query.value.pag = page.value;
         let response = await getVentas(query.value);
 
-        console.log(response);
 
         if (response.status !== 200) {
-            console.log('No hay más resultados');
             isThereMoreResults.value = false;
             return
         }

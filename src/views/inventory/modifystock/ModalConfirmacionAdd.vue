@@ -159,7 +159,6 @@ const putProducto = async () => {
         requestSent.value = true;
         loading.value = true;
         const response = await actualizarStockProducto(idInt, cantidad.value);
-        console.log(response);
         loading.value = false;
 
     }catch(error){

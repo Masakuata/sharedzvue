@@ -28,6 +28,10 @@
                     <p class="mr-2">Disponibilidad:</p>
                     <p class="text-green-600">{{ producto.cantidad }}</p>
                 </div>
+                <div class="flex flex-row">
+                    <p class="mr-2">Peso:</p>
+                    <p>{{ producto.peso + ' KG'}}</p>
+                </div>
 
             </template>
 

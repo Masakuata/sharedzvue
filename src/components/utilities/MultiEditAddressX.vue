@@ -87,7 +87,7 @@ const agregrarDireccion = (direccion) => {
 const registrarDireccion = async (direccion) => {
     try {
         const response = await addDireccion(props.idCliente, direccion);
-        console.log('La respuesta es', response);
+        
 
         //eXTRAER EL ID Y DIRECCION DE LA RESPUSTA Y PUSHEARLO AL ARREGLO
         let direccionAux = {
@@ -149,9 +149,9 @@ const verificarDireccionRepedida = (direccion) => {
 
 //Verificar si la direccion es repetida y tiene diferente id
 const verificarDireccionRepedidaConId = (direccion) => {
-    console.log('la direccion es en el verificar', direccion);
+
     let direccionRepetida = direcciones.value.find((dir) => dir.valor.toLowerCase() === direccion.valor.toLowerCase() && dir.id !== direccion.id);
-    console.log('La direccion repetida que se encontró es', direccionRepetida);
+
 
     return direccionRepetida;
 };
@@ -159,7 +159,7 @@ const verificarDireccionRepedidaConId = (direccion) => {
 //Editar una direccion del arreglo por su id
 const editarDireccion = (direccion) => {
 
-    console.log('Se recibio la siguiente direccion', direccion);
+
 
     let direccionFormateada = direccion.valor.trim();
     let direccionAux = {
@@ -179,8 +179,8 @@ const editarDireccion = (direccion) => {
 
     direcciones.value.forEach((dir) => {
         if (dir.id === direccion.id) {
-            console.log('Se encontro la direccion a editar', dir);
-            console.log('Se le asignará el sigueinte valor', direccionFormateada);
+
+
             dir.valor = direccionFormateada;
         }
     });

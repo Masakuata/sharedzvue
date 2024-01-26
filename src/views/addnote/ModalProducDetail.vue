@@ -103,6 +103,8 @@ const confirm = () => {
         producto.value.subtotal = subtotal;
     }
 
+    let nuevoPesoTotal = producto.value.peso * nuevaCantidadInt;
+
     let productoEmit = {
         nombre: producto.value.nombre,
         presentacion: producto.value.presentacion,
@@ -113,6 +115,8 @@ const confirm = () => {
         cantidadCompra: nuevaCantidadInt,
         id: producto.value.id,
         subtotal: producto.value.subtotal,
+        peso: producto.value.peso,
+        pesoTotal: nuevoPesoTotal,
     }
 
 

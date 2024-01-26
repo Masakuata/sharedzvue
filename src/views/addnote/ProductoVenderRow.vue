@@ -2,14 +2,15 @@
     <div class="flex flex-row w-full bg-white p-2 rounded-lg shadow-lg mt-2">
         <div @click="showDetails" class="flex flex-col w-11/12">
             <div class="flex flex-row w-full">
-                <p class="mr-2 w-1/2 truncate">{{ producto.nombre }}</p>
-                <p class="w-1/2 truncate">{{ producto.presentacion }}</p>
+                <p class="mr-2 w-6/12 truncate">{{ producto.nombre }}</p>
+                <p class="w-3/12 truncate text-xs">{{ producto.presentacion }}</p>
+                <p class="mr-2 w-3/12 overflow-hidden text-bgBlue text-xs">{{ precioFormat }}</p>
             </div>
 
             <div class="flex flex-row w-full items-center">
                 <p class="w-3/12 text-bgBlue text-xs">{{ cantidadFormat }}</p>
-                <p class="mr-2 w-4/12 overflow-hidden text-bgBlue text-xs">{{ precioFormat }}</p>
                 <p class="w-5/12 truncate text-green-600  text-sm">{{ subtotalFormat }}</p>
+                <p class="w-4/12 text-xs">{{ 'PesoTotal ' + producto.pesoTotal + 'KG' }}</p>
             </div>
         </div>
 

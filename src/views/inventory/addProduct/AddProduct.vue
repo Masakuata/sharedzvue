@@ -28,9 +28,15 @@
         </p>
       </div>
 
+      <div class="flex flex-row items-center text-right  justify-center py-2">
+        <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa el peso del producto en kilogramos</p>
+        <input v-model="pesoProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg px-2">
+      </div>
+      <p v-if="faltaPesoProducto" class="text-red-600 w-full">El peso del producto es un campo requerido</p>
+
       <div class="flex flex-row items-center text-right">
-        <p class="w-3/4 text-left text-lg font-semibold pr-3">Selecciona la cantidad en stock</p>
-        <input v-model="cantidadProducto" class="w-1/4 h-10 border border-gray-400 rounded-lg mt-2 px-2">
+        <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa la cantidad en stock</p>
+        <input v-model="cantidadProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg mt-2 px-2">
       </div>
       <p v-if="faltaCantidadProducto" class="text-red-600 w-full">La cantidad de stock es un campo requerido</p>
 
@@ -45,7 +51,7 @@
       </div>
 
 
-      
+
       <div class="w-full">
         <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
         <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
@@ -55,12 +61,13 @@
           requerido</p>
       </div>
 
-      <p class="text-lg font-semibold w-full text-center">Si el producto tendrá varios precios dependiendo el tipo de cliente, agrégalos</p>
+      <p class="text-lg font-semibold w-full text-center">Si el producto tendrá varios precios dependiendo el tipo de
+        cliente, agrégalos</p>
       <div class="w-full">
         <SearchTipoCliente :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
       </div>
 
-      
+
 
       <div class="mt-3 w-full">
         <ButtonX color="purple" @click="registrarProductoMetod">Registrar producto</ButtonX>
@@ -68,11 +75,11 @@
           <ButtonX color="red" @click="regresar">Regresar</ButtonX>
         </div>
       </div>
-      
 
-      
 
-      
+
+
+
     </template>
     <template v-else>
       <template v-if="loading">
@@ -125,7 +132,7 @@ import ErrorX from '@/components/utilities/ErrorX.vue';
 import { useRouter } from 'vue-router';
 import SearchTipoCliente from './selectTipoCliente/SearchTipoCliente.vue';
 
-const router = useRouter(); 
+const router = useRouter();
 
 const precios = ref([]);
 
@@ -144,6 +151,25 @@ const ID_PUBLICO = 1;
 
 
 const opcionRazaSeleccionada = ref('');
+
+
+//Variables y metodos necesarios para validasr el peso del producto
+const pesoProducto = ref('');
+const pesoProductoValid = ref(false);
+const faltaPesoProducto = ref(false);
+const validatePesoProdcuto = () => {
+  faltaPesoProducto.value = false;
+  pesoProducto.value = filtrarEntrada(pesoProducto.value);
+  pesoProductoValid.value = pesoProducto.value.length > 0;
+};
+
+watch(
+  () => pesoProducto.value,
+  () => {
+    validatePesoProdcuto();
+  },
+);
+
 
 // Variables y metodos necesarios para validar el nombre del producto
 const nombreProducto = ref('');
@@ -170,7 +196,7 @@ const validatePrecioProdcuto = () => {
   faltaPrecioProducto.value = false;
   precioProducto.value = filtrarEntrada(precioProducto.value);
   let precioInt = parseInt(precioProducto.value);
-  
+
   if (precioInt > 0) {
     precioProductoValid.value = true;
   } else {
@@ -227,9 +253,9 @@ const validateEmptyfields = () => {
   faltaCantidadProducto.value = cantidadProducto.value.length === 0;
   faltaNombreProducto.value = nombreProducto.value.length === 0;
   faltaPresentacionProducto.value = presentacionProducto.value.length === 0;
-
-
   faltaPrecioProducto.value = precioProducto.value.length === 0;
+  faltaPesoProducto.value = pesoProducto.value.length === 0;
+  
 };
 
 const validateForm = () => {
@@ -238,10 +264,10 @@ const validateForm = () => {
   if (
     nombreProductoValid.value &&
     presentacionProductoValid.value &&
+    precioProductoValid.value &&
     precioProductoValid.value
   ) {
 
-    console.log('El formulario es valido');
     return true;
   } else {
     return false;
@@ -267,7 +293,7 @@ const registrarProductoMetod = async () => {
 
       if (error.response.status === 409) {
         errorMessage.value = 'Ya existe un producto con ese nombre y descripción';
-      } 
+      }
     }
 
   }
@@ -293,7 +319,7 @@ const buildPayload = () => {
     };
     preciosMetod.push(precioAux);
   });
-  
+
   preciosMetod.push(precioPublico);
 
   let payload = {
@@ -304,6 +330,7 @@ const buildPayload = () => {
     precio: precioProducto.value,
     raza: '',
     precios: preciosMetod,
+    peso: pesoProducto.value,
   };
 
   return payload;
@@ -321,6 +348,7 @@ const aceptar = () => {
   precioProducto.value = '';
   opcionRazaSeleccionada.value = opciones[0].value;
   precios.value = [];
+  pesoProducto.value = '';
 };
 
 const aceptarError = () => {

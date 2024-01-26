@@ -72,11 +72,8 @@ const emitirSelectItem = () => {
 
 const seleccionarElemento = () => {
     let pos = 0;
-    console.log('El elemento seleccionado es' ,props.valueItemSelected);
     props.elementos.forEach((elemento, index) => {
         if (elemento.value == props.valueItemSelected) {
-            console.log(elemento.value);
-            console.log(props.valueItemSelected);
             pos = index;
         }
     });

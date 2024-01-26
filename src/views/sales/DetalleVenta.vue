@@ -263,7 +263,6 @@ const registrarAbono = async () => {
     }
 
     if (!errorAbono.value) {
-        console.log('Registrando abono');
         let payload = construirPayloadAbono();
 
 
@@ -359,9 +358,7 @@ const getDetailsVenta = async (ventaId) => {
 
         sale.value = data;
         cliente.value = data.cliente;
-        console.log('En detalles', cliente.value);
         cliente.value.direccion = sale.value.direccion
-        console.log( 'En detalles', cliente.value);
         productos.value = data.productos;
 
 
