@@ -6,7 +6,7 @@
         
 
         <input type="text" v-model="searchQuery"  placeholder="Buscar..." class="border rounded w-full h-10 px-2 mb-3" />
-        <ButtonX color="purple" isSlim="true" @click="goAddProduct" > Agregar producto</ButtonX>
+        <ButtonX color="purple" :isSlim="true" @click="goAddProduct" > Agregar producto</ButtonX>
 
         <div class="w-full h-[80vh] overflow-scroll mt-2">
             <template v-if="loadingItems">
@@ -21,7 +21,7 @@
                 </ProductinventoryItem>
                 <template button v-if="isThereMoreResults">
                     <div class="w-full mt-2">
-                        <ButtonX :isLoading="loadingaddItems" @click="addItems" color="green">Cargar más productos</ButtonX>
+                        <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más productos</ButtonX>
                     </div>
 
                 </template>
