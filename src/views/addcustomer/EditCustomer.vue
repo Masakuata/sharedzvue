@@ -88,7 +88,7 @@
 
 
             <div class="w-full mt-3">
-                <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
+                <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Actualizar Cliente</ButtonX>
             </div>
 
             <div class="w-full mt-3">
@@ -169,8 +169,19 @@ const actualizarDireccion = ( direccion) => {
         id: direccion.id,
         direccion: direccion.valor,
     }
-    direccionesActualizar.value.push(direccionAux); 
+    direccionesActualizar.value.push(direccionAux);
 }
+
+watch(
+    () => direcciones.value,
+    () => {
+        if (direcciones.value.length === 0) {
+            faltanDirecciones.value = true;
+        } else {
+            faltanDirecciones.value = false;
+        }
+    }
+)
 
 
 

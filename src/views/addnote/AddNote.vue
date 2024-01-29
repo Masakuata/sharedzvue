@@ -28,13 +28,17 @@
 
 
 
-        <p class="w-full text-xl font-semibold mb-3 text-center">Seleccione un cliente y registre su venta</p>
+        <p class="w-full text-lg font-semibold mb-3 text-center">Seleccione un cliente y registre su venta</p>
         <SearchClientX :reload="reloadSearch" @select-item="seleccionarCliente" @unselect-item="deseleccionarCliente">
         </SearchClientX>
 
-        <p class="w-full bg-gray-400 text-white text-center mt-3 font-semibold py-1 rounded-t-lg">PRODUCTOS A VENDER</p>
-        <div class="w-full h-[60vh] border border-gray-400 rounded-b-lg  p-3 overflow-scroll">
-
+        <p class="w-full bg-gray-400 text-white text-center mt-3 font-semibold py-1 rounded-lg">PRODUCTOS A VENDER</p>
+        <div class="w-full h-[60vh] overflow-scroll">
+            <template v-if="productosLista.length === 0">
+                <p class="w-full text-center mt-5 text-lg">
+                    No hay productos agregados
+                </p>
+            </template>
             <ProductoVenderRow v-for="product in productosLista" :key=product.id :producto="product"
                 @unselect-item="unselectProduct" :is-deletable="true" @showDetails="selectProduct"></ProductoVenderRow>
         </div>

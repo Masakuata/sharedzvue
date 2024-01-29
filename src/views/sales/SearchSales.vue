@@ -2,14 +2,15 @@
     <ModalAbonar :isVisible="isVisibleModalAbonar" :sale="saleSelected" @cerrarConfirmarAbono="closeSaleModal"
         @confirmarAbono="confirmarAbono"></ModalAbonar>
     <div class="w-full">
-        <template v-if="!isInDetails">
-            <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
-        </template>
-        <template v-else>
-            <label v-if="!isFromCliente" for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las ventas del producto son las siguientes:</label>
-            <label v-else for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las ventas del cliente son las siguientes:</label>
-        </template>
-        
+
+        <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
+
+
+        <label v-if="isFromCliente" for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las ventas del
+            cliente son las siguientes:</label>
+      
+
+
         <div class="py-3">
             <select v-model="opcionSeleccionada" id="miSelect"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -20,6 +21,7 @@
         </div>
 
 
+
         <template v-if="isFechaDia">
             <div class="w-full pb-3">
                 <AlertX :flag="isFechaFutura" message="No puedes seleccionar fechas futuras"></AlertX>
@@ -27,15 +29,15 @@
                 <template v-if="isVisibleDatePicker">
                     <!-- <VueDatePicker v-model="dateValue" :enableTimePicker="false"></VueDatePicker> -->
 
-                    <input type="date" name="startDate" 
-                        v-model="dateValue"
-                        class="form-control rounded-lg w-full" />
+                    <input type="date" name="startDate" v-model="dateValue" class="form-control rounded-lg w-full" />
 
                 </template>
 
             </div>
 
         </template>
+        <p class="w-full font-semibold">Cliente</p>
+        <input type="text" v-model="nombreCliente" placeholder="Nombre del cliente..." class="border rounded w-full h-10 px-2 mb-3" />
 
         <template v-if="firstLoading">
             <div class="w-full h-96 flex flex-col items-center justify-center">
@@ -44,7 +46,7 @@
             </div>
         </template>
 
-        <div class="w-full overflow-scroll" :class="[{'min-h-24 max-h-72' : isInDetails}, {'h[80vh]' : !isInDetails}] ">
+        <div class="w-full overflow-scroll" :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h[80vh]': !isFromCliente }]">
             <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
 
             <button v-if="isThereMoreResults" @click="addItems"
@@ -69,7 +71,7 @@ import SaleRow from '@/components/SaleRow.vue';
 import ModalAbonar from '@/views/sales/ModalAbonar.vue';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router';
-import { data } from 'autoprefixer';
+
 
 
 const props = defineProps({
@@ -81,23 +83,20 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    isFromCliente:{
+    isFromCliente: {
         type: Boolean,
         default: false,
-    },
-    isInDetails: {
-        type: Boolean,
-        default: false,
-    }  
+    }
 });
 
 
 
+const nombreCliente = ref('');
 
 const opciones = [
     { value: 'fecha-dia', texto: 'Fecha - Dia' },
     { value: 'no-pagados', texto: 'No pagados primero' },
-    { value: 'todas', texto: 'Todas' }, 
+    { value: 'todas', texto: 'Todas' },
 ];
 
 const router = useRouter();
@@ -117,6 +116,8 @@ const firstLoading = ref(false);
 const opcionSeleccionada = ref('');
 
 const isVisibleDatePicker = ref(true);
+
+
 
 
 
@@ -156,34 +157,45 @@ watch(
     }
 )
 
+watch(
+    () => nombreCliente.value,
+    () => {
+        items.value = [];
+        page.value = 0;
+        construirQuery();
+    }
+)
+
 const agregarQueryProps = () => {
 
-    if(props.idCliente !== -1){
+    if (props.idCliente !== -1) {
         query.value.id_cliente = props.idCliente;
     }
-    if(props.idProducto !== 0){
+    if (props.idProducto !== 0) {
         query.value.producto = props.idProducto;
     }
 
 }
 
 const construirQuery = () => {
+    query.value = {};
+    query.value.cliente = nombreCliente.value;
+
+    console.log('La query es:' + query.value) 
+
     if (opcionSeleccionada.value === 'todas') {
-        query.value = {};
         agregarQueryProps();
         getItems();
         return
     }
 
     if (opcionSeleccionada.value === '') {
-        query.value = {};
         query.value.pagado = 0;
         agregarQueryProps();
         getItems();
         return
     }
     if (opcionSeleccionada.value === 'no-pagados') {
-        query.value = {};
         query.value.pagado = 0;
         agregarQueryProps();
         getItems();
@@ -200,11 +212,10 @@ const construirQuery = () => {
         let anio = dateValue.value.substring(0, 4);
         let mes = dateValue.value.substring(5, 7);
         let dia = dateValue.value.substring(8, 10);
-        query.value = {
-            dia: dia,
-            mes: mes,
-            anio: anio,
-        };
+        query.value.dia = dia;
+        query.value.mes = mes;
+        query.value.anio = anio;
+
         agregarQueryProps();
         getItems();
         return
@@ -231,7 +242,7 @@ const getItems = async () => {
 }
 
 const addItems = async () => {
-    
+
 
     try {
         page.value = page.value + 1;

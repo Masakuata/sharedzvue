@@ -87,12 +87,13 @@ export async function postCliente(cliente) {
     }
 }
 
-export async function getClientesBusqueda(nombre) {
+export async function getClientesBusqueda(query) {
     const complemento = '/cliente'
     let urlnew = getUrl() + complemento;
 
+
     try {
-        let respuesta = await axiosInstance.get(urlnew, {params: {nombre: nombre}});
+        let respuesta  = await axiosInstance.get(urlnew, {params: query});
         return respuesta;
     } catch (error) {
         throw error;
@@ -190,6 +191,8 @@ export async function postVenta(venta) {
 export async function getVentas(paramsMethod) {
     const complemento = '/venta/buscar';
     let urlnew = getUrl() + complemento;
+
+    console.log('paramsMethod', paramsMethod)
 
     try {
         let respuesta = await axiosInstance.get(urlnew, {params: paramsMethod});

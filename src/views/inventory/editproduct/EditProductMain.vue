@@ -27,6 +27,10 @@
                         requerido
                     </p>
                 </div>
+                <div class="flex flex-row items-center text-right  justify-center py-2">
+                    <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa el peso del producto en kilogramos</p>
+                    <input v-model="pesoProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg px-2">
+                </div>
 
                 <div class="flex flex-row items-center text-right">
                     <p class="w-3/4 text-left text-lg font-semibold pr-3">Selecciona la cantidad en stock</p>
@@ -58,7 +62,7 @@
                 <div class="w-full">
                     <SearchTipoCliente :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
                 </div>
-                
+
 
                 <div class="mt-3 w-full">
                     <ButtonX color="purple" @click="actualizarProductoMetod">Actualizar producto</ButtonX>
@@ -116,7 +120,22 @@ import { getProductoId } from '@/api/api.js'
 import { useRoute, useRouter } from 'vue-router';
 import SearchTipoCliente from '../addProduct/selectTipoCliente/SearchTipoCliente.vue';
 
+//Variables y metodos necesarios para validasr el peso del producto
+const pesoProducto = ref('');
+const pesoProductoValid = ref(false);
+const faltaPesoProducto = ref(false);
+const validatePesoProdcuto = () => {
+  faltaPesoProducto.value = false;
+  pesoProducto.value = filtrarEntrada(pesoProducto.value);
+  pesoProductoValid.value = pesoProducto.value.length > 0;
+};
 
+watch(
+  () => pesoProducto.value,
+  () => {
+    validatePesoProdcuto();
+  },
+);
 
 
 // Variables y metodos necesarios para tipoMascota
@@ -141,7 +160,7 @@ const ID_MAYORISTA = 3;
 
 const producto = ref({});
 
-const precios = ref([]);    
+const precios = ref([]);
 
 const opcionRazaSeleccionada = ref('');
 
@@ -241,6 +260,9 @@ const llenarCampos = () => {
     precioProducto.value = precio.toString();
 
     precios.value = producto.value.precios;
+
+    pesoProducto.value = producto.value.peso.toString();
+
 };
 
 
@@ -266,12 +288,8 @@ const validateEmptyfields = () => {
     faltaCantidadProducto.value = cantidadProducto.value.length === 0;
     faltaNombreProducto.value = nombreProducto.value.length === 0;
     faltaPresentacionProducto.value = presentacionProducto.value.length === 0;
-
-
     faltaPrecioProducto.value = precioProducto.value.length === 0;
-
-
-
+    faltaPesoProducto.value = pesoProducto.value.length === 0;
 };
 
 const validateForm = () => {
@@ -280,7 +298,8 @@ const validateForm = () => {
     if (
         nombreProductoValid.value &&
         presentacionProductoValid.value &&
-        precioProductoValid.value
+        precioProductoValid.value &&
+        pesoProductoValid.value
     ) {
 
 
@@ -339,6 +358,7 @@ const buildPayload = () => {
         precio: precioProducto.value,
         raza: '',
         precios: preciosMetod,
+        peso: pesoProducto.value,
     };
 
     return payload;

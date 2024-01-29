@@ -2,9 +2,10 @@
     <div class="relative w-full">
         <template v-if="!isSelected">
             <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>
-            <input type="text" v-model="searchQuery" placeholder="Buscar..." class="border rounded w-full h-10 px-2" />
+            <input type="text" ref="refInputSearch" v-model="searchQuery" placeholder="Buscar..."
+                class="border rounded w-full h-10 px-2" />
             <ul v-if="searchQuery"
-                class=" absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[50vh] overflow-scroll w-full">
+                class=" absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[40vh] overflow-scroll w-full">
                 <li v-for="item in items" :key="item.id" class="flex flex-row border-b p-2" @click="selectItem(item)">
 
                     <div class="w-1/2 flex flex-row pr-2">
@@ -14,7 +15,8 @@
                     <div class="flex flex-col w-1/2">
                         <p class="w-full bg-b text-sm">{{ item.presentacion }}</p>
                         <p class="text text-sm"
-                            :class="{ 'text-green-600': item.cantidad > 0, 'text-red-700': item.cantidad == 0 }">{{ 'Qty: ' +
+                            :class="{ 'text-green-600': item.cantidad > 0, 'text-red-700': item.cantidad == 0 }">{{ 'Qty: '
+                                +
                                 item.cantidad }}</p>
                     </div>
 
@@ -42,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineEmits, defineProps } from 'vue';
+import { ref, watch, defineEmits, defineProps, onMounted, nextTick } from 'vue';
 import { getProductosBusqueda } from '@/api/api.js';
 import AlertX from './AlertX.vue';
 
@@ -57,6 +59,7 @@ const pros = defineProps({
     }
 });
 
+const refInputSearch = ref(null);
 
 const searchQuery = ref('');
 const selectedItem = ref({});
@@ -118,6 +121,16 @@ const getProductos = async () => {
         console.log(error);
     }
 };
+
+onMounted(() => {
+    nextTick(() => {
+        if (refInputSearch.value) {
+            refInputSearch.value.focus();
+        }else{
+            console.log('no se pudo hacer focus en el search');
+        }
+    });
+});
 
 
 

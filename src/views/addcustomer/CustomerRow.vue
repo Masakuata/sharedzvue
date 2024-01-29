@@ -1,5 +1,6 @@
 <template>
-    <div class="flex flex-row w-full bg-bgBlue mt-3 rounded-lg overflow-hidden" :class="[{'h-40' : tieneNombreGrande}, {'h-32' : !tieneNombreGrande}]" @click="goCustomerDetail">
+    <div class="flex flex-row w-full bg-bgBlue mt-3 rounded-lg overflow-hidden"
+        :class="[{ 'h-40': tieneNombreGrande }, { 'h-32': !tieneNombreGrande }]" @click="goCustomerDetail">
         <div class="w-1/3 bg-bgGray h-full">
             <div class="p-3 h-full w-full">
                 <svg width="100" height="100" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,18 +27,32 @@
 
             <div class="flex flex-row w-full px-3 pt-3">
                 <div class="flex flex-col w-full text-sm text-white">
-                    <div  v-if="tieneDirecciones" class="flex flex-row items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-map-pinned w-2/12 text-white">
-                            <path d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9a6 6 0 0 1 12 0" />
-                            <circle cx="12" cy="8" r="2" />
-                            <path
-                                d="M8.835 14H5a1 1 0 0 0-.9.7l-2 6c-.1.1-.1.2-.1.3 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.1 0-.2-.1-.3l-2-6a1 1 0 0 0-.9-.7h-3.835" />
-                        </svg>
-                        <p class="text-white text-sm truncate">{{ textoDirecciones }}</p>
+                    <div v-if="tieneDirecciones" class="flex flex-row items-center">
+                        <div class="w-2/12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-map-pinned text-white">
+                                <path d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9a6 6 0 0 1 12 0" />
+                                <circle cx="12" cy="8" r="2" />
+                                <path
+                                    d="M8.835 14H5a1 1 0 0 0-.9.7l-2 6c-.1.1-.1.2-.1.3 0 .6.4 1 1 1h18c.6 0 1-.4 1-1 0-.1 0-.2-.1-.3l-2-6a1 1 0 0 0-.9-.7h-3.835" />
+                            </svg>
+                        </div>
+
+                        <p class="text-white text-sm w-10/12 truncate">{{ textoDirecciones }}</p>
                     </div>
-                   <p v-if="cliente.telefono"  class="ml-2">{{ cliente.telefono }}</p>
+                    <div v-if="cliente.telefono" class="flex flex-row">
+                        <div class="w-2/12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-phone">
+                                <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                            </svg>
+                        </div>
+                        <p class="w-10/12">{{ cliente.telefono }}</p>
+                    </div>
+
                 </div>
 
             </div>

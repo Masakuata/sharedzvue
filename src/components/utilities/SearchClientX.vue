@@ -154,7 +154,10 @@ const getClientes = async () => {
     try {
         items.value = [];
         loading.value = true;
-        const clientes = await getClientesBusqueda(searchQuery.value);
+        let query = {
+            nombre: searchQuery.value,
+        }
+        const clientes = await getClientesBusqueda(query);
         items.value = clientes.data;
         if (items.value.length == 0) {
             noResults.value = true;

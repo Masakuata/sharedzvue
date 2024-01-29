@@ -3,9 +3,10 @@
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
 
         <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>
-        <input type="text" v-model="searchQuery" placeholder="Buscar..." class="border rounded w-full h-10 px-2" />
-        <button class="w-full h-10 mt-2 bg-bgPurple text-white font-semibold rounded-xl" @click="goAddProduct">Agregar
-            producto</button>
+        
+
+        <input type="text" v-model="searchQuery"  placeholder="Buscar..." class="border rounded w-full h-10 px-2 mb-3" />
+        <ButtonX color="purple" isSlim="true" @click="goAddProduct" > Agregar producto</ButtonX>
 
         <div class="w-full h-[80vh] overflow-scroll mt-2">
             <template v-if="loadingItems">

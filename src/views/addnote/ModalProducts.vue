@@ -1,12 +1,12 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
-        <div class="bg-white rounded-lg mx-4 h-[80vh] w-full z-50">
+        <div class="bg-white rounded-lg mx-4 max-h-[80vh]  w-full z-50">
             <p class="bg-bgBlue text-center text-white text-xl h-fit p-2 pt-5 rounded-t-lg">Selecciona un producto y
                 agrégalo a
                 la lista de compra</p>
 
 
-            <div class="p-4 h-[80vh]">
+            <div class="p-4 overflow-scroll h-[60vh]">
                 <SearchProduct @select-product="selectProduct" :tipo-cliente="props.tipoCliente"></SearchProduct>
                 <template v-if="isProductSelected">
                     <div class="mt-3">
@@ -39,7 +39,8 @@
 
                         <div v-if="!isProductInList" class="flex flex-row items-center text-right">
                             <p class="w-full text-left pr-3">Selecciona la cantidad</p>
-                            <input v-model="cantidad" class="w-20 h-10 border border-gray-400 rounded-lg mt-2 px-2">
+                            <input ref="refInputCantidad" v-model="cantidad"
+                                class="w-20 h-10 border border-gray-400 rounded-lg mt-2 px-2">
                         </div>
 
                         <div v-if="isProductInList" class="w-full">
@@ -99,11 +100,13 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch, onMounted, onUnmounted } from 'vue';
+import { defineProps, defineEmits, ref, watch, onMounted, nextTick } from 'vue';
 import SearchProduct from '@/components/utilities/SearchProduct.vue';
 import ProductDetails from '@/components/utilities/ProductDetails.vue';
 import { toast } from 'vue3-toastify';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+
+const refInputCantidad = ref(null);
 
 const errorCantidadCero = ref(false);
 const errorCantidadMayor = ref(false);
@@ -117,7 +120,7 @@ const producto = ref(null);
 
 
 const isProductSelected = ref(false);
-const cantidad = ref('0');
+const cantidad = ref('');
 let cantidadDisponible = 0;
 
 const isProductInList = ref(false);
@@ -327,9 +330,22 @@ const validarProductoEnLista = () => {
             isProductInList.value = false;
         }
     }
+    selecceionarInputCantidad();
+}
+
+const selecceionarInputCantidad = () => {
+    if (refInputCantidad.value) {
+        refInputCantidad.value.focus();
+    }else{
+        console.log('no hay ref');
+    }
 }
 
 
+
+
+onMounted(() => {
+});
 
 
 

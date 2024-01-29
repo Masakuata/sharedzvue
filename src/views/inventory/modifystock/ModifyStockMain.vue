@@ -106,9 +106,6 @@
 
             </div>
 
-            <div class="w-full">
-                <SearchSales :id-producto="producto.id" :is-in-details="true"></SearchSales>
-            </div>
 
             <div class="w-full flex flex-col justify-end ">
                 <ButtonX color="red" @click="regresar">Regresar</ButtonX>
