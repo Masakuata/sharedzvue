@@ -1,108 +1,116 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">ACTUALIZAR PRODUCTO</h1>
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
-
-        <template v-if="!requestSent">
-            <template v-if="!loading">
-                <div class="w-full">
-                    <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
-                    <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
-                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                    <template v-if="nombreProducto.length > 0">
-                        <p class="text-green-600" v-if="nombreProductoValid">Nombre Válido</p>
-                        <p v-else class="text-red-600">El nombre del producto no es válido</p>
-                    </template>
-                    <p v-else-if="faltaNombreProducto" class="text-red-600">El nombre del producto es un campo requerido</p>
-                </div>
-                <div class="w-full">
-                    <label for="presentacionProducto" class="block text-lg font-medium ">Presentación</label>
-                    <input type="text" id="presentacionProducto" v-model="presentacionProducto"
-                        @input="validatePresentacionProdcuto"
-                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                    <template v-if="presentacionProducto.length > 0">
-                        <p class="text-green-600" v-if="presentacionProductoValid">Presentación válida</p>
-                        <p v-else class="text-red-600">La presentación del producto no es válida</p>
-                    </template>
-                    <p v-else-if="faltaPresentacionProducto" class="text-red-600">La presentacion del producto es un campo
-                        requerido
-                    </p>
-                </div>
-                <div class="flex flex-row items-center text-right  justify-center py-2">
-                    <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa el peso del producto en kilogramos</p>
-                    <input v-model="pesoProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg px-2">
-                </div>
-
-                <div class="flex flex-row items-center text-right">
-                    <p class="w-3/4 text-left text-lg font-semibold pr-3">Selecciona la cantidad en stock</p>
-                    <input v-model="cantidadProducto" class="w-1/4 h-10 border border-gray-400 rounded-lg mt-2 px-2">
-                </div>
-                <p v-if="faltaCantidadProducto" class="text-red-600 w-full">La cantidad de stock es un campo requerido</p>
-
-                <label for="miSelect" class="block mb-2 text-lg font-semibold w-full text-left">Tipo de mascota</label>
-                <div class="w-full h-12">
-                    <select v-model="opcionRazaSeleccionada" id="miSelect"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option disabled value="">Selecciona una opción</option>
-                        <option class="w-full" v-for="opcion in opciones" :key="opcion.value" :value="opcion.value">{{
-                            opcion.texto
-                        }}</option>
-                    </select>
-                </div>
-
-
-
-                <div class="w-full">
-                    <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
-                    <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
-                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-
-                    <p v-if="faltaPrecioProducto" class="text-red-600">El precio del producto es un campo
-                        requerido</p>
-                </div>
-                <div class="w-full">
-                    <SearchTipoCliente :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
-                </div>
-
-
-                <div class="mt-3 w-full">
-                    <ButtonX color="purple" @click="actualizarProductoMetod">Actualizar producto</ButtonX>
-                    <div class="mt-3 w-full">
-                        <ButtonX color="red" @click="regresar">Cancelar</ButtonX>
-                    </div>
-                </div>
-            </template>
-            <template v-else>
-                <div class="w-full h-96 flex flex-col items-center justify-center">
-                    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
-                    <p class="text-xl font-bold text-gray-900">Cargando...</p>
-                </div>
-            </template>
-
-
+        <template v-if="sessionExpired">
+            <ModalSesionExpired></ModalSesionExpired>
         </template>
-        <template v-else>
-            <template v-if="loading">
-                <div class="flex flex-row items-center h-[80vh]">
-                    <LoadingX message="Registrando producto..."></LoadingX>
-                </div>
 
-            </template>
-            <template v-else>
-                <template v-if="hasErrror">
-                    <div class="flex flex-row items-center h-[80vh]">
-                        <ErrorX :message="errorMessage" button-message="Aceptar" @aceptar="aceptarError"> </ErrorX>
+
+        <template v-if="!internalError">
+            <template v-if="!requestSent">
+                <template v-if="!loading">
+                    <div class="w-full">
+                        <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
+                        <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
+                            class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+                        <template v-if="nombreProducto.length > 0">
+                            <p class="text-green-600" v-if="nombreProductoValid">Nombre Válido</p>
+                            <p v-else class="text-red-600">El nombre del producto no es válido</p>
+                        </template>
+                        <p v-else-if="faltaNombreProducto" class="text-red-600">El nombre del producto es un campo requerido
+                        </p>
+                    </div>
+                    <div class="w-full">
+                        <label for="presentacionProducto" class="block text-lg font-medium ">Presentación</label>
+                        <input type="text" id="presentacionProducto" v-model="presentacionProducto"
+                            @input="validatePresentacionProdcuto"
+                            class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+                        <template v-if="presentacionProducto.length > 0">
+                            <p class="text-green-600" v-if="presentacionProductoValid">Presentación válida</p>
+                            <p v-else class="text-red-600">La presentación del producto no es válida</p>
+                        </template>
+                        <p v-else-if="faltaPresentacionProducto" class="text-red-600">La presentacion del producto es un
+                            campo
+                            requerido
+                        </p>
+                    </div>
+                    <div class="flex flex-row items-center text-right  justify-center py-2">
+                        <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa el peso del producto en kilogramos</p>
+                        <input v-model="pesoProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg px-2">
+                    </div>
+
+                    <div class="flex flex-row items-center text-right">
+                        <p class="w-3/4 text-left text-lg font-semibold pr-3">Selecciona la cantidad en stock</p>
+                        <input v-model="cantidadProducto" class="w-1/4 h-10 border border-gray-400 rounded-lg mt-2 px-2">
+                    </div>
+                    <p v-if="faltaCantidadProducto" class="text-red-600 w-full">La cantidad de stock es un campo requerido
+                    </p>
+
+                    <label for="miSelect" class="block mb-2 text-lg font-semibold w-full text-left">Tipo de mascota</label>
+                    <div class="w-full h-12">
+                        <select v-model="opcionRazaSeleccionada" id="miSelect"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option disabled value="">Selecciona una opción</option>
+                            <option class="w-full" v-for="opcion in opciones" :key="opcion.value" :value="opcion.value">{{
+                                opcion.texto
+                            }}</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="w-full">
+                        <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
+                        <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
+                            class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+
+                        <p v-if="faltaPrecioProducto" class="text-red-600">El precio del producto es un campo
+                            requerido</p>
+                    </div>
+                    <div class="w-full">
+                        <SearchTipoCliente v-if="!sessionExpired" :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
+                    </div>
+
+
+                    <div class="mt-3 w-full">
+                        <ButtonX color="purple" @click="actualizarProductoMetod">Actualizar producto</ButtonX>
+                        <div class="mt-3 w-full">
+                            <ButtonX color="red" @click="regresar">Cancelar</ButtonX>
+                        </div>
                     </div>
                 </template>
                 <template v-else>
-                    <div class="flex flex-row items-center h-[80vh] w-full">
-                        <SuccesX message="Producto registrado exitósamenta" button-message="Aceptar" @aceptar="aceptar">
-                        </SuccesX>
+                    <div class="w-full h-96 flex flex-col items-center justify-center">
+                        <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
+                        <p class="text-xl font-bold text-gray-900">Cargando...</p>
                     </div>
                 </template>
 
-            </template>
 
+            </template>
+            <template v-else>
+                <template v-if="loading">
+                    <div class="flex flex-row items-center h-[80vh]">
+                        <LoadingX message="Registrando producto..."></LoadingX>
+                    </div>
+
+                </template>
+                <template v-else>
+                    <template v-if="!hasErrror">
+                        <div class="flex flex-row items-center h-[80vh] w-full">
+                            <SuccesX message="Producto registrado exitósamenta" button-message="Aceptar" @aceptar="aceptar">
+                            </SuccesX>
+                        </div>
+                    </template>
+
+                </template>
+
+            </template>
         </template>
+        <template v-else>
+            <ErrorX @aceptar="aceptarErrorServe"></ErrorX>
+        </template>
+
 
     </div>
 </template>
@@ -119,22 +127,27 @@ import ErrorX from '@/components/utilities/ErrorX.vue';
 import { getProductoId } from '@/api/api.js'
 import { useRoute, useRouter } from 'vue-router';
 import SearchTipoCliente from '../addProduct/selectTipoCliente/SearchTipoCliente.vue';
+import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
 
 //Variables y metodos necesarios para validasr el peso del producto
 const pesoProducto = ref('');
 const pesoProductoValid = ref(false);
 const faltaPesoProducto = ref(false);
+
+const internalError = ref(false);
+const sessionExpired = ref(false);
+
 const validatePesoProdcuto = () => {
-  faltaPesoProducto.value = false;
-  pesoProducto.value = filtrarEntrada(pesoProducto.value);
-  pesoProductoValid.value = pesoProducto.value.length > 0;
+    faltaPesoProducto.value = false;
+    pesoProducto.value = filtrarEntrada(pesoProducto.value);
+    pesoProductoValid.value = pesoProducto.value.length > 0;
 };
 
 watch(
-  () => pesoProducto.value,
-  () => {
-    validatePesoProdcuto();
-  },
+    () => pesoProducto.value,
+    () => {
+        validatePesoProdcuto();
+    },
 );
 
 
@@ -265,6 +278,13 @@ const llenarCampos = () => {
 
 };
 
+const aceptarErrorServe = () => {
+    loading.value = false;
+    requestSent.value = false;
+    hasErrror.value = false;
+    errorMessage.value = '';
+    getProducto();
+};
 
 const getProducto = async () => {
     const id = route.params.id;
@@ -274,12 +294,25 @@ const getProducto = async () => {
         const response = await getProductoId(id);
         producto.value = response.data;
         llenarCampos();
-
+        internalError.value = false;
+        hasErrror.value = false;
         loading.value = false;
 
     } catch (error) {
         loading.value = false;
         console.log(error);
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 
 };
@@ -328,6 +361,18 @@ const actualizarProductoMetod = async () => {
 
             if (error.response.status === 409) {
                 errorMessage.value = 'Ya existe un producto con ese nombre y descripción';
+            }
+            if (!error.response) {
+                internalError.value = true;
+                return;
+            }
+            if (error.response.status == 500) {
+                internalError.value = true;
+                return;
+            }
+            if (error.response.status == 406) {
+                sessionExpired.value = true;
+                return;
             }
         }
 
