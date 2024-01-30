@@ -8,9 +8,6 @@
                 >
             </ModalConfirmacionVenta>
         </template>
-
-
-
         <ModalCancelVenta :is-visible="modalCancelVentaVisible" @cerrarModalCancelarVenta="closeModalCancelVenta"
             @cancelarVenta="cancelVenta"></ModalCancelVenta>
 
@@ -26,59 +23,64 @@
                 :is-visible="modalProductDetailVisible" :producto="productSelected"></ModalProducDetail>
         </template>
 
+        <template v-if="!internalError">
+            <p class="w-full text-lg font-semibold mb-3 text-center">Seleccione un cliente y registre su venta</p>
+            <SearchClientX @error="emitSearchError" :reload="reloadSearch" @select-item="seleccionarCliente"
+                @unselect-item="deseleccionarCliente">
+            </SearchClientX>
 
-
-        <p class="w-full text-lg font-semibold mb-3 text-center">Seleccione un cliente y registre su venta</p>
-        <SearchClientX :reload="reloadSearch" @select-item="seleccionarCliente" @unselect-item="deseleccionarCliente">
-        </SearchClientX>
-
-        <p class="w-full bg-gray-400 text-white text-center mt-3 font-semibold py-1 rounded-lg">PRODUCTOS A VENDER</p>
-        <div class="w-full h-[60vh] overflow-scroll">
-            <template v-if="productosLista.length === 0">
-                <p class="w-full text-center mt-5 text-lg">
-                    No hay productos agregados
-                </p>
-            </template>
-            <ProductoVenderRow v-for="product in productosLista" :key=product.id :producto="product"
-                @unselect-item="unselectProduct" :is-deletable="true" @showDetails="selectProduct"></ProductoVenderRow>
-        </div>
-        <div class="w-full mt-2">
-            <ButtonX color="purple" :is-slim="true" icon="add" @click="showModalProducts">Agregar producto</ButtonX>
-        </div>
-
-        <div class=" flex flex-row w-full items-center mt-3 pt-3">
-            <div class=" flex flex-col w-1/2">
-                <p class="w-full  text-center  text-xl">Costo Total</p>
-                <p class="w-full text-center  text-lg font-bold">{{ totalString }}</p>
+            <p class="w-full bg-gray-400 text-white text-center mt-3 font-semibold py-1 rounded-lg">PRODUCTOS A VENDER</p>
+            <div class="w-full h-[60vh] overflow-scroll">
+                <template v-if="productosLista.length === 0">
+                    <p class="w-full text-center mt-5 text-lg">
+                        No hay productos agregados
+                    </p>
+                </template>
+                <ProductoVenderRow v-for="product in productosLista" :key=product.id :producto="product"
+                    @unselect-item="unselectProduct" :is-deletable="true" @showDetails="selectProduct"></ProductoVenderRow>
+            </div>
+            <div class="w-full mt-2">
+                <ButtonX color="purple" :is-slim="true" icon="add" @click="showModalProducts">Agregar producto</ButtonX>
             </div>
 
-            <div class=" flex flex-col w-1/2">
-                <p class="w-full  text-center  text-xl">Peso Total</p>
-                <p class="w-full text-center  text-lg font-bold">{{ pesoTotalString }}</p>
+            <div class=" flex flex-row w-full items-center mt-3 pt-3">
+                <div class=" flex flex-col w-1/2">
+                    <p class="w-full  text-center  text-xl">Costo Total</p>
+                    <p class="w-full text-center  text-lg font-bold">{{ totalString }}</p>
+                </div>
+
+                <div class=" flex flex-col w-1/2">
+                    <p class="w-full  text-center  text-xl">Peso Total</p>
+                    <p class="w-full text-center  text-lg font-bold">{{ pesoTotalString }}</p>
+                </div>
+
+            </div>
+            <div v-if="errorCantidadMayor" class="flex flex-row py-1 my-2 h-fit border-2 border-orange-500 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-alert-triangle w-10 h-auto mx-2">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                </svg>
+                <p>La cantidad no puede ser mayor que la de inventario</p>
             </div>
 
-        </div>
-        <div v-if="errorCantidadMayor" class="flex flex-row py-1 my-2 h-fit border-2 border-orange-500 rounded-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-alert-triangle w-10 h-auto mx-2">
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                <path d="M12 9v4" />
-                <path d="M12 17h.01" />
-            </svg>
-            <p>La cantidad no puede ser mayor que la de inventario</p>
-        </div>
+            <div class="flex flex-row w-full mt-3">
+                <div class="w-1/2 pr-1">
+                    <ButtonX color="red" @click="showModalCancelVenta">Cancelar</ButtonX>
+                </div>
+                <div class="w-1/2 pl-1">
+                    <button class="w-full rounded-lg h-12 text-white font-semibold bg-bgBlue"
+                        @click="registrarCompra">Crear</button>
+                </div>
+            </div>
+        </template>
+        <template v-else>
+            <ErrorX @aceptar="limpiarCampos"></ErrorX>
+        </template>
 
 
-        <div class="flex flex-row w-full mt-3">
-            <div class="w-1/2 pr-1">
-                <ButtonX color="red" @click="showModalCancelVenta">Cancelar</ButtonX>
-            </div>
-            <div class="w-1/2 pl-1">
-                <button class="w-full rounded-lg h-12 text-white font-semibold bg-bgBlue"
-                    @click="registrarCompra">Crear</button>
-            </div>
-        </div>
     </div>
 </template>
     
@@ -94,6 +96,7 @@ import { getProductosBusqueda } from '@/api/api.js';
 import ModalCancelVenta from './ModalCancelVenta.vue';
 import ModalConfirmacionVenta from './ModalConfirmacionVenta.vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+import ErrorX from '@/components/utilities/ErrorX.vue';
 
 
 //Variables del ModalProducDetail
@@ -125,6 +128,13 @@ const pesoTotalFloat = ref(0);
 const pesoTotalString = ref('0.00 kg');
 
 const tipoCliente = ref(0);
+
+const internalError = ref(false);
+
+
+const emitSearchError = () => {
+    internalError.value = true;
+};
 
 
 //Metodos del ModalCancelVenta
@@ -316,6 +326,7 @@ const limpiarCampos = () => {
     cliente.value = null;
     isClienteSelected.value = false;
     errorCantidadMayor.value = false;
+    internalError.value = false;
 };
 
 const seleccionarCliente = (clienteEmit) => {

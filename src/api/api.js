@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { limpiarSesion } from '@/utils/SessionManager';
 
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'

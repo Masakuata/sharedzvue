@@ -82,7 +82,9 @@ const noResults = ref(false);
 const loading = ref(false);
 
 
-const emit = defineEmits(['select-item', 'unselect-item']);
+
+
+const emit = defineEmits(['select-item', 'unselect-item', 'error']);
 
 
 
@@ -169,6 +171,16 @@ const getClientes = async () => {
     } catch (error) {
         loading.value = false;
         console.log(error);
+        if (!error.response) {
+            emit('error');
+            return;
+        }
+
+        if (error.response.status == 500) {
+            emit('error');
+            return;
+        }
+
     }
 
 

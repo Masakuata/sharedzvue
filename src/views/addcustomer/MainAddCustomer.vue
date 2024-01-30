@@ -1,46 +1,47 @@
 <template>
+    <template v-if="sessionExpired">
+        <ModalSesionExpiredVue></ModalSesionExpiredVue>
+    </template>
+    
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">CLIENTES</h1>
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
-
-        <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>
-        <input type="text" v-model="searchQuery" placeholder="Buscar..." class="border rounded w-full h-10 px-2" />
-        <div class="w-full mt-3">
-            <ButtonX color="purple" :isSlim="true" @click="agregarCliente">Agregar cliente</ButtonX>
-        </div>
-
-        <template v-if="noClientes">
-            <div class="w-full h-24 flex flex-col items-center justify-center">
-                <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+        <template v-if="!internalError">
+            <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>
+            <input type="text" v-model="searchQuery" placeholder="Buscar..." class="border rounded w-full h-10 px-2" />
+            <div class="w-full mt-3">
+                <ButtonX color="purple" :isSlim="true" @click="agregarCliente">Agregar cliente</ButtonX>
             </div>
-        </template>
-        <template v-else>
-            <template v-if="loading">
-                <div class="w-full h-96 flex flex-col items-center justify-center">
-                    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
-                    <p class="text-xl font-bold text-gray-900">Cargando...</p>
+            <template v-if="noClientes">
+                <div class="w-full h-24 flex flex-col items-center justify-center">
+                    <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
                 </div>
             </template>
-            <div class="w-full h-[80vh] overflow-scroll mt-2">
-                <CustomerRow v-for="cliente in clientes" :key="cliente.id" :cliente="cliente"></CustomerRow>
-                <template v-if="isThereMoreResults">
-                    <div class="w-full mt-2">
-                        <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más
-                            clientes</ButtonX>
+            <template v-else>
+                <template v-if="loading">
+                    <div class="w-full h-96 flex flex-col items-center justify-center">
+                        <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
+                        <p class="text-xl font-bold text-gray-900">Cargando...</p>
                     </div>
                 </template>
-                <template v-else>
-                    <div class="w-full h-24 flex flex-col items-center justify-center">
-                        <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
-                    </div>
-                </template>
-            </div>
+                <div class="w-full h-[80vh] overflow-scroll mt-2">
+                    <CustomerRow v-for="cliente in clientes" :key="cliente.id" :cliente="cliente"></CustomerRow>
+                    <template v-if="isThereMoreResults">
+                        <div class="w-full mt-2">
+                            <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más
+                                clientes</ButtonX>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="w-full h-24 flex flex-col items-center justify-center">
+                            <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+                        </div>
+                    </template>
+                </div>
+            </template>
         </template>
-
-
-
-
-
-
+        <template v-else>
+            <ErrorX @aceptar="getClientes"></ErrorX>
+        </template>
     </div>
 </template>
     
@@ -52,7 +53,11 @@ import { getClientesBusqueda } from '@/api/api.js';
 import CustomerRow from './CustomerRow.vue';
 import { useRouter } from 'vue-router';
 import AlertX from '@/components/utilities/AlertX.vue';
-import { trueGray } from 'tailwindcss/colors';
+import ErrorX from '@/components/utilities/ErrorX.vue';
+import ModalSesionExpiredVue from '@/components/utilities/ModalSesionExpired.vue';
+
+//
+const internalError = ref(false);
 
 //variables del buscador
 const searchQuery = ref('');
@@ -79,6 +84,9 @@ const noClientes = ref(false);
 const clientes = ref([]);
 const loading = ref(false);
 
+const sessionExpired = ref(false);
+
+
 
 const getClientes = async () => {
 
@@ -93,13 +101,14 @@ const getClientes = async () => {
         }
         const response = await getClientesBusqueda(query);
         console.log('Se asigno la nueva respuesta', response.data);
+        internalError.value = false;
         clientes.value = response.data;
         if (clientes.value.length == 0) {
             noClientes.value = true;
         } else if (clientes.value.length == 10) {
             isThereMoreResults.value = true;
             noClientes.value = false;
-        }else{
+        } else {
             noClientes.value = false;
         }
         loading.value = false;
@@ -108,6 +117,21 @@ const getClientes = async () => {
         loading.value = false;
         console.log(error);
         noClientes.value = true;
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
+
     }
 
 };
@@ -130,10 +154,25 @@ const addItems = async () => {
         }
         clientes.value = [...clientes.value, ...data];
         loadingaddItems.value = false;
+        internalError.value = false;
 
     } catch (error) {
         loadingaddItems.value = false;
         console.log(error);
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 }
 

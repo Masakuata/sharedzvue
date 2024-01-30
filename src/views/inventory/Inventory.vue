@@ -1,12 +1,22 @@
 <template>
+    <template v-if="sessionExpired">
+        <ModalSesionExpired></ModalSesionExpired>
+    </template>
+
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">INVENTARIO</h1>
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
 
         <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>
-        
 
-        <input type="text" v-model="searchQuery"  placeholder="Buscar..." class="border rounded w-full h-10 px-2 mb-3" />
-        <ButtonX color="purple" :isSlim="true" @click="goAddProduct" > Agregar producto</ButtonX>
+        <template v-if="internalError">
+            <ErrorX @aceptar="intentarDeNuevo" buttonMessage="Intentar de nuevo">
+            </ErrorX>
+        </template>
+        <template v-else>
+            <input type="text" v-model="searchQuery" placeholder="Buscar..." class="border rounded w-full h-10 px-2 mb-3" />
+            <ButtonX color="purple" :isSlim="true" @click="goAddProduct"> Agregar producto</ButtonX>
+        </template>
+
 
         <div class="w-full h-[80vh] overflow-scroll mt-2">
             <template v-if="loadingItems">
@@ -17,20 +27,21 @@
 
             </template>
             <template v-else>
+
                 <ProductinventoryItem v-for="item in items" :key="item.id" :producto="item" @click="onGo">
                 </ProductinventoryItem>
                 <template button v-if="isThereMoreResults">
                     <div class="w-full mt-2">
-                        <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más productos</ButtonX>
+                        <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más
+                            productos</ButtonX>
                     </div>
-
                 </template>
                 <div v-else-if="!isThereMoreResults" class="w-full h-24 flex flex-col items-center justify-center">
                     <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
                 </div>
+
+
             </template>
-
-
         </div>
 
 
@@ -40,14 +51,14 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue';
 import { toggleSidebar } from '@/utils/sidebarManager.js';
-import SearchProduct from '@/components/utilities/SearchProduct.vue';
-import { postProducto } from '@/api/api.js';
 import ProductinventoryItem from './ProductinventoryItem.vue';
 import AlertX from '@/components/utilities/AlertX.vue';
 import { getProductosInventario } from '@/api/api.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { useRouter } from 'vue-router';
 import { useMyStore } from '@/stores/store.js';
+import ErrorX from '@/components/utilities/ErrorX.vue'
+import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
 
 
 const searchQuery = ref('');
@@ -62,6 +73,10 @@ const router = useRouter();
 const store = useMyStore();
 
 const isPushed = ref(false);
+
+const internalError = ref(false);
+
+const sessionExpired = ref(false);
 
 
 watch(
@@ -84,6 +99,7 @@ const getProductos = async () => {
         const productos = await getProductosInventario(query);
         items.value = productos.data;
         loadingItems.value = false;
+        internalError.value = false;
 
         if (productos.data.length === 10) {
             isThereMoreResults.value = true;
@@ -97,8 +113,22 @@ const getProductos = async () => {
             noResults.value = false;
         }
     } catch (error) {
+        console.log(error)
         loadingItems.value = false;
-        console.log(error);
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 };
 
@@ -113,6 +143,7 @@ const addItems = async () => {
         }
         const { data } = await getProductosInventario(query);
         loadingaddItems.value = false;
+        internalError.value = false;
 
         if (data.length === 10) {
             isThereMoreResults.value = true;
@@ -121,8 +152,23 @@ const addItems = async () => {
         }
         items.value = [...items.value, ...data];
     } catch (error) {
+        console.log(error)
         loadingaddItems.value = false;
-        console.log(error);
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
+        
     }
 }
 
@@ -140,17 +186,17 @@ const onGo = () => {
 }
 
 const guardarQuery = () => {
-    
+
     let queryAux = {
         page: page.value,
         query: searchQuery.value,
     }
-    
+
     store.setQueryInventory(queryAux);
 }
 
 onUnmounted(() => {
-    
+
     if (isPushed.value) {
         guardarQuery();
     } else {
@@ -169,11 +215,17 @@ const cargarQuery = () => {
 
 }
 
+const intentarDeNuevo = () => {
+    console.log('intento de nuevo');
+    internalError.value = false;
+    getProductos();
+}
+
 
 onMounted(() => {
     if (store.getQueryInventory.page != -1) {
         cargarQuery();
-    } 
+    }
     getProductos();
 });
 

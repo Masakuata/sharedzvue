@@ -2,61 +2,63 @@
     <ModalAbonar :isVisible="isVisibleModalAbonar" :sale="saleSelected" @cerrarConfirmarAbono="closeSaleModal"
         @confirmarAbono="confirmarAbono"></ModalAbonar>
     <div class="w-full">
-
-        <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
-
-
-        <label v-if="isFromCliente" for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las ventas del
-            cliente son las siguientes:</label>
-      
-
-
-        <div class="py-3">
-            <select v-model="opcionSeleccionada" id="miSelect"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                <option disabled value="">Selecciona una opción</option>
-                <option class="w-full" v-for="opcion in opciones" :key="opcion.value" :value="opcion.value">{{ opcion.texto
-                }}</option>
-            </select>
-        </div>
-
-
-
-        <template v-if="isFechaDia">
-            <div class="w-full pb-3">
-                <AlertX :flag="isFechaFutura" message="No puedes seleccionar fechas futuras"></AlertX>
-                <p>Selecciona la fecha</p>
-                <template v-if="isVisibleDatePicker">
-                    <!-- <VueDatePicker v-model="dateValue" :enableTimePicker="false"></VueDatePicker> -->
-
-                    <input type="date" name="startDate" v-model="dateValue" class="form-control rounded-lg w-full" />
-
-                </template>
-
+        <template v-if="!internalError">
+            <label for="miSelect" class="block mb-2 text-xl font-bold text-gray-900">Ordenar por:</label>
+            <label v-if="isFromCliente" for="miSelect" class="block mb-2 font-bold w-full text-center text-gray-900">Las
+                ventas del
+                cliente son las siguientes:</label>
+            <div class="py-3">
+                <select v-model="opcionSeleccionada" id="miSelect"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <option disabled value="">Selecciona una opción</option>
+                    <option class="w-full" v-for="opcion in opciones" :key="opcion.value" :value="opcion.value">{{
+                        opcion.texto
+                    }}</option>
+                </select>
             </div>
 
+            <template v-if="isFechaDia">
+                <div class="w-full pb-3">
+                    <AlertX :flag="isFechaFutura" message="No puedes seleccionar fechas futuras"></AlertX>
+                    <p>Selecciona la fecha</p>
+                    <template v-if="isVisibleDatePicker">
+                        <!-- <VueDatePicker v-model="dateValue" :enableTimePicker="false"></VueDatePicker> -->
+
+                        <input type="date" name="startDate" v-model="dateValue" class="form-control rounded-lg w-full" />
+
+                    </template>
+
+                </div>
+
+            </template>
+            <p class="w-full font-semibold">Cliente</p>
+            <input type="text" v-model="nombreCliente" placeholder="Nombre del cliente..."
+                class="border rounded w-full h-10 px-2 mb-3" />
+
+            <template v-if="firstLoading">
+                <div class="w-full h-96 flex flex-col items-center justify-center">
+                    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
+                    <p class="text-xl font-bold text-gray-900">Cargando...</p>
+                </div>
+            </template>
+
+            <div class="w-full overflow-scroll"
+                :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h[80vh]': !isFromCliente }]">
+                <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
+
+                <button v-if="isThereMoreResults" @click="addItems"
+                    class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
+
+                <div v-else-if="!isThereMoreResults && !firstLoading"
+                    class="w-full h-24 flex flex-col items-center justify-center">
+                    <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+                </div>
+            </div>
         </template>
-        <p class="w-full font-semibold">Cliente</p>
-        <input type="text" v-model="nombreCliente" placeholder="Nombre del cliente..." class="border rounded w-full h-10 px-2 mb-3" />
-
-        <template v-if="firstLoading">
-            <div class="w-full h-96 flex flex-col items-center justify-center">
-                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
-                <p class="text-xl font-bold text-gray-900">Cargando...</p>
-            </div>
+        <template v-else>
+            <ErrorX @aceptar="construirQuery"></ErrorX>
         </template>
 
-        <div class="w-full overflow-scroll" :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h[80vh]': !isFromCliente }]">
-            <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
-
-            <button v-if="isThereMoreResults" @click="addItems"
-                class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
-
-            <div v-else-if="!isThereMoreResults && !firstLoading"
-                class="w-full h-24 flex flex-col items-center justify-center">
-                <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
-            </div>
-        </div>
 
     </div>
 </template>
@@ -71,6 +73,7 @@ import SaleRow from '@/components/SaleRow.vue';
 import ModalAbonar from '@/views/sales/ModalAbonar.vue';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router';
+import ErrorX from '@/components/utilities/ErrorX.vue';
 
 
 
@@ -90,6 +93,7 @@ const props = defineProps({
 });
 
 
+const internalError = ref(false);
 
 const nombreCliente = ref('');
 
@@ -181,7 +185,7 @@ const construirQuery = () => {
     query.value = {};
     query.value.cliente = nombreCliente.value;
 
-    console.log('La query es:' + query.value) 
+    console.log('La query es:' + query.value)
 
     if (opcionSeleccionada.value === 'todas') {
         agregarQueryProps();
@@ -232,12 +236,22 @@ const getItems = async () => {
         } else {
             isThereMoreResults.value = false;
         }
-
+        internalError.value = false;
         items.value = data;
         firstLoading.value = false;
     } catch (error) {
         console.log(error);
         firstLoading.value = false;
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
     }
 }
 
@@ -263,8 +277,20 @@ const addItems = async () => {
             isThereMoreResults.value = false;
         }
         items.value = [...items.value, ...data];
+        internalError.value = false;
+        
     } catch (error) {
         console.log(error);
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
     }
 }
 
