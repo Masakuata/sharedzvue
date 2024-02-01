@@ -13,7 +13,8 @@
     <div class="mt-3" :class="[{'relative' : !isVisibleModal && !isVisibleModalConfirmacion}]">
 
         <div @click="isOpen = !isOpen"
-            class="w-full bg-bgBlue p-1 rounded-t-lg text-white font-semibold text-center items-center">
+            :class="{'rounded-lg' : !isOpen, 'rounded-t-lg' : isOpen}"
+            class="w-full bg-bgBlue p-1 text-white font-semibold text-center items-center">
             <p>SELECCIONAR TIPO DE CLIENTE</p>
             <div class="w-full flex flex-row justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -60,7 +61,7 @@
 </template>
   
 <script setup>
-import { ref, onMounted, defineProps } from 'vue';
+import { ref, onMounted, defineProps, defineEmits } from 'vue';
 import ModalPrecio from './ModalPrecio.vue';
 import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
 
@@ -96,6 +97,7 @@ const props = defineProps({
         required: true
     }
 });
+const emit = defineEmits(['error']);
 
 
 
@@ -130,6 +132,7 @@ const obtenerTiposCliente = async () => {
 
     } catch (error) {
         console.log('obtenerTiposCliente', error);
+        emit('error', error);
     }
 
 }

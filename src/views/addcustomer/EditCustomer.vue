@@ -1,110 +1,113 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">ACTUALIZAR CLIENTE</h1>
+    <template v-if="sessionExpired">
+        <ModalSesionExpired></ModalSesionExpired>
+    </template>
 
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full overflow-scroll">
-        <template v-if="firstLoading">
-            <div class="w-full h-96 flex flex-col items-center justify-center">
-                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
-                <p class="text-xl font-bold text-gray-900">Cargando...</p>
-            </div>
+        <template v-if="!internalError">
+            <template v-if="firstLoading">
+                <div class="w-full h-96 flex flex-col items-center justify-center">
+                    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
+                    <p class="text-xl font-bold text-gray-900">Cargando...</p>
+                </div>
 
+            </template>
+            <template v-else>
+                <div class="flex flex-row w-full text-left items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-user-round-plus w-10 h-10 text-bgBlue">
+                        <path d="M2 21a8 8 0 0 1 13.292-6" />
+                        <circle cx="10" cy="8" r="5" />
+                        <path d="M19 16v6" />
+                        <path d="M22 19h-6" />
+                    </svg>
+                    <p class="w-full  ml-2 text-lg">Actualiza la información del cliente</p>
+                </div>
+
+                <div class="w-full">
+                    <label for="name" class="block text-sm font-medium text-bgBlue">Nombre</label>
+                    <input id="name" v-model="name" @input="validateName"
+                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+                    <template v-if="name.length > 0">
+                        <p class="text-green-600" v-if="nameValid">Nombre válido</p>
+                        <p v-else class="text-red-600">Ingresa un nombre valido</p>
+                    </template>
+                    <p v-else-if="faltaName" class="text-red-600">El nombre es un campo requerido</p>
+                </div>
+
+
+
+                <label class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
+                <template v-if="tiposFormato.length > 0">
+                    <div class="w-full">
+                        <SelectX :elementos="tiposFormato" @selectItem="seleccionarTipo" :value-item-selected="tipoCliente">
+                        </SelectX>
+                    </div>
+                </template>
+
+
+
+                <div class="w-full">
+                    <label for="correo" class="block text-sm font-medium text-bgBlue">Correo</label>
+                    <input type="email" id="correo" v-model="email" @input="validateEmail"
+                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+                    <template v-if="email.length > 0">
+                        <p class="text-green-600" v-if="emailValid">Email Válido</p>
+                        <p v-else class="text-red-600">El correo no es válido</p>
+                    </template>
+                    <p v-else-if="faltaEmail" class="text-red-600">El correo es un campo requerido</p>
+                </div>
+
+                <div class="w-full">
+                    <label for="rfc" class="block text-sm font-medium text-bgBlue">RFC</label>
+                    <input id="rfc" v-model="rfc" @input="validateRFC" maxlength="13"
+                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+                    <template v-if="rfc.length > 0">
+                        <p class="text-green-600" v-if="rfcValid">RFC válido</p>
+                        <p v-else class="text-red-600">Ingresa un RFC valido</p>
+                    </template>
+                    <p v-else-if="faltaRfc" class="text-red-600">El RFC es un campo requerido</p>
+                </div>
+
+
+
+                <div class="w-full">
+                    <label for="telefono" class="block text-sm font-medium text-bgBlue">Teléfono</label>
+                    <input id="telefono" type="tel" v-model="telefono" maxlength="14"
+                        class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+                    <template v-if="telefono.length > 0">
+                        <p class="text-green-600" v-if="telefonoValid">Teléfono válido</p>
+                        <p v-else class="text-red-600">Ingresa un teléfono válido</p>
+                    </template>
+                    <p v-else-if="faltaTelefono" class="text-red-600">La dirección es un campo requerido</p>
+                </div>
+                <div class="mt-3 w-full">
+                    <p class="text-sm font-medium text-bgBlue pb-1">Agrega, elimina o edita sus direcciones</p>
+                    <AlertX :flag="faltanDirecciones" message="El cliente debe tener al menos una direccion registrada">
+                    </AlertX>
+                    <MultiEditAddressX @actualizarDireccion="actualizarDireccion" @deleleItem="eliminarDireccion"
+                        @update-items="actualizarDirecciones" :direcciones="direcciones" :id-cliente="idCliente"
+                        :switch="switchMultiAddress">
+                    </MultiEditAddressX>
+                </div>
+
+
+                <div class="w-full mt-3">
+                    <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Actualizar Cliente</ButtonX>
+                </div>
+
+                <div class="w-full mt-3">
+                    <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
+                </div>
+
+
+            </template>
         </template>
         <template v-else>
-            <div class="flex flex-row w-full text-left items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-user-round-plus w-10 h-10 text-bgBlue">
-                    <path d="M2 21a8 8 0 0 1 13.292-6" />
-                    <circle cx="10" cy="8" r="5" />
-                    <path d="M19 16v6" />
-                    <path d="M22 19h-6" />
-                </svg>
-                <p class="w-full  ml-2 text-lg">Actualiza la información del cliente</p>
-            </div>
-
-            <div class="w-full">
-                <label for="name" class="block text-sm font-medium text-bgBlue">Nombre</label>
-                <input id="name" v-model="name" @input="validateName"
-                    class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                <template v-if="name.length > 0">
-                    <p class="text-green-600" v-if="nameValid">Nombre válido</p>
-                    <p v-else class="text-red-600">Ingresa un nombre valido</p>
-                </template>
-                <p v-else-if="faltaName" class="text-red-600">El nombre es un campo requerido</p>
-            </div>
-
-
-
-            <label class="block text-sm font-medium text-bgBlue w-full text-left">Tipo de cliente</label>
-            <template v-if="tiposFormato.length > 0">
-                <div class="w-full">
-                    <SelectX :elementos="tiposFormato" @selectItem="seleccionarTipo" :value-item-selected="tipoCliente">
-                    </SelectX>
-                </div>
-            </template>
-
-
-
-            <div class="w-full">
-                <label for="correo" class="block text-sm font-medium text-bgBlue">Correo</label>
-                <input type="email" id="correo" v-model="email" @input="validateEmail"
-                    class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                <template v-if="email.length > 0">
-                    <p class="text-green-600" v-if="emailValid">Email Válido</p>
-                    <p v-else class="text-red-600">El correo no es válido</p>
-                </template>
-                <p v-else-if="faltaEmail" class="text-red-600">El correo es un campo requerido</p>
-            </div>
-
-            <div class="w-full">
-                <label for="rfc" class="block text-sm font-medium text-bgBlue">RFC</label>
-                <input id="rfc" v-model="rfc" @input="validateRFC" maxlength="13"
-                    class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                <template v-if="rfc.length > 0">
-                    <p class="text-green-600" v-if="rfcValid">RFC válido</p>
-                    <p v-else class="text-red-600">Ingresa un RFC valido</p>
-                </template>
-                <p v-else-if="faltaRfc" class="text-red-600">El RFC es un campo requerido</p>
-            </div>
-
-
-
-            <div class="w-full">
-                <label for="telefono" class="block text-sm font-medium text-bgBlue">Teléfono</label>
-                <input id="telefono" type="tel" v-model="telefono" maxlength="14"
-                    class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-                <template v-if="telefono.length > 0">
-                    <p class="text-green-600" v-if="telefonoValid">Teléfono válido</p>
-                    <p v-else class="text-red-600">Ingresa un teléfono válido</p>
-                </template>
-                <p v-else-if="faltaTelefono" class="text-red-600">La dirección es un campo requerido</p>
-            </div>
-            <div class="mt-3 w-full">
-                <p class="text-sm font-medium text-bgBlue pb-1">Agrega, elimina o edita sus direcciones</p>
-                <AlertX :flag="faltanDirecciones" message="El cliente debe tener al menos una direccion registrada"></AlertX>
-                <MultiEditAddressX  @actualizarDireccion="actualizarDireccion" @deleleItem="eliminarDireccion" @update-items="actualizarDirecciones" :direcciones="direcciones" :id-cliente="idCliente" :switch="switchMultiAddress">
-                </MultiEditAddressX>
-            </div>
-
-
-            <div class="w-full mt-3">
-                <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
-            </div>
-
-            <div class="w-full mt-3">
-                <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
-            </div>
-
-
+            <ErrorX @aceptar="regresarVistaClientes"></ErrorX>
         </template>
-
-
-
-
-
-
-
-
 
     </div>
 </template>
@@ -121,7 +124,12 @@ import SelectX from '@/components/utilities/SelectX.vue';
 import { getTiposCliente, getCliente, deleteDireccion, updateDireccion } from '@/api/api.js';
 import MultiEditAddressX from '@/components/utilities/MultiEditAddressX.vue';
 import AlertX from '@/components/utilities/AlertX.vue';
+import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
+import ErrorX from '@/components/utilities/ErrorX.vue';
 
+
+const internalError = ref(false);
+const sessionExpired = ref(false);
 
 
 const switchMultiAddress = ref(false);
@@ -130,7 +138,7 @@ const direcciones = ref([]);
 const faltanDirecciones = ref(false);
 
 const direccionesEliminar = ref([]);
-const errorEliminarDirecciones = ref(false);  
+const errorEliminarDirecciones = ref(false);
 
 const direccionesActualizar = ref([]);
 const errorActualizarDirecciones = ref(false);
@@ -139,7 +147,8 @@ const actualizarDirecciones = (direccionesEmit) => {
     direcciones.value = direccionesEmit;
 }
 
-const eliminarDireccion = (direccion) => {;
+const eliminarDireccion = (direccion) => {
+    ;
     direccionesEliminar.value.push(direccion.id);
 }
 
@@ -151,6 +160,18 @@ const eliminarDireccionesServer = async () => {
     } catch (error) {
         errorEliminarDirecciones.value = true;
         console.log(error);
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 }
 const actualizarDireccionesServer = async () => {
@@ -161,16 +182,39 @@ const actualizarDireccionesServer = async () => {
     } catch (error) {
         errorActualizarDirecciones.value = true;
         console.log(error);
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 }
 
-const actualizarDireccion = ( direccion) => {
+const actualizarDireccion = (direccion) => {
     let direccionAux = {
         id: direccion.id,
         direccion: direccion.valor,
     }
-    direccionesActualizar.value.push(direccionAux); 
+    direccionesActualizar.value.push(direccionAux);
 }
+
+watch(
+    () => direcciones.value,
+    () => {
+        if (direcciones.value.length === 0) {
+            faltanDirecciones.value = true;
+        } else {
+            faltanDirecciones.value = false;
+        }
+    }
+)
 
 
 
@@ -196,6 +240,18 @@ const getTipos = async () => {
         formatearTipos();
     } catch (error) {
         console.log(error);
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 }
 
@@ -323,7 +379,7 @@ const resgistrarCliente = () => {
             tipoCliente: tipoClienteSelected.value.value,
         }
         actualizarCliente(cliente);
-        
+
     }
 }
 
@@ -334,7 +390,7 @@ const actualizarCliente = async (cliente) => {
     try {
         await putCliente(id, cliente);
         pudoActualizarCliente = true;
-        
+
     } catch (error) {
         console.log(error);
         if (error.response.status === 409) {
@@ -342,11 +398,18 @@ const actualizarCliente = async (cliente) => {
                 type: 'error',
                 autoClose: 2000,
             });
-        } else {
-            toast("Error al actualizar el cliente", {
-                type: 'error',
-                autoClose: 2000,
-            });
+        } 
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
         }
 
     }
@@ -390,6 +453,19 @@ const obternerCliente = async (id) => {
     } catch (error) {
         firstLoading.value = false;
         console.log(error);
+
+        if (!error.response) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 500) {
+            internalError.value = true;
+            return;
+        }
+        if (error.response.status == 406) {
+            sessionExpired.value = true;
+            return;
+        }
     }
 }
 

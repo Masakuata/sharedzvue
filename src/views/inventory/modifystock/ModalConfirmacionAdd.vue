@@ -105,7 +105,7 @@ const limpiarComponente = () => {
 
 
 
-const emit = defineEmits(['cerrarModal', 'confirmar']);
+const emit = defineEmits(['cerrarModal', 'confirmar', 'error']);
 const props = defineProps({
     isVisible: Boolean,
     mensaje: String,
@@ -165,6 +165,7 @@ const putProducto = async () => {
         loading.value = false;
         error.value = true;
         errorMessage.value = error.response.data.message;
+        emit('error', error);
         console.log(error);
     }
 }

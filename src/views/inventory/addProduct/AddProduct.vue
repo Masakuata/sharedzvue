@@ -1,98 +1,94 @@
 <template>
   <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">AGREGAR PRODUCTO</h1>
   <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
-    <template v-if="!requestSent">
-      <div class="w-full">
-        <p class="w-full text-bgPurple font-semibold text-xl text-center">Registra un producto y comienza a registrar sus
-          ventas</p>
-
-        <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
-        <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
-          class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-        <template v-if="nombreProducto.length > 0">
-          <p class="text-green-600" v-if="nombreProductoValid">Nombre Válido</p>
-          <p v-else class="text-red-600">El nombre del producto no es válido</p>
-        </template>
-        <p v-else-if="faltaNombreProducto" class="text-red-600">El nombre del producto es un campo requerido</p>
-      </div>
-
-      <div class="w-full">
-        <label for="presentacionProducto" class="block text-lg font-medium ">Presentación</label>
-        <input type="text" id="presentacionProducto" v-model="presentacionProducto" @input="validatePresentacionProdcuto"
-          class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-        <template v-if="presentacionProducto.length > 0">
-          <p class="text-green-600" v-if="presentacionProductoValid">Presentación válida</p>
-          <p v-else class="text-red-600">La presentación del producto no es válida</p>
-        </template>
-        <p v-else-if="faltaPresentacionProducto" class="text-red-600">La presentacion del producto es un campo requerido
-        </p>
-      </div>
-
-      <div class="flex flex-row items-center text-right  justify-center py-2">
-        <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa el peso del producto en kilogramos</p>
-        <input v-model="pesoProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg px-2">
-      </div>
-      <p v-if="faltaPesoProducto" class="text-red-600 w-full">El peso del producto es un campo requerido</p>
-
-      <div class="flex flex-row items-center text-right">
-        <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa la cantidad en stock</p>
-        <input v-model="cantidadProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg mt-2 px-2">
-      </div>
-      <p v-if="faltaCantidadProducto" class="text-red-600 w-full">La cantidad de stock es un campo requerido</p>
-
-      <label for="miSelect" class="block mb-2 text-lg font-semibold w-full text-left">Tipo de mascota</label>
-      <div class="w-full h-12">
-        <select v-model="opcionRazaSeleccionada" id="miSelect"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-          <option disabled value="">Selecciona una opción</option>
-          <option class="w-full" v-for="opcion in opciones" :key="opcion.value" :value="opcion.value">{{ opcion.texto
-          }}</option>
-        </select>
-      </div>
-
-
-
-      <div class="w-full">
-        <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
-        <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
-          class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
-
-        <p v-if="faltaPrecioProducto" class="text-red-600">El precio del producto es un campo
-          requerido</p>
-      </div>
-
-      <p class="text-lg font-semibold w-full text-center">Si el producto tendrá varios precios dependiendo el tipo de
-        cliente, agrégalos</p>
-      <div class="w-full">
-        <SearchTipoCliente :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
-      </div>
-
-
-
-      <div class="mt-3 w-full">
-        <ButtonX color="purple" @click="registrarProductoMetod">Registrar producto</ButtonX>
-        <div class="w-full mt-3">
-          <ButtonX color="red" @click="regresar">Regresar</ButtonX>
-        </div>
-      </div>
-
-
-
-
-
+    <template v-if="sessionExpired">
+      <ModalSesionExpired></ModalSesionExpired>
     </template>
-    <template v-else>
-      <template v-if="loading">
-        <div class="flex flex-row items-center h-[80vh]">
-          <LoadingX message="Registrando producto..."></LoadingX>
+
+    <template v-if="!internalError">
+      <template v-if="!requestSent">
+        <div class="w-full">
+          <p class="w-full text-bgPurple font-semibold text-xl text-center">Registra un producto y comienza a registrar
+            sus
+            ventas</p>
+          <p class="text-lg font-semibold mt-10">Selecciona la imagen de tu producto </p>
+          <FileManagerX @set-image="agregarImagen"></FileManagerX>
+          <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
+          <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
+            class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+          <template v-if="nombreProducto.length > 0">
+            <p class="text-green-600" v-if="nombreProductoValid">Nombre Válido</p>
+            <p v-else class="text-red-600">El nombre del producto no es válido</p>
+          </template>
+          <p v-else-if="faltaNombreProducto" class="text-red-600">El nombre del producto es un campo requerido</p>
         </div>
 
+        <div class="w-full">
+          <label for="presentacionProducto" class="block text-lg font-medium ">Presentación</label>
+          <input type="text" id="presentacionProducto" v-model="presentacionProducto"
+            @input="validatePresentacionProdcuto"
+            class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+          <template v-if="presentacionProducto.length > 0">
+            <p class="text-green-600" v-if="presentacionProductoValid">Presentación válida</p>
+            <p v-else class="text-red-600">La presentación del producto no es válida</p>
+          </template>
+          <p v-else-if="faltaPresentacionProducto" class="text-red-600">La presentacion del producto es un campo requerido
+          </p>
+        </div>
+
+        <div class="flex flex-row items-center text-right  justify-center py-2">
+          <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa el peso del producto en kilogramos</p>
+          <input v-model="pesoProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg px-2">
+        </div>
+        <p v-if="faltaPesoProducto" class="text-red-600 w-full">El peso del producto es un campo requerido</p>
+
+        <div class="flex flex-row items-center text-right">
+          <p class="w-3/4 text-left text-lg font-semibold pr-3">Ingresa la cantidad en stock</p>
+          <input v-model="cantidadProducto" class="w-1/4 h-10 border border-blueLetters rounded-lg mt-2 px-2">
+        </div>
+        <p v-if="faltaCantidadProducto" class="text-red-600 w-full">La cantidad de stock es un campo requerido</p>
+
+        <label for="miSelect" class="block mb-2 text-lg font-semibold w-full text-left">Tipo de mascota</label>
+        <div class="w-full h-12">
+          <select v-model="opcionRazaSeleccionada" id="miSelect"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <option disabled value="">Selecciona una opción</option>
+            <option class="w-full" v-for="opcion in opciones" :key="opcion.value" :value="opcion.value">{{ opcion.texto
+            }}</option>
+          </select>
+        </div>
+
+        <div class="w-full">
+          <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
+          <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
+            class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
+
+          <p v-if="faltaPrecioProducto" class="text-red-600">El precio del producto es un campo
+            requerido</p>
+        </div>
+
+        <p class="text-lg font-semibold w-full text-center">Si el producto tendrá varios precios dependiendo el tipo de
+          cliente, agrégalos</p>
+        <div class="w-full">
+          <SearchTipoCliente v-if="!sessionExpired" :tipos-clientes-seleccionados="precios" @error="errorAlBuscarTipos">
+          </SearchTipoCliente>
+        </div>
+
+
+
+        <div class="mt-3 w-full">
+          <ButtonX color="purple" @click="registrarInformacion">Registrar producto</ButtonX>
+          <div class="w-full mt-3">
+            <ButtonX color="red" @click="regresar">Regresar</ButtonX>
+          </div>
+        </div>
       </template>
       <template v-else>
-        <template v-if="hasErrror">
+        <template v-if="loading">
           <div class="flex flex-row items-center h-[80vh]">
-            <ErrorX :message="errorMessage" button-message="Aceptar" @aceptar="aceptarError"> </ErrorX>
+            <LoadingX message="Registrando producto..."></LoadingX>
           </div>
+
         </template>
         <template v-else>
           <div class="flex flex-row items-center h-[80vh] w-full">
@@ -101,19 +97,10 @@
         </template>
 
       </template>
-
     </template>
-
-
-
-
-
-
-
-
-
-
-
+    <template v-else>
+      <ErrorX @aceptar="regresar"></ErrorX>
+    </template>
 
 
   </div>
@@ -131,8 +118,32 @@ import SuccesX from '@/components/utilities/SuccesX.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
 import { useRouter } from 'vue-router';
 import SearchTipoCliente from './selectTipoCliente/SearchTipoCliente.vue';
+import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
+import FileManagerX from '@/components/utilities/FileManagerX.vue';
+
+import { storage } from '@/firebase.js';
+import { ref as fireRef, uploadBytes } from 'firebase/storage';
+
+
+const subirimagen = async (id) => {
+  const storageRef = fireRef(storage, 'images/productos/' + id + '.png')
+  uploadBytes(storageRef, imageData.value).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
+}
+
 
 const router = useRouter();
+
+const imageData = ref(null);
+
+const agregarImagen = (file) => {
+  console.log(file);
+  imageData.value = file;
+};
+
+const internalError = ref(false);
+const sessionExpired = ref(false);
 
 const precios = ref([]);
 
@@ -144,7 +155,7 @@ const opciones = [
 
 const requestSent = ref(false);
 const loading = ref(false);
-const hasErrror = ref(false);
+
 const errorMessage = ref('Error al registrar el producto');
 
 const ID_PUBLICO = 1;
@@ -255,7 +266,7 @@ const validateEmptyfields = () => {
   faltaPresentacionProducto.value = presentacionProducto.value.length === 0;
   faltaPrecioProducto.value = precioProducto.value.length === 0;
   faltaPesoProducto.value = pesoProducto.value.length === 0;
-  
+
 };
 
 const validateForm = () => {
@@ -274,6 +285,17 @@ const validateForm = () => {
   }
 };
 
+let idProducto = 0; 
+
+const registrarInformacion = async () => {
+  await registrarProductoMetod();
+  if (imageData.value !== null) {
+    subirimagen(idProducto);
+  }else{
+    console.log('No se subio la imagen');
+  }
+};
+
 const registrarProductoMetod = async () => {
   if (validateForm()) {
     let payload = buildPayload();
@@ -281,24 +303,51 @@ const registrarProductoMetod = async () => {
     try {
       loading.value = true;
       requestSent.value = true;
-      await registrarProducto(payload);
+      const response = await registrarProducto(payload);
+      idProducto = response.data.id;
+
+
 
       loading.value = false;
 
     } catch (error) {
-      hasErrror.value = true;
-      errorMessage.value = error.response.data.detail;
       console.log('Error al registrar el producto', error);
       loading.value = false;
-
       if (error.response.status === 409) {
         errorMessage.value = 'Ya existe un producto con ese nombre y descripción';
+      }
+
+      if (!error.response) {
+        internalError.value = true;
+        return;
+      }
+      if (error.response.status == 500) {
+        internalError.value = true;
+        return;
+      }
+      if (error.response.status == 406) {
+        sessionExpired.value = true;
+        return;
       }
     }
 
   }
 
 }
+const errorAlBuscarTipos = (error) => {
+  if (!error.response) {
+    internalError.value = true;
+    return;
+  }
+  if (error.response.status == 500) {
+    internalError.value = true;
+    return;
+  }
+  if (error.response.status == 406) {
+    sessionExpired.value = true;
+    return;
+  }
+};
 
 const regresar = () => {
   router.go(-1);
@@ -340,7 +389,6 @@ const buildPayload = () => {
 const aceptar = () => {
   loading.value = false;
   requestSent.value = false;
-  hasErrror.value = false;
   errorMessage.value = '';
   nombreProducto.value = '';
   presentacionProducto.value = '';
@@ -354,7 +402,6 @@ const aceptar = () => {
 const aceptarError = () => {
   loading.value = false;
   requestSent.value = false;
-  hasErrror.value = false;
   errorMessage.value = '';
 };
 

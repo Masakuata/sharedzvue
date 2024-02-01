@@ -75,6 +75,8 @@ const props = defineProps({
 const direccionesFormat = ref([]);
 
 const searchQuery = ref('');
+let debounceTimeout = null;
+
 const selectedItem = ref({});
 const isSelected = ref(false);
 const noResults = ref(false);
@@ -82,7 +84,9 @@ const noResults = ref(false);
 const loading = ref(false);
 
 
-const emit = defineEmits(['select-item', 'unselect-item']);
+
+
+const emit = defineEmits(['select-item', 'unselect-item', 'error']);
 
 
 
@@ -136,14 +140,6 @@ watch(
     }
 )
 
-watch(
-    () => props.reload,
-    () => {
-        selectedItem.value = null;
-        searchQuery.value = '';
-        isSelected.value = false;
-    }
-)
 
 const getClientes = async () => {
     if (searchQuery.value.length < 1) {
@@ -154,7 +150,10 @@ const getClientes = async () => {
     try {
         items.value = [];
         loading.value = true;
-        const clientes = await getClientesBusqueda(searchQuery.value);
+        let query = {
+            nombre: searchQuery.value,
+        }
+        const clientes = await getClientesBusqueda(query);
         items.value = clientes.data;
         if (items.value.length == 0) {
             noResults.value = true;
@@ -166,6 +165,16 @@ const getClientes = async () => {
     } catch (error) {
         loading.value = false;
         console.log(error);
+        if (!error.response) {
+            emit('error');
+            return;
+        }
+
+        if (error.response.status == 500) {
+            emit('error');
+            return;
+        }
+
     }
 
 

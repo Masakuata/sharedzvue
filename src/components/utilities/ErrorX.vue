@@ -1,18 +1,20 @@
 <template>
     <div class="w-full">
         <div class="w-full">
-            <p class="text-2xl font-semibold text-center text-[#BA1A1A]">{{ message }}</p>
             <div class="w-full flex justify-center mt-2">
-                <img src="@/assets/dogError.svg" width="100" height="100" alt="Descripción de la imagen">
-            </div>
+                <img src="@/assets/sad_dog.svg" class="h-40 w-auto" alt="">
 
+            </div>
+            <p class="w-full text-2xl text-center text-bgBlue font-semibold">{{ title }}</p>
+            <p class="text-xl text-center text-bgBlue ">{{ message }}</p>
+
+            <p v-if="showContact" class="w-full text-center font-semibold my-2">Si el error persiste, póngase en contacto con soporte técnico: contacto@xatal.com.mx</p>
 
             <div class="p-2 w-full">
-                <ButtonX color="redLite" @click="emitirAceptar">{{ buttonMessage }}</ButtonX>
+                <ButtonX color="blue" @click="emitirAceptar">{{ buttonMessage }}</ButtonX>
             </div>
 
         </div>
-
 
     </div>
 </template>
@@ -22,12 +24,20 @@ import ButtonX from './ButtonX.vue';
 const props = defineProps({
     message: {
         type: String,
-        default: 'Error... Algo ha ocurrido. Inténtelo más tarde!'
+        default: 'Algo ha ocurrido. Inténtelo más tarde!'
     },
     buttonMessage: {
         type: String,
-        default: 'Aceptar'
-    }
+        default: 'Intentar de nuevo'
+    },
+    title: {
+        type: String,
+        default: 'Error interno'
+    },
+    showContact: {
+        type: Boolean,
+        default: true
+    },
 });
 
 const emit = defineEmits(['aceptar']);
