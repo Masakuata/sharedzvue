@@ -3,7 +3,7 @@
         <ModalSesionExpired></ModalSesionExpired>
     </template>
 
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">INVENTARIO</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left md:invisible mt-3">INVENTARIO</h1>
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
 
         <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>

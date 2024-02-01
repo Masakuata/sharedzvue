@@ -134,6 +134,13 @@ watch(
 );
 
 watch(
+    () => props.reload,
+    () => {
+        unselectItem();
+    }
+);
+
+watch(
     () => searchQuery.value,
     () => {
         getClientes();

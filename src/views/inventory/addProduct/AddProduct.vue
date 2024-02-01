@@ -92,7 +92,7 @@
         </template>
         <template v-else>
           <div class="flex flex-row items-center h-[80vh] w-full">
-            <SuccesX message="Producto registrado exitósamenta" button-message="Aceptar" @aceptar="aceptar"> </SuccesX>
+            <SuccesX message="Producto registrado exitósamente" button-message="Aceptar" @aceptar="aceptar"> </SuccesX>
           </div>
         </template>
 
@@ -126,7 +126,8 @@ import { ref as fireRef, uploadBytes } from 'firebase/storage';
 
 
 const subirimagen = async (id) => {
-  const storageRef = fireRef(storage, 'images/productos/' + id + '.png')
+  const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
+  const storageRef = fireRef(storage, path)
   uploadBytes(storageRef, imageData.value).then((snapshot) => {
     console.log('Uploaded a blob or file!');
   });
