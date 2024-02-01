@@ -10,6 +10,11 @@
             <template v-if="!requestSent">
                 <template v-if="!loading">
                     <div class="w-full">
+                            <div class="w-full">
+                                <p class="text-lg font-medium">Edita la imagen del producto</p>
+                                <FileManagerX :image-url="imageUrl" @set-image="agregarImagen"></FileManagerX>
+                            </div>
+
                         <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
                         <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
                             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
@@ -68,12 +73,13 @@
                             requerido</p>
                     </div>
                     <div class="w-full">
-                        <SearchTipoCliente v-if="!sessionExpired" :tipos-clientes-seleccionados="precios"></SearchTipoCliente>
+                        <SearchTipoCliente v-if="!sessionExpired" :tipos-clientes-seleccionados="precios">
+                        </SearchTipoCliente>
                     </div>
 
 
                     <div class="mt-3 w-full">
-                        <ButtonX color="purple" @click="actualizarProductoMetod">Actualizar producto</ButtonX>
+                        <ButtonX color="purple" @click="actualizarInformacion">Actualizar producto</ButtonX>
                         <div class="mt-3 w-full">
                             <ButtonX color="red" @click="regresar">Cancelar</ButtonX>
                         </div>
@@ -128,6 +134,63 @@ import { getProductoId } from '@/api/api.js'
 import { useRoute, useRouter } from 'vue-router';
 import SearchTipoCliente from '../addProduct/selectTipoCliente/SearchTipoCliente.vue';
 import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
+import { storage } from '@/firebase.js';
+
+import { ref as storageRef, getDownloadURL, uploadBytes } from 'firebase/storage'
+import FileManagerX from '@/components/utilities/FileManagerX.vue';
+
+
+
+
+
+//Variables para manejar los flujos de la imagen
+const imageUrl = ref(null);
+
+const getImageUrl = (id) => {
+
+    console.log('getting url');
+
+    const path = 'images/productos/' + id + '.png';
+    getDownloadURL(storageRef(storage, path))
+        .then((url) => {
+            imageUrl.value = url;
+            console.log('url', url);
+            // `url` is the download URL for 'images/stars.jpg'
+
+            // This can be downloaded directly:
+            // const xhr = new XMLHttpRequest();
+            // xhr.responseType = 'blob';
+            // xhr.onload = (event) => {
+            //     const blob = xhr.response;
+            // };
+            // xhr.open('GET', url);
+            // xhr.send();
+
+            // // Or inserted into an <img> element
+            // const img = document.getElementById('myimg');
+            // img.setAttribute('src', url);
+        })
+        .catch((error) => {
+            console.log('no url');
+            // Handle any errors
+        });
+
+};
+
+const imageData = ref(null);
+const agregarImagen = (file) => {
+  console.log(file);
+  imageData.value = file;
+};
+
+const subirimagen = async (id) => {
+  const storageRefe = storageRef(storage, 'images/productos/' + id + '.png')
+  uploadBytes(storageRefe, imageData.value).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
+}
+
+
 
 //Variables y metodos necesarios para validasr el peso del producto
 const pesoProducto = ref('');
@@ -181,6 +244,11 @@ const opcionRazaSeleccionada = ref('');
 const nombreProducto = ref('');
 const nombreProductoValid = ref(false);
 const faltaNombreProducto = ref(false);
+
+
+
+
+
 const validateNombreProdcuto = () => {
     faltaNombreProducto.value = false;
     nombreProductoValid.value = nombreProducto.value.length > 0;
@@ -342,6 +410,11 @@ const validateForm = () => {
     }
 };
 
+const actualizarInformacion = () => {
+    actualizarProductoMetod();
+    subirimagen(id.value);
+}
+
 const actualizarProductoMetod = async () => {
     if (validateForm()) {
         let payload = buildPayload();
@@ -350,7 +423,7 @@ const actualizarProductoMetod = async () => {
             loading.value = true;
             requestSent.value = true;
             await actualizarProducto(id.value, payload);
-
+            
             loading.value = false;
 
         } catch (error) {
@@ -437,6 +510,7 @@ const clickEnDiv = () => {
 onMounted(() => {
     id.value = route.params.id;
     getProducto();
+    getImageUrl(id.value);
 
 });
 

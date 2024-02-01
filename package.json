@@ -12,6 +12,8 @@
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
     "bootstrap-icons": "^1.11.2",
+    "firebase": "^10.7.2",
+    "firebase-storage": "^1.0.0",
     "pinia": "^2.1.7",
     "postcss": "^8.4.32",
     "register-service-worker": "^1.7.2",
@@ -20,7 +22,8 @@
     "vue-axios": "^3.5.2",
     "vue-router": "^4.0.3",
     "vue-tailwind-datepicker": "^1.6.1",
-    "vue3-toastify": "^0.2.1"
+    "vue3-toastify": "^0.2.1",
+    "vuefire": "^3.1.22"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

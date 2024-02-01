@@ -11,7 +11,8 @@
           <p class="w-full text-bgPurple font-semibold text-xl text-center">Registra un producto y comienza a registrar
             sus
             ventas</p>
-
+          <p class="text-lg font-semibold mt-10">Selecciona la imagen de tu producto </p>
+          <FileManagerX @set-image="agregarImagen"></FileManagerX>
           <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
           <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
             class="w-full mt-1 h-10 px-3 border border-solid border-blueLetters rounded-lg" />
@@ -57,8 +58,6 @@
           </select>
         </div>
 
-
-
         <div class="w-full">
           <label for="precioProducto" class="block text-lg font-medium ">Precio Publico</label>
           <input type="text" id="precioProducto" v-model="precioProducto" @input="validatePrecioProdcuto"
@@ -71,22 +70,18 @@
         <p class="text-lg font-semibold w-full text-center">Si el producto tendrá varios precios dependiendo el tipo de
           cliente, agrégalos</p>
         <div class="w-full">
-          <SearchTipoCliente v-if="!sessionExpired" :tipos-clientes-seleccionados="precios" @error="errorAlBuscarTipos"></SearchTipoCliente>
+          <SearchTipoCliente v-if="!sessionExpired" :tipos-clientes-seleccionados="precios" @error="errorAlBuscarTipos">
+          </SearchTipoCliente>
         </div>
 
 
 
         <div class="mt-3 w-full">
-          <ButtonX color="purple" @click="registrarProductoMetod">Registrar producto</ButtonX>
+          <ButtonX color="purple" @click="registrarInformacion">Registrar producto</ButtonX>
           <div class="w-full mt-3">
             <ButtonX color="red" @click="regresar">Regresar</ButtonX>
           </div>
         </div>
-
-
-
-
-
       </template>
       <template v-else>
         <template v-if="loading">
@@ -96,12 +91,9 @@
 
         </template>
         <template v-else>
-          <template>
-            <div class="flex flex-row items-center h-[80vh] w-full">
-              <SuccesX message="Producto registrado exitósamenta" button-message="Aceptar" @aceptar="aceptar"> </SuccesX>
-            </div>
-          </template>
-
+          <div class="flex flex-row items-center h-[80vh] w-full">
+            <SuccesX message="Producto registrado exitósamenta" button-message="Aceptar" @aceptar="aceptar"> </SuccesX>
+          </div>
         </template>
 
       </template>
@@ -127,8 +119,28 @@ import ErrorX from '@/components/utilities/ErrorX.vue';
 import { useRouter } from 'vue-router';
 import SearchTipoCliente from './selectTipoCliente/SearchTipoCliente.vue';
 import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
+import FileManagerX from '@/components/utilities/FileManagerX.vue';
+
+import { storage } from '@/firebase.js';
+import { ref as fireRef, uploadBytes } from 'firebase/storage';
+
+
+const subirimagen = async (id) => {
+  const storageRef = fireRef(storage, 'images/productos/' + id + '.png')
+  uploadBytes(storageRef, imageData.value).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
+}
+
 
 const router = useRouter();
+
+const imageData = ref(null);
+
+const agregarImagen = (file) => {
+  console.log(file);
+  imageData.value = file;
+};
 
 const internalError = ref(false);
 const sessionExpired = ref(false);
@@ -273,6 +285,17 @@ const validateForm = () => {
   }
 };
 
+let idProducto = 0; 
+
+const registrarInformacion = async () => {
+  await registrarProductoMetod();
+  if (imageData.value !== null) {
+    subirimagen(idProducto);
+  }else{
+    console.log('No se subio la imagen');
+  }
+};
+
 const registrarProductoMetod = async () => {
   if (validateForm()) {
     let payload = buildPayload();
@@ -280,12 +303,14 @@ const registrarProductoMetod = async () => {
     try {
       loading.value = true;
       requestSent.value = true;
-      await registrarProducto(payload);
+      const response = await registrarProducto(payload);
+      idProducto = response.data.id;
+
+
 
       loading.value = false;
 
     } catch (error) {
-      errorMessage.value = error.response.data.detail;
       console.log('Error al registrar el producto', error);
       loading.value = false;
       if (error.response.status === 409) {

@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { limpiarSesion } from '@/utils/SessionManager';
 
+import { storage } from '@/firebase.js';
+import { ref as storageRef, getDownloadURL } from 'firebase/storage'
+
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
 const urlEdson = 'https://neutral-kindly-wildcat.ngrok-free.app'
@@ -52,7 +55,7 @@ function getToken() {
 export async function registrarUsuario(miembro) {
     const complemento = '/usuario';
     let urlnew = getUrl() + complemento;
-    let respuesta = {} 
+    let respuesta = {}
 
     try { // Reemplaza con tu URL
         respuesta = await axiosInstance.post(urlnew, miembro);
@@ -64,12 +67,12 @@ export async function registrarUsuario(miembro) {
 
 export async function login(user) {
     const complemento = '/usuario/login';
-    let urlnew = getUrl() + complemento; 
+    let urlnew = getUrl() + complemento;
 
-    try { 
+    try {
         let respuesta = await axiosInstance.post(urlnew, user);
-        let respuestaJson =  respuesta.json
-        return respuesta  
+        let respuestaJson = respuesta.json
+        return respuesta
     } catch (error) {
         console.log('Error en login', error);
         throw error;
@@ -94,7 +97,7 @@ export async function getClientesBusqueda(query) {
 
 
     try {
-        let respuesta  = await axiosInstance.get(urlnew, {params: query});
+        let respuesta = await axiosInstance.get(urlnew, { params: query });
         return respuesta;
     } catch (error) {
         throw error;
@@ -117,7 +120,7 @@ export async function getProductosBusqueda(nombre, tipocliente) {
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.get(urlnew, {params: {nombre: nombre, tipo_cliente: tipocliente}});
+        let respuesta = await axiosInstance.get(urlnew, { params: { nombre: nombre, tipo_cliente: tipocliente } });
         return respuesta;
     } catch (error) {
         throw error;
@@ -129,7 +132,7 @@ export async function getProductosInventario(paramsMethod) {
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.get(urlnew, {params: paramsMethod});
+        let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
         return respuesta;
     } catch (error) {
         throw error;
@@ -149,9 +152,9 @@ export async function getProductoId(id) {
 }
 
 export async function actualizarStockProducto(id, stock) {
-    const complemento = '/producto/' + id+ '/stock?cant=' + stock;
+    const complemento = '/producto/' + id + '/stock?cant=' + stock;
 
-    
+
 
 
     let urlnew = getUrl() + complemento;
@@ -196,7 +199,7 @@ export async function getVentas(paramsMethod) {
     console.log('paramsMethod', paramsMethod)
 
     try {
-        let respuesta = await axiosInstance.get(urlnew, {params: paramsMethod});
+        let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
         return respuesta;
     } catch (error) {
         throw error;
@@ -216,7 +219,7 @@ export async function getProductosLista(listaProductos) {
 }
 
 export async function getVentaProductosDetalles(idVenta) {
-    const complemento = '/venta/' + idVenta+ '/productos';
+    const complemento = '/venta/' + idVenta + '/productos';
     let urlnew = getUrl() + complemento;
 
     try {
@@ -234,7 +237,7 @@ export async function getVentaProductosDetalles(idVenta) {
 export async function resgistrarProductos(productos) {
     const complemento = '/producto/cargar';
     let urlnew = getUrl() + complemento;
-    let respuesta = {} 
+    let respuesta = {}
 
     try { // Reemplaza con tu URL
         respuesta = await axiosInstance.post(urlnew, productos);
@@ -269,7 +272,7 @@ export const registrarProducto = async (producto) => {
 }
 
 export async function getDetallesVenta(idVenta) {
-    const complemento = '/venta/' + idVenta+ '/details';
+    const complemento = '/venta/' + idVenta + '/details';
     let urlnew = getUrl() + complemento;
 
     try {
@@ -304,13 +307,13 @@ export async function getTiposCliente() {
     } catch (error) {
         throw error;
     }
-    
+
 }
 
 export async function eliminarProducto(id) {
     const complemento = '/producto/' + id
 
-    
+
 
 
     let urlnew = getUrl() + complemento;
@@ -373,7 +376,7 @@ export async function addDireccion(idCliente, direcion) {
     }
 }
 
-export async function updateDireccion(idCliente, direcion){
+export async function updateDireccion(idCliente, direcion) {
     const complemento = '/cliente/' + idCliente + '/direccion/' + direcion.id;
 
     let urlnew = getUrl() + complemento;
@@ -385,7 +388,7 @@ export async function updateDireccion(idCliente, direcion){
     }
 }
 
-export async function deleteDireccion(idCliente, idDireccion){
+export async function deleteDireccion(idCliente, idDireccion) {
     const complemento = '/cliente/' + idCliente + '/direccion/' + idDireccion;
 
     let urlnew = getUrl() + complemento;
@@ -396,6 +399,18 @@ export async function deleteDireccion(idCliente, idDireccion){
         throw error;
     }
 }
+export async function getUrlImage(id) {
+    const path = 'images/productos/' + id + '.png';
+    getDownloadURL(storageRef(storage, path)).then((url) => {
+        return url
+    }).catch((error) => {
+        return null
+    })
+}
+
+
+
+
 
 
 

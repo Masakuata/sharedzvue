@@ -6,7 +6,9 @@
         <div class="flex text-left w-full">
           <p  class="text-white bg-bgBlue p-1 rounded-sm w-fit">Heriberto Sandoval Machuca</p>
         </div>
-
+        <div class="w-full">
+          <FileManagerX></FileManagerX>
+        </div>
        
 
         
@@ -26,9 +28,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import {toggleSidebar} from '@/utils/sidebarManager.js';
-import ErrorX from '@/components/utilities/ErrorX.vue';
-import ButtonX from '@/components/utilities/ButtonX.vue';
-import MultiRegistAddressX from '@/components/utilities/MultiRegistAddressX.vue';
+import FileManagerX from '@/components/utilities/FileManagerX.vue';
 
 
 

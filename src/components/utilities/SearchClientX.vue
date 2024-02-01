@@ -75,6 +75,8 @@ const props = defineProps({
 const direccionesFormat = ref([]);
 
 const searchQuery = ref('');
+let debounceTimeout = null;
+
 const selectedItem = ref({});
 const isSelected = ref(false);
 const noResults = ref(false);
@@ -138,14 +140,6 @@ watch(
     }
 )
 
-watch(
-    () => props.reload,
-    () => {
-        selectedItem.value = null;
-        searchQuery.value = '';
-        isSelected.value = false;
-    }
-)
 
 const getClientes = async () => {
     if (searchQuery.value.length < 1) {
