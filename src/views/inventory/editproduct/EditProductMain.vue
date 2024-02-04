@@ -10,10 +10,10 @@
             <template v-if="!requestSent">
                 <template v-if="!loading">
                     <div class="w-full">
-                            <div class="w-full">
-                                <p class="text-lg font-medium">Edita la imagen del producto</p>
-                                <FileManagerX :image-url="imageUrl" @set-image="agregarImagen"></FileManagerX>
-                            </div>
+                        <div class="w-full">
+                            <p class="text-lg font-medium">Edita la imagen del producto</p>
+                            <FileManagerX :image-url="imageUrl" @set-image="agregarImagen"></FileManagerX>
+                        </div>
 
                         <label for="nombreProducto" class="block text-lg font-medium ">Nombre de producto</label>
                         <input type="text" id="nombreProducto" v-model="nombreProducto" @input="validateNombreProdcuto"
@@ -97,14 +97,14 @@
             <template v-else>
                 <template v-if="loading">
                     <div class="flex flex-row items-center h-[80vh]">
-                        <LoadingX message="Registrando producto..."></LoadingX>
+                        <LoadingX message="Actualizando producto..."></LoadingX>
                     </div>
 
                 </template>
                 <template v-else>
                     <template v-if="!hasErrror">
                         <div class="flex flex-row items-center h-[80vh] w-full">
-                            <SuccesX message="Producto registrado exitósamenta" button-message="Aceptar" @aceptar="aceptar">
+                            <SuccesX message="Producto actualizado exitósamente" button-message="Aceptar" @aceptar="aceptar">
                             </SuccesX>
                         </div>
                     </template>
@@ -149,8 +149,8 @@ const imageUrl = ref(null);
 const getImageUrl = (id) => {
 
     console.log('getting url');
-
-    const path = 'images/productos/' + id + '.png';
+    const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
+    
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
@@ -179,15 +179,17 @@ const getImageUrl = (id) => {
 
 const imageData = ref(null);
 const agregarImagen = (file) => {
-  console.log(file);
-  imageData.value = file;
+    console.log(file);
+    imageData.value = file;
 };
 
 const subirimagen = async (id) => {
-  const storageRefe = storageRef(storage, 'images/productos/' + id + '.png')
-  uploadBytes(storageRefe, imageData.value).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
-  });
+    const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
+
+    const storageRefe = storageRef(storage, path)
+    uploadBytes(storageRefe, imageData.value).then((snapshot) => {
+        console.log('Uploaded a blob or file!');
+    });
 }
 
 
@@ -423,13 +425,13 @@ const actualizarProductoMetod = async () => {
             loading.value = true;
             requestSent.value = true;
             await actualizarProducto(id.value, payload);
-            
+
             loading.value = false;
 
         } catch (error) {
             hasErrror.value = true;
             errorMessage.value = error.response.data.detail;
-            console.log('Error al registrar el producto', error);
+            console.log('Error al actualizar el producto', error);
             loading.value = false;
 
             if (error.response.status === 409) {

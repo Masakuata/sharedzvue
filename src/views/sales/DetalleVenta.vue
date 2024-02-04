@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">DETALLES DE VENTA</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible ">DETALLES DE VENTA</h1>
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
         <template v-if="!loading">
             <template v-if="!requestSent">
@@ -49,7 +49,7 @@
                                         </svg>
                                     </div>
                                     <input type="search" :disabled="finiquitarRestante" v-model="abono" id="default-search"
-                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500   "
                                         required>
 
                                 </div>

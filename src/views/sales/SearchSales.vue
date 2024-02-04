@@ -46,7 +46,7 @@
                 :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h[80vh]': !isFromCliente }]">
                 <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
 
-                <button v-if="isThereMoreResults" @click="addItems"
+                <button v-if="isThereMoreResults && !firstLoading" @click="addItems"
                     class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
 
                 <div v-else-if="!isThereMoreResults && !firstLoading"
@@ -74,6 +74,7 @@ import ModalAbonar from '@/views/sales/ModalAbonar.vue';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router';
 import ErrorX from '@/components/utilities/ErrorX.vue';
+import ButtonX from '@/components/utilities/ButtonX.vue';
 
 
 

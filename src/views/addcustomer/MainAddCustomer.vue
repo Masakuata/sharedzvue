@@ -3,7 +3,7 @@
         <ModalSesionExpiredVue></ModalSesionExpiredVue>
     </template>
     
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">CLIENTES</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible">CLIENTES</h1>
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
         <template v-if="!internalError">
             <AlertX :flag="noResults" message="No se encontraron resultados"></AlertX>

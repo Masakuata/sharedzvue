@@ -79,8 +79,7 @@ const imageUrl = ref('');
 const getImageUrl = (id) => {
 
     console.log('getting url');
-
-    const path = 'images/productos/' + id + '.png';
+    const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;

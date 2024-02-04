@@ -7,8 +7,8 @@
                 <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la venta
                 </p>
                 <div class="w-full p-4 h-[80vh] overflow-scroll">
-                    <p>Productos a vender</p>
-                    <div class="w-full h-96 border border-gray-400 rounded-lg  p-3 overflow-scroll">
+                    <p class="w-full text-center font-semibold text-lg">Productos a vender</p>
+                    <div class="w-full h-96  overflow-scroll">
                         <ProductoVenderRow v-for="product in productos" :key=product.id :producto="product">
                         </ProductoVenderRow>
                     </div>

@@ -185,33 +185,16 @@ const hasUrl = ref(false);
 
 const getImageUrl = (id) => {
 
-    console.log('getting url');
+    const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
 
-    const path = 'images/productos/' + id + '.png';
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
             console.log('url', url);
-            // `url` is the download URL for 'images/stars.jpg'
-
-            // This can be downloaded directly:
-            // const xhr = new XMLHttpRequest();
-            // xhr.responseType = 'blob';
-            // xhr.onload = (event) => {
-            //     const blob = xhr.response;
-            // };
-            // xhr.open('GET', url);
-            // xhr.send();
-
-            // // Or inserted into an <img> element
-            // const img = document.getElementById('myimg');
-            // img.setAttribute('src', url);
         })
         .catch((error) => {
             console.log('no url');
-            // Handle any errors
         });
-
 };
 
 

@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">NOTAS</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left md:invisible mt-3">NOTAS</h1>
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full bg-gray-50">
         <template v-if="modalConfirmacionVentalVisible">
             <ModalConfirmacionVenta :is-visible="modalConfirmacionVentalVisible" :productos="productosLista"
@@ -172,6 +172,7 @@ const unselectProduct = (producto) => {
 };
 
 const selectProduct = (producto) => {
+    console.log('Producto seleccionado', producto); 
     productSelected.value = producto;
     showModalProductDetail();
 };
@@ -321,6 +322,7 @@ const registrarCompra = async () => {
 
 
 const limpiarCampos = () => {
+    console.log('limpiando campos');
     reloadSearch.value = !reloadSearch.value;
     productosLista.value = [];
     cliente.value = null;
