@@ -1,9 +1,14 @@
 <template>
+    <template v-if="modalCerrarSesion">
+        <ModalConfirmationX @realizar="cerrarSesion" @cancelar="cerrarModal" :is-visible="modalCerrarSesion"
+            :is-important="true" titulo="Cerrar Sesión" texto-realizar="Cerrar Sesión" texto-cancelar="Regresar"
+            mensaje="¿Está seguro de cerrar sesión?"></ModalConfirmationX>
+    </template>
     <div class="md:w-64 md:h-full">
 
         <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
             type="button" @click="toggleSidebar"
-            class="inline-flex   items-center p-2 mt-2 ms-3 text-sm text-white rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+            class="inline-flex bg-bgBlue   items-center p-2 mt-2 ms-3 text-sm text-white rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
             <span class="sr-only">Open sidebar</span>
             <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
@@ -120,7 +125,7 @@
 
 
                             <span class="flex-1 ms-3 whitespace-nowrap">Inventario</span>
-                            
+
                         </a>
                     </li>
                     <li>
@@ -143,7 +148,39 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" @click="cerrarSesion"
+                        <a href="#" @click="goReports"
+                            class="flex items-center p-2 md:px-2 md:py-6 text-white text-xl rounded-lg hover:bg-gray-100 hover:text-textBlueDark group">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="w-7 h-7 text-white transition duration-75 group-hover:text-textBlueDark dark:group-hover:text-white lucide lucide-area-chart">
+                                <path d="M3 3v18h18" />
+                                <path d="M7 12v5h12V8l-5 5-4-4Z" />
+                            </svg>
+
+                            <span class="flex-1 ms-3 whitespace-nowrap">Reportes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" @click="goContact"
+                            class="flex items-center p-2 md:px-2 md:py-6 text-white text-xl rounded-lg hover:bg-gray-100 hover:text-textBlueDark group">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="w-7 h-7 text-white transition duration-75 group-hover:text-textBlueDark dark:group-hover:text-white lucide lucide-square-dashed-bottom-code">
+                                <path d="m10 10-2 2 2 2" />
+                                <path d="m14 14 2-2-2-2" />
+                                <path d="M5 21a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2" />
+                                <path d="M9 21h1" />
+                                <path d="M14 21h1" />
+                            </svg>
+
+                            <span class="flex-1 ms-3 whitespace-nowrap">Contacto</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" @click="mostrarModalCerrarSesion"
                             class="flex items-center p-2 md:px-2 md:py-6 text-white text-xl rounded-lg hover:bg-gray-100 hover:text-textBlueDark group">
                             <span class="flex-1 ms-3 whitespace-nowrap">Cerrar sesion</span>
                         </a>
@@ -161,11 +198,23 @@
 import { ref, watch, defineEmits } from 'vue'
 import { useRouter } from 'vue-router';
 import { useMyStore } from '@/stores/store.js';
+import ModalConfirmationX from '../utilities/ModalConfirmationX.vue';
 
 const emit = defineEmits(['cerrarSesion']);
 
 const router = useRouter();
 const store = useMyStore();
+
+const modalCerrarSesion = ref(false);
+
+const mostrarModalCerrarSesion = () => {
+    toggleSidebar()
+    modalCerrarSesion.value = true;
+}
+const cerrarModal = () => {
+    modalCerrarSesion.value = false;
+}
+
 
 const goHome = () => {
     toggleSidebar()
@@ -187,6 +236,14 @@ const goInventory = () => {
 const goSales = () => {
     toggleSidebar()
     router.push({ name: 'sales' })
+}
+const goReports = () => {
+    toggleSidebar()
+    router.push({ name: 'reports' })
+}
+const goContact = () => {
+    toggleSidebar()
+    router.push({ name: 'contact' })
 }
 
 

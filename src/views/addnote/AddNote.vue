@@ -29,7 +29,7 @@
                 @unselect-item="deseleccionarCliente">
             </SearchClientX>
 
-            <p class="w-full bg-gray-400 text-white text-center mt-3 font-semibold py-1 rounded-lg">PRODUCTOS A VENDER</p>
+            <p class="w-full  text-black text-center mt-3 font-semibold py-1 rounded-lg">LISTA DE PRODUCTOS A VENDER</p>
             <div class="w-full h-[60vh] overflow-scroll">
                 <template v-if="productosLista.length === 0">
                     <p class="w-full text-center mt-5 text-lg">

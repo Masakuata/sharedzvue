@@ -1,12 +1,10 @@
 <template>
-    <div class="w-full py-3 border border-gray-400 rounded-lg">
-        <p class="w-full text-lg font-semibold text-left ml-3">Detalles del producto</p>
-        <div class="flex flex-col px-3">
-            <template v-if="producto">
-
-                <div class="flex flex-row">
-                    <template v-if="!imageUrl">
-                        <svg class="w-16 h-16" width="400" height="400" viewBox="0 0 200 200" fill="none"
+    <p class="w-full text-lg font-semibold text-left ml-3">Detalles del producto</p>
+    <div class="w-full flex flex-row  py-3">
+        
+        <div class="w-5/12 h-60 bg-white rounded-lg">
+            <template v-if="!imageUrl">
+                        <svg class="w-full h-auto" width="400" height="400" viewBox="0 0 200 200" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <mask id="mask0_254_273" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
                                 width="200" height="200">
@@ -20,34 +18,32 @@
                         </svg>
                     </template>
                     <template v-else>
-                        <img :src="imageUrl" class="object-contain h-16 w-16  rounded-lg shadow-md" />
+                        <img :src="imageUrl" class="object-contain h-full w-full  rounded-lg shadow-md" />
                     </template>
-                    <p>{{ producto.nombre }}</p>
+        </div>
+        <div class="flex flex-col px-3 w-7/12 overflow-scroll">
+            <template v-if="producto">
+
+                <div class="flex flex-row">
+                    <p class="font-semibold">{{ producto.nombre }}</p>
                 </div>
                 <div class="flex flex-row">
-                    <p class="mr-2">Tipo de mascota:</p>
-                    <p>{{ producto.tipoMascota }}</p>
-                </div>
-                <div class="flex flex-row">
-                    <p class="mr-2">Raza:</p>
-                    <p>{{ producto.raza }}</p>
-                </div>
-                <div class="flex flex-row">
-                    <p class="mr-2">Precio:</p>
-                    <p>{{ producto.precio }}</p>
-                </div>
-                <div class="flex flex-row">
-                    <p class="mr-2">Presentación:</p>
                     <p>{{ producto.presentacion }}</p>
-                </div>
-                <div class="flex flex-row">
-                    <p class="mr-2">Disponibilidad:</p>
-                    <p class="text-green-600">{{ producto.cantidad }}</p>
                 </div>
                 <div class="flex flex-row">
                     <p class="mr-2">Peso:</p>
                     <p>{{ producto.peso + ' KG' }}</p>
                 </div>
+                <div class="flex flex-row">
+                    <p class="mr-2">Disponibilidad:</p>
+                    <p class="text-green-600" :class="{'text-green-600' : producto.cantidad > 0 , 'text-red-600' : producto.cantidad <= 0}">{{ producto.cantidad }}</p>
+                </div>
+                <div class="flex flex-row">
+                    <p class="text-2xl w-full text-right mt-4 font-medium">{{ '$' + producto.precio }}</p>
+                </div>
+                
+                
+                
 
             </template>
 

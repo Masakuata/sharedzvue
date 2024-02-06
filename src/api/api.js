@@ -191,6 +191,17 @@ export async function postVenta(venta) {
         throw error;
     }
 }
+export async function deleteVenta(idVenta) {
+    const complemento = '/venta/' + idVenta;
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.delete(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
 
 export async function getVentas(paramsMethod) {
     const complemento = '/venta/buscar';
@@ -406,6 +417,19 @@ export async function getUrlImage(id) {
     }).catch((error) => {
         return null
     })
+}
+export async function getReporte(paramsMethod) {
+    const complemento = '/reporte';
+    let urlnew = getUrl() + complemento;
+
+    console.log('paramsMethod', paramsMethod)
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
 }
 
 

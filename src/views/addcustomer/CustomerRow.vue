@@ -22,7 +22,7 @@
         <div class="flex flex-col w-2/3">
 
             <div class="flex flex-row w-full mt-2">
-                <p class="text-white font-semibold text-lg ml-3 mr-2">{{ cliente.nombre }}</p>
+                <p class="text-white font-semibold line-clamp-3 text-lg ml-3 mr-2">{{ cliente.nombre }}</p>
             </div>
 
             <div class="flex flex-row w-full px-3 pt-3">

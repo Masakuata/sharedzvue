@@ -75,7 +75,6 @@ const store = useMyStore();
 const isPushed = ref(false);
 
 const internalError = ref(false);
-
 const sessionExpired = ref(false);
 
 

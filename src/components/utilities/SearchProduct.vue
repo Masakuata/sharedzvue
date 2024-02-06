@@ -26,9 +26,9 @@
         <template v-else>
             <p>Producto seleccionado:</p>
             <div class="flex flex-row w-full h-14 items-center shadow-lg rounded-lg px-3 border border-gray-500">
-                <p class="w-full text-lg">{{ selectedItem.nombre }}</p>
-                <p class="w-full ">{{ presentacion }}</p>
-                <div class="flex flew-row w-10 justify-end">
+                <p class="w-7/12">{{ selectedItem.nombre }}</p>
+                <p class="w-4/12 ">{{ presentacion }}</p>
+                <div class="flex flew-row w-1/12 justify-end">
                     <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-x-circle text-red-700">

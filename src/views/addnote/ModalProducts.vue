@@ -39,7 +39,7 @@
 
                         <div v-if="!isProductInList" class="flex flex-row items-center text-right">
                             <p class="w-full text-left pr-3">Selecciona la cantidad</p>
-                            <input ref="refInputCantidad" v-model="cantidad"
+                            <input ref="refInputCantidad"  v-model="cantidad" @keyup.enter="confirm"
                                 class="w-20 h-10 border border-gray-400 rounded-lg mt-2 px-2">
                         </div>
 
@@ -62,7 +62,7 @@
 
                                 </div>
                                 <div v-else class="flex flex-row items-center justify-center h-14 w-6/12">
-                                    <input v-model="nuevaCantidad" class="w-20 h-10 border border-gray-400 rounded-lg px-2">
+                                    <input v-model="nuevaCantidad" @keyup.enter="confirm" class="w-20 h-10 border border-gray-400 rounded-lg px-2">
                                 </div>
 
                             </div>
@@ -88,8 +88,11 @@
                 </template>
                 <template v-else>
                     <div class="flex  flex-col  h-[50vh]" id="contenedorRegresar">
-                        <button @click="cancel"
-                            class="w-full text-white text-lg font-semibold h-12 mt-auto bg-red-500 rounded-lg">Regresar</button>
+                        <div class="mt-auto">
+                            <ButtonX color="red" @click="cancel" >Regresar</ButtonX>
+                        </div>
+                        
+                        
                     </div>
                 </template>
             </div>

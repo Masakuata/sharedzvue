@@ -1,13 +1,23 @@
 <template>
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible ">DETALLES DE VENTA</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible ">DETALLES DE
+        VENTA</h1>
+    <template v-if="modalEliminarVentaVisible">
+        <ModalConfirmationX :is-visible="modalEliminarVentaVisible" :is-important="true" titulo="Eliminación de venta"
+            texto-realizar="Eliminar" texto-cancelar="Regresar"
+            mensaje="¿Desea eliminar la venta? Esta acción eliminará todo registro relacionado con la venta y el inventario será restablecido?"
+            @cancelar="cerrarModalEliminarVenta" @realizar="eliminarVenta">
+
+        </ModalConfirmationX>
+    </template>
     <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
         <template v-if="!loading">
             <template v-if="!requestSent">
 
                 <div class="w-full">
-                    <p class="w-full text-center font-semibold bg-gray-400 text-white rounded-t-lg ">PRODUCTOS DE LA VENTA </p>
+                    <p class="w-full text-center font-semibold bg-gray-400 text-white rounded-t-lg ">PRODUCTOS DE LA VENTA
+                    </p>
                     <div class="w-full h-[40vh] border border-gray-400 rounded-b-lg p-3 overflow-scroll">
-                
+
                         <ProductoVentaRow v-for="product in productos" :key=product.id :producto="product">
                         </ProductoVentaRow>
                     </div>
@@ -16,7 +26,7 @@
 
 
                     <template v-if="sale">
-                        <DetallesVentaRow :sale="sale"></DetallesVentaRow>
+                        <DetallesVentaRow :sale="sale" @eliminar-venta="showModalEliminarVenta"></DetallesVentaRow>
                     </template>
 
 
@@ -34,7 +44,7 @@
 
                         </div>
                         <AlertX :flag="errorAbono" :message="errorMessageAbono"></AlertX>
-                       
+
                         <div class="flex flex-row w-full  border-bgBlue items-center space-x-2 pt-2">
                             <p class="font-semibold w-1/2">Monto del Abono</p>
                             <div class="w-1/2 text-right">
@@ -56,7 +66,7 @@
                             </div>
                         </div>
 
-                        
+
 
 
                         <div class="flex flex-row w-full mt-3">
@@ -86,7 +96,7 @@
                 <div class="w-full h-[90vh] flex justify-center items-center">
                     <template v-if="loadingSendAbono">
                         <div class="w-full">
-                            <p class="text-2xl font-semibold text-center text-bgBlue">Registrando abono...</p>
+                            <p class="text-2xl font-semibold text-center text-bgBlue">{{ mensajeLoading }}</p>
                             <div class="w-full flex justify-center mt-2">
                                 <svg aria-hidden="true"
                                     class="w-16 h-16 text-white animate-spin dark:text-gray-600 fill-bgBlue"
@@ -102,7 +112,7 @@
                         </div>
                     </template>
                     <template v-else>
-                        <template v-if="!error">
+                        <template v-if="!error && !ventaEliminada">
                             <div class="w-full">
                                 <p class="text-2xl font-semibold text-center text-bgBlue">Abono registrado exitósamente</p>
                                 <div class="w-full flex justify-center mt-2">
@@ -121,7 +131,25 @@
                             </div>
 
                         </template>
+                        <template v-else-if="!error && ventaEliminada">
+                            <div class="w-full">
+                                <p class="text-2xl font-semibold text-center text-bgBlue">Venta eliminada exitósamente</p>
+                                <div class="w-full flex justify-center mt-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="currentFill" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-check-check w-16 h-auto text-green-600 fill-gray-100">
+                                        <path d="M18 6 7 17l-5-5" />
+                                        <path d="m22 10-7.5 7.5L13 16" />
+                                    </svg>
+                                </div>
+                                <div class="p-2 w-full">
+                                    <ButtonX @click="aceptar" color="blue">Aceptar</ButtonX>
+                                </div>
 
+                            </div>
+
+                        </template>
                         <template v-else>
                             <div class="w-full">
                                 <p class="text-2xl font-semibold text-center text-bgBlue">Error al registrar el abono</p>
@@ -176,7 +204,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
-import { getDetallesVenta, postAbono } from '@/api/api.js';
+import { getDetallesVenta, postAbono, deleteVenta } from '@/api/api.js';
 import ProductoVentaRow from './ProductoVentaRow.vue';
 import AlertX from '@/components/utilities/AlertX.vue';
 import { getHoyString } from '@/utils/validator.js'
@@ -184,6 +212,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ClienteDetailRow from './ClienteDetailRow.vue';
 import DetallesVentaRow from './DetallesVentaRow.vue';
+import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -210,10 +239,19 @@ const abono = ref('0');
 
 const finiquitarRestante = ref(false);
 
+const modalEliminarVentaVisible = ref(false)
+
+const ventaEliminada = ref(false);
+const mensajeLoading = ref("")
 
 
 
-
+const showModalEliminarVenta = () => {
+    modalEliminarVentaVisible.value = true;
+}
+const cerrarModalEliminarVenta = () => {
+    modalEliminarVentaVisible.value = false;
+}
 
 
 
@@ -236,6 +274,26 @@ watch(
     }
 );
 
+const eliminarVenta = async () => {
+    console.log(route.params.id)
+    cerrarModalEliminarVenta()
+    console.log('Eliminadno venta')
+    mensajeLoading.value = "Eliminado venta...";
+    try {
+        requestSent.value = true;
+        loadingSendAbono.value = true;
+        let response = await deleteVenta(route.params.id);
+
+        loadingSendAbono.value = false;
+        ventaEliminada.value = true;
+
+    } catch (error) {
+        loadingSendAbono.value = false;
+        console.log(error);
+    }
+
+}
+
 const filtrarEntrada = (input) => {
 
     if (typeof input === 'number') {
@@ -255,6 +313,7 @@ const filtrarEntrada = (input) => {
 };
 
 const registrarAbono = async () => {
+    mensajeLoading.value = "Registrando abono...";
 
     if (abono.value === '' || abono.value === '0') {
         errorAbono.value = true;
@@ -275,6 +334,7 @@ const registrarAbono = async () => {
             abono.value = '';
         } catch (error) {
             loadingSendAbono.value = false;
+            error.value = true;
             console.log(error);
         }
 
@@ -305,7 +365,12 @@ const aceptar = () => {
     requestSent.value = false;
     error.value = false;
     errorMessage.value = '';
-    getDetailsVenta(route.params.id);
+    if (ventaEliminada) {
+        router.go(-1)
+    } else {
+        getDetailsVenta(route.params.id);
+    }
+
 };
 
 

@@ -61,6 +61,42 @@ export const getHoyString = () => {
     return fechaString;
 }
 
+export const getHoyDate = () => {
+    const hoy  = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+    const fecha =  hoy.toISOString().split('T')[0];
+    return fecha;
+}
+
+export const getAnioActural = () => {
+    const hoy  = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+    return hoy.getFullYear();
+}
+
+export const getMesActual = () => {
+    let meses = [
+        { value: 1, texto: 'Enero' },
+        { value: 2, texto: 'Febrero' },
+        { value: 3, texto: 'Marzo' },
+        { value: 4, texto: 'Abril' },
+        { value: 5, texto: 'Mayo' },
+        { value: 6, texto: 'Junio' },
+        { value: 7, texto: 'Julio' },
+        { value: 8, texto: 'Agosto' },
+        { value: 9, texto: 'Septiembre' },
+        { value: 10, texto: 'Octubre' },
+        { value: 11, texto: 'Noviembre' },
+        { value: 12, texto: 'Diciembre' }
+    ]
+    const hoy  = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+    let numeroMes = hoy.getMonth() + 1;
+
+    //encontrar el indice el mes de hoy
+    let index = meses.findIndex(mes => mes.value === numeroMes);
+
+    return meses[index]
+
+}
+
 export const filtrarEntrada = (input) => {
     // Primero, quitar todos los caracteres que no sean dígitos o puntos
     let filtrado = input.replace(/[^\d.]/g, '');

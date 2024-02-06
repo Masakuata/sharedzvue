@@ -19,7 +19,7 @@
         </template>
         <template v-else>
             <div>
-                <div class="flex flex-row w-full h-14 bg-gray-200 pt-2  rounded-t-lg overflow-hidden">
+                <div class="flex flex-row w-full h-14 bg-gray-200 pt-2   overflow-hidden" :class="{'rounded-lg' : !showDirections , 'rounded-t-lg' : showDirections}">
 
 
 
@@ -50,7 +50,7 @@
 
                 </div>
                 <div class="w-full">
-                    <template v-if="selectedItem.direcciones.length > 0">
+                    <template v-if="selectedItem.direcciones.length > 0 && showDirections">
 
                         <SelectXDirecciones :elementos="selectedItem.direcciones" @select-item="seleccionarDireccion">
                         </SelectXDirecciones>
@@ -70,6 +70,10 @@ import SelectXDirecciones from './SelectXDirecciones.vue';
 
 const props = defineProps({
     reload: Boolean,
+    showDirections: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const direccionesFormat = ref([]);
