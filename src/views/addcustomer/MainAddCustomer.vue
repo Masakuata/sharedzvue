@@ -23,8 +23,11 @@
                         <p class="text-xl font-bold text-gray-900">Cargando...</p>
                     </div>
                 </template>
-                <div class="w-full h-[80vh] overflow-scroll mt-2">
-                    <CustomerRow v-for="cliente in clientes" :key="cliente.id" :cliente="cliente"></CustomerRow>
+                <div class="w-full h-[80vh] md:grid md:grid-cols-3 overflow-scroll mt-2">
+                    <div v-for="cliente in clientes" :key="cliente.id" class="md:p-3 w-full">
+                        <CustomerRow  :cliente="cliente"></CustomerRow>
+                    </div>
+                    
                     <template v-if="isThereMoreResults">
                         <div class="w-full mt-2">
                             <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más
@@ -70,7 +73,6 @@ const loadingaddItems = ref(false);
 watch(
     () => searchQuery.value,
     () => {
-        console.log('searchQuery changed');
         page.value = 0;
         getClientes();
     }
@@ -91,7 +93,6 @@ const sessionExpired = ref(false);
 const getClientes = async () => {
 
     try {
-        console.log('entrando al get clientes');
         loading.value = true;
         clientes.value = [];
         page.value = 0;
@@ -100,7 +101,6 @@ const getClientes = async () => {
             pag: page.value,
         }
         const response = await getClientesBusqueda(query);
-        console.log('Se asigno la nueva respuesta', response.data);
         internalError.value = false;
         clientes.value = response.data;
         if (clientes.value.length == 0) {

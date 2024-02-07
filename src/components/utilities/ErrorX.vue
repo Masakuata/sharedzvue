@@ -8,10 +8,14 @@
             <p class="w-full text-2xl text-center text-bgBlue font-semibold">{{ title }}</p>
             <p class="text-xl text-center text-bgBlue ">{{ message }}</p>
 
-            <p v-if="showContact" class="w-full text-center font-semibold my-2">Si el error persiste, póngase en contacto con soporte técnico: contacto@xatal.com.mx</p>
+            <p v-if="showContact" class="w-full text-center font-semibold my-2">Si el error persiste, póngase en contacto
+                con soporte técnico: contacto@xatal.com.mx</p>
 
-            <div class="p-2 w-full">
-                <ButtonX color="blue" @click="emitirAceptar">{{ buttonMessage }}</ButtonX>
+            <div class="p-2 w-full  md:flex md:flex-row md:justify-center">
+                <div class="w-full md:w-96">
+                    <ButtonX color="blue" @click="emitirAceptar">{{ buttonMessage }}</ButtonX>
+                </div>
+
             </div>
 
         </div>

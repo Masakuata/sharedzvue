@@ -13,6 +13,9 @@
             <div class="w-1/2 bg-bgGray h-full p-2">
                 <div class="h-full w-full flex flex-col  font-semibold">
                     <div class="w-full border-b border-gray-500">
+                        <p>Fecha</p>
+                    </div>
+                    <div class="w-full border-b border-gray-500">
                         <p>Total de venta</p>
                     </div>
                     <div class="w-full border-b border-gray-500">
@@ -25,6 +28,7 @@
 
             </div>
             <div class="flex flex-col p-2 w-1/2 text-white font-semibold">
+                <div class="w-full border-b border-gray-500">{{ sale.fecha }}</div>
                 <div class="w-full border-b border-gray-500">{{ '$' + sale.total }}</div>
                 <div class="w-full border-b border-gray-500">{{ '$' + sale.abonado }}</div>
                 <div class="w-full border-b border-gray-500">{{ '$' + restante }}</div>

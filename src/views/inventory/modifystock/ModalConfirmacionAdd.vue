@@ -1,8 +1,8 @@
 <template>
     <div @click="clickOut" v-if="isVisible"
         class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-gray-100 h-[30vh] rounded-lg  w-full mx-4 z-50">
-            <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Actualización de inventario</p>
+        <div class="bg-gray-100 h-[30vh] rounded-lg  w-full md:w-2/4 mx-4 z-50">
+            <p class="w-full  h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Actualización de inventario</p>
             <template v-if="!requestSent">
                 
                 <div class="w-full px-3">

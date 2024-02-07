@@ -1,6 +1,6 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
-        <div class="bg-white rounded-lg mx-4 w-full z-50">
+        <div class="bg-white rounded-lg mx-4 w-full md:w-6/12 z-50">
             <p class="w-full text-white text-center font-semibold bg-bgBlue h-10 rounded-t-lg py-2">Detalles del produco</p>
             <div class="p-4">
                 <div class="mt-3">
@@ -149,6 +149,7 @@ const toggleEditCantidadMode = () => {
 watch(
     () => nuevaCantidad.value,
     () => {
+        errorCantidadMayor.value = false;
         calcularNuevaCantidad();
     }
 )

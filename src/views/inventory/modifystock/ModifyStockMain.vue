@@ -15,13 +15,14 @@
     <template v-if="sessionExpired">
         <ModalSesionExpired></ModalSesionExpired>
     </template>
-    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">EXISTENCIAS</h1>
+    <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible">EXISTENCIAS</h1>
     <template v-if="!internalError">
         <template v-if="!loading">
             <div @click="clickEnDiv" class="flex flex-col items-center pt-4 px-4  w-full">
-                <div class="flex flex-row w-full mt-3 rounded-lg overflow-hidden">
-                    <div class="w-5/12  rounded-lg h-full">
-                        <div class="p-3 h-full w-full">
+                <div class="w-full md:px-40">
+                    <div class="flex flex-row w-full mt-3 rounded-lg overflow-hidden md:justify-center">
+                    <div class="w-5/12   rounded-lg h-full">
+                        <div class="p-3 h-full w-full md:w-40  ">
                             <template v-if="!imageUrl">
                                 <svg class="w-full h-full" width="400" height="400" viewBox="0 0 200 200" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +47,7 @@
 
                         <div class="flex flex-row w-full items-center">
                             <p class=" font-semibold text-lg ml-3 mr-2 w-10/12">{{ producto.nombre }}</p>
-                            <div class="w-2/12 h-10 text-red-600 flex flex-row pr-2" @click="mostrarModalDelete">
+                            <div class="w-2/12 h-10 text-red-600 flex flex-row pr-2 md:justify-end" @click="mostrarModalDelete">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-trash-2 h-auto">
@@ -61,30 +62,33 @@
                         <div class="w-full pl-3">
                             <p class=" font-semibold text-lg">{{ producto.presentacion }}</p>
                         </div>
-                        <div class="w-full px-4">
-                            <button @click="goEditar" class="bg-bgPurple rounded-xl mt-1 text-white w-full">Editar</button>
+                        <div class="w-full px-4 md:flex md:flex-row md:justify-end">
+                            <button @click="goEditar" class="bg-bgPurple rounded-xl mt-1 text-white w-full md:w-32">Editar</button>
                         </div>
 
                     </div>
 
                 </div>
-                <div class="w-full text-lg">
-                    <div class="flex flex-row">
-                        <p class="w-2/3 font-semibold">Cantidad en inventario</p>
+                </div>
+                
+                <div class="w-full text-lg md:ml-80">
+
+                    <div class="flex flex-row md:w-full">
+                        <p class="w-2/3 md:w-52  font-semibold">Cantidad en inventario</p>
                         <p class="w-1/3 font-semibold"
                             :class="[{ 'text-green-800': producto.cantidad > 0 }, { 'text-red-800': producto.cantidad <= 0 }]">
                             {{ producto.cantidad }}</p>
                     </div>
                     <div class="flex flex-row">
-                        <p class="w-2/3 font-semibold">Precio público</p>
+                        <p class="w-2/3 md:w-52 font-semibold">Precio público</p>
                         <p class="w-1/3">{{ precioPublico }}</p>
                     </div>
                     <div class="flex flex-row">
-                        <p class="w-2/3 font-semibold">Precio detalle</p>
+                        <p class="w-2/3 md:w-52 font-semibold">Precio detalle</p>
                         <p class="w-1/3">{{ precioDetalle }}</p>
                     </div>
                     <div class="flex flex-row">
-                        <p class="w-2/3 font-semibold">Precio mayorista</p>
+                        <p class="w-2/3 md:w-52 font-semibold">Precio mayorista</p>
                         <p class="w-1/3">{{ precioMayorista }}</p>
                     </div>
 
@@ -120,9 +124,8 @@
                 
 
 
-                <div class="w-full flex flex-col justify-end ">
+                <div class="w-full flex flex-col justify-end md:px-56 ">
                     <ButtonX color="red" @click="regresar">Regresar</ButtonX>
-
                 </div>
             </div>
 

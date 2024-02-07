@@ -95,7 +95,7 @@ const construirTextoDirecciones = () => {
 };
 
 const medirDimenciones = () => {
-    if (props.cliente.nombre.length > 20) {
+    if (props.cliente.nombre.length > 30) {
         tieneNombreGrande.value = true;
     } else {
         tieneNombreGrande.value = false;

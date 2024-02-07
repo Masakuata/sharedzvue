@@ -213,6 +213,7 @@ const construirQuery = () => {
 
     if (clienteSeleccionado.value != null) {
         query.cliente = clienteSeleccionado.value.id;
+        query.nombre_cliente = clienteSeleccionado.value.nombre;
     }
     if (estadoVentaSeleccionado.value != 2){
         query.pagado = estadoVentaSeleccionado.value;

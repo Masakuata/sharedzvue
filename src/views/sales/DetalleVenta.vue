@@ -16,10 +16,13 @@
                 <div class="w-full">
                     <p class="w-full text-center font-semibold bg-gray-400 text-white rounded-t-lg ">PRODUCTOS DE LA VENTA
                     </p>
-                    <div class="w-full h-[40vh] border border-gray-400 rounded-b-lg p-3 overflow-scroll">
+                    <div
+                        class="w-full h-[40vh] border border-gray-400 rounded-b-lg p-3 overflow-scroll md:grid md:grid-cols-3 ">
+                        <div v-for="product in productos" :key=product.id class="md:p-2 h-20">
+                            <ProductoVentaRow :producto="product">
+                            </ProductoVentaRow>
+                        </div>
 
-                        <ProductoVentaRow v-for="product in productos" :key=product.id :producto="product">
-                        </ProductoVentaRow>
                     </div>
 
                     <ClienteDetailRow :cliente="cliente"></ClienteDetailRow>
@@ -58,9 +61,9 @@
                                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                         </svg>
                                     </div>
-                                    <input type="search" :disabled="finiquitarRestante" v-model="abono" id="default-search"
-                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500   "
-                                        required>
+                                    <input v-if="!modalEliminarVentaVisible"  :disabled="finiquitarRestante" v-model="abono" id="default-search"
+                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                        >
 
                                 </div>
                             </div>

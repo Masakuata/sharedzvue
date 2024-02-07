@@ -45,7 +45,7 @@
                 </div>
             </template>
             <template v-else>
-                <div class="w-full  md:grid md:grid-cols-3 overflow-scroll"
+                <div class="w-full  md:grid md:grid-cols-2 xl:grid-cols-3 overflow-scroll"
                     :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h-[70vh]': !isFromCliente }]">
                     <div v-for="item in items" :key="item.id" class="md:p-3 w-full md:h-full">
                         <SaleRow :sale="item"></SaleRow>

@@ -431,6 +431,16 @@ export async function getReporte(paramsMethod) {
         throw error;
     }
 }
+export async function postTipoCliente(tipoCliente) {
+    const complemento = '/tipoCliente';
+    let urlnew = getUrl() + complemento;
+    try {
+        let respuesta = await axiosInstance.post(urlnew, tipoCliente);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 

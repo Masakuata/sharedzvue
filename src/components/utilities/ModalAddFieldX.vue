@@ -1,13 +1,13 @@
 <template>
     <div @click="clickOut" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-gray-100 h-fit pb-10 rounded-lg  w-full mx-4 z-50">
+        <div class="bg-gray-100 h-fit pb-10 rounded-lg  w-full md:w-6/12 mx-4 z-50">
             <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">{{ titulo }}</p>
             <div class="w-full px-3">
                 <p class="mt-4 text-lg font-semibold text-black w-full text-center">{{ mensaje }}</p>
                 <AlertX :flag="alerVisible" message='Ingresa una dirección válida por favor.'></AlertX>
                 <div class="w-full flex flex-row justify-center">
 
-                    <input v-model="valor" id="default-search"
+                    <input v-model="valor" 
                         class="block w-full p-4 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                         required>
 

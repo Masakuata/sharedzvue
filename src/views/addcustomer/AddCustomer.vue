@@ -3,7 +3,16 @@
     <template v-if="sessionExpired">
         <ModalSesionExpiredVue></ModalSesionExpiredVue>
     </template>
-    
+    <template v-if="modalAgregarTipoClienteVisible">
+        <ModalAddFieldX :is-edit="false" titulo="Nuevo tipo de cliente"
+            mensaje="Agrega un nuevo tipo de cliente. Recuerda agregar el precio de este tipo de cliente a los productos previamente registrados."
+            @confirmar="registrarTipoCliente"
+            @cerrarModal="cerrrarModalAgregarTipoCliente">
+            
+            
+        </ModalAddFieldX>
+    </template>
+
     <div @click="closeSidebar" class="flex flex-col items-center p-4  w-full h-full md:h-full">
         <template v-if="!internalError">
             <div class="flex flex-row">
@@ -35,6 +44,8 @@
                     <SelectX :elementos="tiposFormato" @selectItem="seleccionarTipo"></SelectX>
                 </div>
             </template>
+            <p class="underline text-blue-400 my-2 w-full text-center" @click="mostrarModalAgregarTipoCliente">¿Necesitas
+                registrar un nuevo tipo de cliente? Haz click aqui</p>
 
             <div class="w-full">
                 <label for="correo" class="block text-sm font-medium text-bgBlue">Correo</label>
@@ -106,11 +117,12 @@ import ButtonX from '@/components/utilities/ButtonX.vue';
 import { toast } from 'vue3-toastify';
 import { useRouter } from 'vue-router';
 import SelectX from '@/components/utilities/SelectX.vue';
-import { getTiposCliente } from '@/api/api.js';
+import { getTiposCliente, postTipoCliente } from '@/api/api.js';
 import MultiRegistAddressX from '@/components/utilities/MultiRegistAddressX.vue';
 import AlertX from '@/components/utilities/AlertX.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
 import ModalSesionExpiredVue from '@/components/utilities/ModalSesionExpired.vue';
+import ModalAddFieldX from '@/components/utilities/ModalAddFieldX.vue';
 
 
 const router = useRouter();
@@ -125,14 +137,38 @@ const switchMultiAdress = ref(false);
 const sessionExpired = ref(false);
 const internalError = ref(false);
 
+const modalAgregarTipoClienteVisible = ref(false);
+
 
 const actualizarDirecciones = (direccionesEmit) => {
     faltaDirecciones.value = false;
     direcciones.value = direccionesEmit;
 };
+const mostrarModalAgregarTipoCliente = () => {
+    modalAgregarTipoClienteVisible.value = true;
+}
+
+const cerrrarModalAgregarTipoCliente = () => {
+    modalAgregarTipoClienteVisible.value = false;
+}
+
+const registrarTipoCliente = async (tipoCliente) => {
+    cerrrarModalAgregarTipoCliente();
+    console.log( 'Registrrando' + tipoCliente);
+    let tipoClienteAux = {
+        nombre: tipoCliente,
+    }
+    try{    
+        await postTipoCliente(tipoClienteAux);
+        getTipos();
+    }catch(error){
+        internalError.value = true;
+    }
+}
 
 const getTipos = async () => {
     try {
+        tipos.value = [];
         const response = await getTiposCliente();
         tipos.value = response.data;
         internalError.value = false;
@@ -162,6 +198,7 @@ const seleccionarTipo = (elemento) => {
 }
 
 const formatearTipos = () => {
+    tiposFormato.value = [];
     tipos.value.forEach(element => {
         tiposFormato.value.push({ value: element.id, text: element.tipoCliente });
     });

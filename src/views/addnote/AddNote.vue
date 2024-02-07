@@ -30,14 +30,20 @@
             </SearchClientX>
 
             <p class="w-full  text-black text-center mt-3 font-semibold py-1 rounded-lg">LISTA DE PRODUCTOS A VENDER</p>
-            <div class="w-full h-[60vh] overflow-scroll">
-                <template v-if="productosLista.length === 0">
+            <template v-if="productosLista.length === 0">
                     <p class="w-full text-center mt-5 text-lg">
                         No hay productos agregados
                     </p>
                 </template>
-                <ProductoVenderRow v-for="product in productosLista" :key=product.id :producto="product"
+            <div class="w-full overflow-scroll h-[60vh] md:grid md:grid-cols-2 xl:grid-cols-3 md:w-full md:h-[60vh] md:overflow-scroll ">
+                
+                
+                <div class="px-2 h-fit" v-for="product in productosLista" :key=product.id >
+                    <ProductoVenderRow  :producto="product"
                     @unselect-item="unselectProduct" :is-deletable="true" @showDetails="selectProduct"></ProductoVenderRow>
+                </div>
+                
+
             </div>
             <div class="w-full mt-2">
                 <ButtonX color="purple" :is-slim="true" icon="add" @click="showModalProducts">Agregar producto</ButtonX>
