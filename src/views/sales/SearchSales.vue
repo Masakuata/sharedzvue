@@ -45,9 +45,11 @@
                 </div>
             </template>
             <template v-else>
-                <div class="w-full overflow-scroll"
-                    :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h[80vh]': !isFromCliente }]">
-                    <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
+                <div class="w-full  md:grid md:grid-cols-3 overflow-scroll"
+                    :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h-[70vh]': !isFromCliente }]">
+                    <div v-for="item in items" :key="item.id" class="md:p-3 w-full md:h-full">
+                        <SaleRow :sale="item"></SaleRow>
+                    </div>
 
                     <button v-if="isThereMoreResults" @click="addItems"
                         class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
@@ -57,6 +59,7 @@
                         <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
                     </div>
                 </div>
+
             </template>
 
 
@@ -162,6 +165,7 @@ watch(
         page.value = 0;
         if (opcionSeleccionada.value === 'fecha-dia') {
             isFechaDia.value = true;
+            construirQuery();
         } else {
             isFechaDia.value = false;
             construirQuery();
@@ -193,7 +197,7 @@ const construirQuery = () => {
     query.value = {};
     query.value.cliente = nombreCliente.value;
 
-    console.log('La query es:' + query.value)
+    console.log('La opcion seleccionada es:' + opcionSeleccionada.value);
 
     if (opcionSeleccionada.value === 'todas') {
         agregarQueryProps();
@@ -202,6 +206,7 @@ const construirQuery = () => {
     }
 
     if (opcionSeleccionada.value === '') {
+        console.log('No hay opcion seleccionada');
         query.value.pagado = 0;
         agregarQueryProps();
         getItems();
@@ -214,8 +219,9 @@ const construirQuery = () => {
         return
     }
     if (opcionSeleccionada.value === 'fecha-dia') {
-
+        console.log('La fecha es:' + dateValue.value);
         if (dateValue.value == null || dateValue.value.length === 0) {
+            console.log('No hay fecha');
             return
         }
 

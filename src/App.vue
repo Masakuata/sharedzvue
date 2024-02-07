@@ -4,7 +4,7 @@
   <main>
 
     <div class="flex flex-col bg-white md:flex  md:flex-row">
-      <div v-if="isLogged" class="w-full bg-bgBlue">
+      <div v-if="isLogged" class="w-full md:w-fit bg-bgBlue">
         <SideBar @cerrarSesion="cerrarSesion"></SideBar>
       </div>
       <div class="md:w-full md:h-[90vh] h-[90vh] bg-white" :class="{'bg-white' : isLogged }">
