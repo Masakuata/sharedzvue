@@ -1,8 +1,11 @@
 <template>
     <div @click="clickOut" v-if="isVisible"
         class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-gray-100 h-fit pb-10 rounded-lg  w-full mx-4 z-50">
-            <p class="bg-bgBlue h-12 rounded-t-lg text-lg font-semibold text-white w-full text-center">{{ titulo }}</p>
+        <div class="bg-gray-100 h-fit pb-10 rounded-lg  w-full md:w-2/4 mx-4 z-50">
+            <div class="w-full flex flex-row h-12 bg-bgBlue rounded-t-lg text-white justify-center items-center">
+                <p class="text-lg font-semibold text-white w-full text-center">{{ titulo }}</p>
+            </div>
+            
             <div class="p-3">
                 <p class="w-full text-center font-semibold">{{ mensaje }}</p>
                 <div class="flex flex-row w-full mt-3">

@@ -1,16 +1,19 @@
 <template>
     <div @click="clickOut" v-if="isVisible"
         class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-gray-100 h-[90vh] rounded-lg  w-full mx-4 z-50">
+        <div class="bg-gray-100 h-[90vh] rounded-lg md:w-3/4 w-full mx-4 z-50">
 
             <template v-if="!requestSent">
                 <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la venta
                 </p>
                 <div class="w-full p-4 h-[80vh] overflow-scroll">
                     <p class="w-full text-center font-semibold text-lg">Productos a vender</p>
-                    <div class="w-full h-96  overflow-scroll">
-                        <ProductoVenderRow v-for="product in productos" :key=product.id :producto="product">
-                        </ProductoVenderRow>
+                    <div class="w-full h-96  overflow-scroll md:grid md:grid-cols-2 xl:grid-cols-3">
+                        <div class="md:p-2" v-for="product in productos" :key=product.id>
+                            <ProductoVenderRow :producto="product">
+                            </ProductoVenderRow>
+                        </div>
+
                     </div>
                     <div class="w-full flex flex-row items-center border-b border-gray-400 py-3">
                         <div class="w-1/12">
@@ -38,8 +41,8 @@
                             <p class="w-full text-center font-semibold">{{ total + 'KG' }}</p>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div class="flex flex-row w-full h-10  items-center border-t border-bgBlue ">
                         <div class="flex flex-row w-full h-10  items-center bg-blueLetters rounded-lg px-2 mt-2"
                             @click="togleFiniquitarRestante">
@@ -75,7 +78,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
 
 
                     <div class="flex flex-row w-full mt-3">
@@ -120,7 +123,7 @@
                                         <path d="m22 10-7.5 7.5L13 16" />
                                     </svg>
                                 </div>
-                                <div class="p-2 w-full">
+                                <div class="p-2 w-full md:px-20 ">
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
 
@@ -244,7 +247,7 @@ const construirVenta = () => {
 };
 
 const registrarVentaApi = async () => {
-    if(errorCantidadMayor.value){
+    if (errorCantidadMayor.value) {
         return;
     }
     try {
@@ -253,7 +256,7 @@ const registrarVentaApi = async () => {
         let venta = construirVenta();
         await postVenta(venta);
         loading.value = false;
-        
+
     } catch (errorResponse) {
 
 

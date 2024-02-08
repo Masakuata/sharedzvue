@@ -27,18 +27,24 @@
 
             </template>
             <template v-else>
-
-                <ProductinventoryItem v-for="item in items" :key="item.id" :producto="item" @click="onGo">
-                </ProductinventoryItem>
-                <template button v-if="isThereMoreResults">
-                    <div class="w-full mt-2">
-                        <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más
-                            productos</ButtonX>
+                <div class="w-full md:grid md:grid-cols-2 xl:grid-cols-3">
+                    <div class="md:px-2" v-for="item in items" :key="item.id">
+                        <ProductinventoryItem :producto="item" @click="onGo">
+                        </ProductinventoryItem>
                     </div>
-                </template>
-                <div v-else-if="!isThereMoreResults" class="w-full h-24 flex flex-col items-center justify-center">
-                    <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+
+                    <template button v-if="isThereMoreResults">
+                        <div class="w-full mt-2">
+                            <ButtonX :isLoading="loadingaddItems" @click="addItems" :isSlim="true" color="green">Cargar más
+                                productos</ButtonX>
+                        </div>
+                    </template>
+                    <div v-else-if="!isThereMoreResults" class="w-full h-24 flex flex-col items-center justify-center">
+                        <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+                    </div>
                 </div>
+
+
 
 
             </template>
@@ -75,7 +81,6 @@ const store = useMyStore();
 const isPushed = ref(false);
 
 const internalError = ref(false);
-
 const sessionExpired = ref(false);
 
 
@@ -168,7 +173,7 @@ const addItems = async () => {
             sessionExpired.value = true;
             return;
         }
-        
+
     }
 }
 

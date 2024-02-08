@@ -1,9 +1,12 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
-        <div class="bg-white rounded-lg mx-4 max-h-[80vh]  w-full z-50">
-            <p class="bg-bgBlue text-center text-white text-xl h-fit p-2 pt-5 rounded-t-lg">Selecciona un producto y
+        <div class="bg-white rounded-lg mx-4 max-h-[80vh] md:w-6/12   w-full z-50">
+            <div class="bg-bgBlue w-full py-2 flex flex-row items-center rounded-t-lg ">
+                <p class=" text-white text-xl w-full text-center ">Selecciona un producto y
                 agrégalo a
                 la lista de compra</p>
+            </div>
+            
 
 
             <div class="p-4 overflow-scroll h-[60vh]">
@@ -39,7 +42,7 @@
 
                         <div v-if="!isProductInList" class="flex flex-row items-center text-right">
                             <p class="w-full text-left pr-3">Selecciona la cantidad</p>
-                            <input ref="refInputCantidad" v-model="cantidad"
+                            <input ref="refInputCantidad"  v-model="cantidad" @keyup.enter="confirm"
                                 class="w-20 h-10 border border-gray-400 rounded-lg mt-2 px-2">
                         </div>
 
@@ -62,7 +65,7 @@
 
                                 </div>
                                 <div v-else class="flex flex-row items-center justify-center h-14 w-6/12">
-                                    <input v-model="nuevaCantidad" class="w-20 h-10 border border-gray-400 rounded-lg px-2">
+                                    <input v-model="nuevaCantidad" @keyup.enter="confirm" class="w-20 h-10 border border-gray-400 rounded-lg px-2">
                                 </div>
 
                             </div>
@@ -88,8 +91,11 @@
                 </template>
                 <template v-else>
                     <div class="flex  flex-col  h-[50vh]" id="contenedorRegresar">
-                        <button @click="cancel"
-                            class="w-full text-white text-lg font-semibold h-12 mt-auto bg-red-500 rounded-lg">Regresar</button>
+                        <div class="mt-auto">
+                            <ButtonX color="red" @click="cancel" >Regresar</ButtonX>
+                        </div>
+                        
+                        
                     </div>
                 </template>
             </div>

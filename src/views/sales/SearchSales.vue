@@ -31,9 +31,12 @@
                 </div>
 
             </template>
-            <p class="w-full font-semibold">Cliente</p>
-            <input type="text" v-model="nombreCliente" placeholder="Nombre del cliente..."
-                class="border rounded w-full h-10 px-2 mb-3" />
+            <template v-if="!isFromCliente">
+                <p class="w-full font-semibold">Cliente</p>
+                <input type="text" v-model="nombreCliente" placeholder="Nombre del cliente..."
+                    class="border rounded w-full h-10 px-2 mb-3" />
+            </template>
+
 
             <template v-if="firstLoading">
                 <div class="w-full h-96 flex flex-col items-center justify-center">
@@ -41,19 +44,29 @@
                     <p class="text-xl font-bold text-gray-900">Cargando...</p>
                 </div>
             </template>
+            <template v-else>
+                <div class="w-full  md:grid md:grid-cols-2 xl:grid-cols-3 overflow-scroll"
+                    :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h-[70vh]': !isFromCliente }]">
+                    <div v-for="item in items" :key="item.id" class="md:p-3 w-full md:h-full">
+                        <SaleRow :sale="item"></SaleRow>
+                    </div>
 
-            <div class="w-full overflow-scroll"
-                :class="[{ 'min-h-24 max-h-72': isFromCliente }, { 'h[80vh]': !isFromCliente }]">
-                <SaleRow v-for="item in items" :key="item.id" :sale="item"></SaleRow>
+                    <template v-if="isThereMoreResults">
+                        <div class="mt-3">
+                            <ButtonX @click="addItems" color="purple" :isSlim="true" :isLoading="loadingAdd">Cargar items</ButtonX>
+                        </div>
+                    </template>
+                    
 
-                <button v-if="isThereMoreResults && !firstLoading" @click="addItems"
-                    class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
-
-                <div v-else-if="!isThereMoreResults && !firstLoading"
-                    class="w-full h-24 flex flex-col items-center justify-center">
-                    <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+                    <div v-else-if="!isThereMoreResults && !firstLoading"
+                        class="w-full h-24 flex flex-col items-center justify-center">
+                        <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
+                    </div>
                 </div>
-            </div>
+
+            </template>
+
+
         </template>
         <template v-else>
             <ErrorX @aceptar="construirQuery"></ErrorX>
@@ -67,7 +80,7 @@
 
 import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
 import { getVentas } from '@/api/api.js';
-import { isFutureDate } from '@/utils/validator.js';
+import { isFutureDate, getHoyDate } from '@/utils/validator.js';
 import AlertX from '@/components/utilities/AlertX.vue';
 import SaleRow from '@/components/SaleRow.vue';
 import ModalAbonar from '@/views/sales/ModalAbonar.vue';
@@ -75,6 +88,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router';
 import ErrorX from '@/components/utilities/ErrorX.vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+
 
 
 
@@ -121,6 +135,8 @@ const firstLoading = ref(false);
 const opcionSeleccionada = ref('');
 
 const isVisibleDatePicker = ref(true);
+const loadingAdd = ref(false);
+
 
 
 
@@ -155,6 +171,7 @@ watch(
         page.value = 0;
         if (opcionSeleccionada.value === 'fecha-dia') {
             isFechaDia.value = true;
+            construirQuery();
         } else {
             isFechaDia.value = false;
             construirQuery();
@@ -186,7 +203,7 @@ const construirQuery = () => {
     query.value = {};
     query.value.cliente = nombreCliente.value;
 
-    console.log('La query es:' + query.value)
+    console.log('La opcion seleccionada es:' + opcionSeleccionada.value);
 
     if (opcionSeleccionada.value === 'todas') {
         agregarQueryProps();
@@ -195,6 +212,7 @@ const construirQuery = () => {
     }
 
     if (opcionSeleccionada.value === '') {
+        console.log('No hay opcion seleccionada');
         query.value.pagado = 0;
         agregarQueryProps();
         getItems();
@@ -207,8 +225,9 @@ const construirQuery = () => {
         return
     }
     if (opcionSeleccionada.value === 'fecha-dia') {
-
+        console.log('La fecha es:' + dateValue.value);
         if (dateValue.value == null || dateValue.value.length === 0) {
+            console.log('No hay fecha');
             return
         }
 
@@ -260,6 +279,7 @@ const addItems = async () => {
 
 
     try {
+        loadingAdd.value = true;
         page.value = page.value + 1;
         query.value.pag = page.value;
         let response = await getVentas(query.value);
@@ -279,9 +299,11 @@ const addItems = async () => {
         }
         items.value = [...items.value, ...data];
         internalError.value = false;
-        
+        loadingAdd.value = false;
+
     } catch (error) {
         console.log(error);
+        loadingAdd.value = false;
 
         if (!error.response) {
             internalError.value = true;
@@ -324,6 +346,7 @@ watch(
 
 onMounted(() => {
     opcionSeleccionada.value = opciones[1].value;
+    dateValue.value = getHoyDate();
     construirQuery();
 });
 

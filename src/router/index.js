@@ -101,6 +101,21 @@ const routes = [
     }
   },
 
+  {
+    path: '/reports',
+    name: 'reports',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/reports/ReportsMain.vue')
+    }
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/contact/MainContact.vue')
+    }
+  },
+
 ]
 
 const router = createRouter({
