@@ -51,8 +51,12 @@
                         <SaleRow :sale="item"></SaleRow>
                     </div>
 
-                    <button v-if="isThereMoreResults" @click="addItems"
-                        class="w-full h-10 rounded-lg text-white bg-bgPurple mt-3">Cargar items</button>
+                    <template v-if="isThereMoreResults">
+                        <div class="mt-3">
+                            <ButtonX @click="addItems" color="purple" :isSlim="true" :isLoading="loadingAdd">Cargar items</ButtonX>
+                        </div>
+                    </template>
+                    
 
                     <div v-else-if="!isThereMoreResults && !firstLoading"
                         class="w-full h-24 flex flex-col items-center justify-center">
@@ -84,6 +88,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { useRouter } from 'vue-router';
 import ErrorX from '@/components/utilities/ErrorX.vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
+
 
 
 
@@ -130,6 +135,7 @@ const firstLoading = ref(false);
 const opcionSeleccionada = ref('');
 
 const isVisibleDatePicker = ref(true);
+const loadingAdd = ref(false);
 
 
 
@@ -273,6 +279,7 @@ const addItems = async () => {
 
 
     try {
+        loadingAdd.value = true;
         page.value = page.value + 1;
         query.value.pag = page.value;
         let response = await getVentas(query.value);
@@ -292,9 +299,11 @@ const addItems = async () => {
         }
         items.value = [...items.value, ...data];
         internalError.value = false;
+        loadingAdd.value = false;
 
     } catch (error) {
         console.log(error);
+        loadingAdd.value = false;
 
         if (!error.response) {
             internalError.value = true;
