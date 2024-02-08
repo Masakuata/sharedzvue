@@ -414,7 +414,10 @@ const validateForm = () => {
 
 const actualizarInformacion = () => {
     actualizarProductoMetod();
-    subirimagen(id.value);
+    if (imageData.value !== null) {
+        subirimagen(id.value);
+    }
+    
 }
 
 const actualizarProductoMetod = async () => {

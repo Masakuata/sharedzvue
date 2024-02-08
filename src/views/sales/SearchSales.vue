@@ -114,7 +114,7 @@ const nombreCliente = ref('');
 
 const opciones = [
     { value: 'fecha-dia', texto: 'Fecha - Dia' },
-    { value: 'no-pagados', texto: 'No pagados primero' },
+    { value: 'no-pagados', texto: 'No pagadas' },
     { value: 'todas', texto: 'Todas' },
 ];
 

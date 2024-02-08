@@ -65,6 +65,7 @@ import { useRouter } from 'vue-router';
 import { useMyStore } from '@/stores/store.js';
 import ErrorX from '@/components/utilities/ErrorX.vue'
 import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
+import { get } from 'firebase/database';
 
 
 const searchQuery = ref('');
@@ -214,8 +215,7 @@ onUnmounted(() => {
 
 });
 
-const cargarQuery = () => {
-    page.value = store.getQueryInventory.page;
+const cargarQuery = async () => {
     searchQuery.value = store.getQueryInventory.query;
 
 }
