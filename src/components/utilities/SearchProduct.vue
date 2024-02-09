@@ -6,6 +6,12 @@
                 class="border rounded w-full h-10 px-2" />
             <ul v-if="searchQuery"
                 class=" absolute z-10 bg-gray-100  border-r border-l border-b border-gray-200 max-h-[40vh] overflow-scroll w-full">
+                <template v-if="loadingBuscador">
+                    <p class="w-full text-center text-sm font-semibold">Buscando...</p>
+                    <div class="flex flex-row items-center justify-center w-full">
+                        <LoadingIcon></LoadingIcon>
+                    </div>
+                </template>
                 <li v-for="item in items" :key="item.id" class="flex flex-row border-b p-2" @click="selectItem(item)">
 
                     <div class="w-1/2 flex flex-row pr-2">
@@ -55,10 +61,13 @@
 <script setup>
 import { ref, watch, defineEmits, defineProps, onMounted, nextTick } from 'vue';
 import { getProductosBusqueda, getProductoId } from '@/api/api.js';
+import LoadingIcon from './LoadingIcon.vue';
 import AlertX from './AlertX.vue';
 
 
 const loading = ref(false);
+
+const loadingBuscador = ref(false);
 
 
 const pros = defineProps({
@@ -173,6 +182,7 @@ const getProductos = async () => {
     }
 
     try {
+        loadingBuscador.value = true;
         const productos = await getProductosBusqueda(searchQuery.value, pros.tipoCliente);
         items.value = productos.data;
         if (items.value.length == 0) {
@@ -180,7 +190,9 @@ const getProductos = async () => {
         } else {
             noResults.value = false;
         }
+        loadingBuscador.value = false;
     } catch (error) {
+        loadingBuscador.value = false;
         console.log(error);
     }
 };
