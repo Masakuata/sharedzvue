@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">ACTUALIZAR PRODUCTO</h1>
-    <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+    <div @click="clickEnDiv" class="flex flex-col items-center p-4 overflow-scroll  w-full h-full md:h-full">
         <template v-if="sessionExpired">
             <ModalSesionExpired></ModalSesionExpired>
         </template>
@@ -78,10 +78,12 @@
                     </div>
 
 
-                    <div class="mt-3 w-full">
-                        <ButtonX color="purple" @click="actualizarInformacion">Actualizar producto</ButtonX>
-                        <div class="mt-3 w-full">
+                    <div class="flex flex-row mt-3 mb-5 w-full">
+                        <div class="w-1/2 px-2">
                             <ButtonX color="red" @click="regresar">Cancelar</ButtonX>
+                        </div>
+                        <div class="w-1/2 px-2">
+                            <ButtonX color="purple" @click="actualizarInformacion">Actualizar producto</ButtonX>
                         </div>
                     </div>
                 </template>
@@ -104,7 +106,8 @@
                 <template v-else>
                     <template v-if="!hasErrror">
                         <div class="flex flex-row items-center h-[80vh] w-full">
-                            <SuccesX message="Producto actualizado exitósamente" button-message="Aceptar" @aceptar="aceptar">
+                            <SuccesX message="Producto actualizado exitósamente" button-message="Aceptar"
+                                @aceptar="aceptar">
                             </SuccesX>
                         </div>
                     </template>
@@ -148,38 +151,23 @@ const imageUrl = ref(null);
 
 const getImageUrl = (id) => {
 
-    console.log('getting url');
+
     const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
-    
+
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
-            console.log('url', url);
-            // `url` is the download URL for 'images/stars.jpg'
 
-            // This can be downloaded directly:
-            // const xhr = new XMLHttpRequest();
-            // xhr.responseType = 'blob';
-            // xhr.onload = (event) => {
-            //     const blob = xhr.response;
-            // };
-            // xhr.open('GET', url);
-            // xhr.send();
 
-            // // Or inserted into an <img> element
-            // const img = document.getElementById('myimg');
-            // img.setAttribute('src', url);
         })
         .catch((error) => {
-            console.log('no url');
-            // Handle any errors
+
         });
 
 };
 
 const imageData = ref(null);
 const agregarImagen = (file) => {
-    console.log(file);
     imageData.value = file;
 };
 
@@ -417,7 +405,7 @@ const actualizarInformacion = () => {
     if (imageData.value !== null) {
         subirimagen(id.value);
     }
-    
+
 }
 
 const actualizarProductoMetod = async () => {

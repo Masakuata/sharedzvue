@@ -113,6 +113,11 @@ const confirm = () => {
         precio: producto.value.precio,
         cantidad: producto.value.cantidad,
         cantidadCompra: nuevaCantidadInt,
+        
+        precioDefecto: producto.value.precioDefecto,
+        nombrePrecio: producto.value.nombrePrecio,
+        precios: producto.value.precios,
+
         id: producto.value.id,
         subtotal: producto.value.subtotal,
         peso: producto.value.peso,

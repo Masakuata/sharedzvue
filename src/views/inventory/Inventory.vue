@@ -221,7 +221,6 @@ const cargarQuery = async () => {
 }
 
 const intentarDeNuevo = () => {
-    console.log('intento de nuevo');
     internalError.value = false;
     getProductos();
 }

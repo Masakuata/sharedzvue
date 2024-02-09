@@ -45,7 +45,7 @@
 
 <script setup>
 import { ref, watch, defineEmits, defineProps, onMounted, nextTick } from 'vue';
-import { getProductosBusqueda } from '@/api/api.js';
+import { getProductosBusqueda, getProductoId } from '@/api/api.js';
 import AlertX from './AlertX.vue';
 
 
@@ -76,15 +76,66 @@ const noResults = ref(false);
 const items = ref([]);
 
 
-const selectItem = (item) => {
+const selectItem = async (item) => {
     presentacion.value = item.presentacion;
     selectedItem.value = item;
     searchQuery.value = item.nombre;
     cantidad.value = item.cantidad;
     cantidadDisponible.value = cantidad.value > 0 ? true : false;
     isSelected.value = true;
-    emit('selectProduct', item);
+
+    
+
+    let itemAux = await optenerProductoCompleto(item.id);
+    
+
+    itemAux.precioDefecto = itemAux.precio;
+
+    itemAux.precio = item.precio
+    itemAux.id = item.id;
+    
+
+    
+
+    let nombrePrecio= obtenerPrecioVenta( itemAux, pros.tipoCliente)
+
+
+    if (nombrePrecio.tipoCliente){
+        itemAux.nombrePrecio = nombrePrecio.tipoCliente;
+    }else{
+        itemAux.nombrePrecio = 'Publico';
+        itemAux.precio = itemAux.precioDefecto;
+    }
+    
+
+    
+    
+    emit('selectProduct', itemAux);
 };
+
+const obtenerPrecioVenta = (producto, tipoCliente) => {
+    let precioAux = {}
+    producto.precios.forEach(precio => {
+        ;
+        if (precio.id === tipoCliente) {
+            
+            precioAux = precio;
+        }
+    });
+
+    return precioAux;
+};
+
+const optenerProductoCompleto = async (id) => {
+    try {
+        const productoRespuesta = await getProductoId(id);
+        
+        return productoRespuesta.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const unselectItem = () => {
     selectedItem.value = null;
     searchQuery.value = '';

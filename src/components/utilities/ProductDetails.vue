@@ -40,9 +40,13 @@
                         :class="{ 'text-green-600': producto.cantidad > 0, 'text-red-600': producto.cantidad <= 0 }">{{
                             producto.cantidad }}</p>
                 </div>
-                <div class="flex flex-row">
-                    <p class="text-2xl w-full text-right mt-4 font-medium">{{ '$' + producto.precio }}</p>
+                <div class="flex flex-col w-full">
+                    <div v-for="precio in producto.precios" class="flex flex-row">
+                        <p class="mr-2">{{ precio.tipoCliente }}:</p>
+                        <p>{{ '$' + precio.precio }}</p>
+                    </div>
                 </div>
+
 
 
 
@@ -51,14 +55,21 @@
 
 
         </div>
-
     </div>
+    <template v-if="producto">
+        <div class="flex flex-row">
+            <p class="text-2xl  text-right mt-4 font-medium w-full">{{ producto.nombrePrecio + ' $' + producto.precio }}</p>
+        </div>
+    </template>
 </template>
 
 <script setup>
 import { ref, onMounted, defineProps, watch } from 'vue';
 import { storage } from '@/firebase.js';
 import { ref as storageRef, getDownloadURL } from 'firebase/storage'
+import { getPrecios } from '@/api/api.js'
+
+const precios = ref(null);
 
 const props = defineProps({
     producto: Object,
@@ -72,17 +83,15 @@ const getImageUrl = () => {
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
-            console.log('url', url);
+            
         })
         .catch((error) => {
-            console.log('no url');
         });
 };
 
 watch(() => props.producto, () => {
     getImageUrl();
 });
-
 
 
 onMounted(() => {

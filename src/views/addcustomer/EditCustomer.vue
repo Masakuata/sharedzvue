@@ -93,14 +93,12 @@
                     </MultiEditAddressX>
                 </div>
 
-
-                <div class="w-full mt-3">
-                    <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Actualizar Cliente</ButtonX>
+                <div class="flex flex-row mt-3 mb-5 w-full">
+                    <div class="w-1/2 px-2"><ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX></div>
+                    <div class="w-1/2 px-2"><ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Actualizar Cliente</ButtonX></div>
                 </div>
 
-                <div class="w-full mt-3">
-                    <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
-                </div>
+                
 
 
             </template>

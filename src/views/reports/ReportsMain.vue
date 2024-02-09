@@ -189,7 +189,6 @@ const errorBuscarCliente = () => {
 
 const editarCorreo = () => {
     isEditReportActivated.value = true;
-    console.log('editar correo');
 };
 
 
@@ -239,7 +238,7 @@ const getFormatedDay = () => {
 }
 const getFormatedMonth = () =>{
     let query = {}
-    console.log(mesSeleccionado.value)
+    
     query.mes = mesSeleccionado.value.substring(5,7)
     query.anio = mesSeleccionado.value.substring(0,4)
     return query
@@ -250,13 +249,13 @@ const getFormatedMonth = () =>{
 const enviarReporte = async () => {
     loadinEnvio.value = true;
     const query = construirQuery();
-    console.log(query);
+    
     
     try{
         let respuesta = await getReporte(query);
         loadinEnvio.value = false;
         reporteSent.value = true
-        console.log(respuesta.status);
+    
         if (respuesta.status == 204){
             loadinEnvio.value = false
             hayVentas.value= false
@@ -300,9 +299,9 @@ watch(
             mesSeleccionado.value = `${anioActual}-${mesActual.toString().padStart(2, '0')}`;
 
         } else if (newValue == 'anio') {
-            console.log(getAnioActural());
+            
             let anioAux = parseInt(getAnioActural());
-            console.log(anioAux);
+            
             //optener la pociocion del anio seleccionado en el arreglo
             let pos = aniosDisponibles.findIndex((anio) => anio.value == anioAux);
             anioSeleccionado.value = aniosDisponibles[pos].value;

@@ -28,7 +28,11 @@
                 <div class="flex flex-row w-full">
                     <div class="flex flex-col w-11/12 pl-2">
                         <p class="mr-2 w-full truncate text-white text-lg font-semibold">{{ producto.nombre }}</p>
-                        <p class="mr-2 w-full overflow-hidden text-white text-xs">{{ precioFormat }}</p>
+                        <div class="flex flex-row w-full">
+                            <p class="mr-2  overflow-hidden text-white text-xs">{{ producto.nombrePrecio }}</p>
+                            <p class="mr-2  overflow-hidden text-white text-xs">{{ precioFormat }}</p>
+                        </div>
+                        
                         <div class="w-full flex flex-row items-center">
                             <p class="w-3/12 text-white text-xs">{{ cantidadFormat }}</p>
                             <p class="w-3/12 text-white text-xs">{{ producto.peso + ' kg' }}</p>
@@ -79,10 +83,10 @@ const getImageUrl = () => {
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
-            console.log('url', url);
+            
         })
         .catch((error) => {
-            console.log('no url');
+            
         });
 };
 
@@ -133,7 +137,6 @@ watch(
 
 
 onMounted(() => {
-    console.log('El producto es' , props.producto);
     getImageUrl(props.producto.id);
     formatInfo();
 

@@ -207,7 +207,7 @@ export async function getVentas(paramsMethod) {
     const complemento = '/venta/buscar';
     let urlnew = getUrl() + complemento;
 
-    console.log('paramsMethod', paramsMethod)
+    
 
     try {
         let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
@@ -422,7 +422,7 @@ export async function getReporte(paramsMethod) {
     const complemento = '/reporte';
     let urlnew = getUrl() + complemento;
 
-    console.log('paramsMethod', paramsMethod)
+    
 
     try {
         let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
@@ -441,6 +441,21 @@ export async function postTipoCliente(tipoCliente) {
         throw error;
     }
 }
+
+export async function getPrecios(idProducto) {
+    const complemento = '/producto/' + idProducto + '/precios';
+    
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 
 
 

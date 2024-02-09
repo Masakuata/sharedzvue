@@ -1,6 +1,6 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
-        <div class="bg-white rounded-lg mx-4 max-h-[80vh] md:w-6/12   w-full z-50">
+        <div class="bg-white rounded-lg mx-4 max-h-[90vh] md:w-6/12   w-full z-50">
             <div class="bg-bgBlue w-full py-2 flex flex-row items-center rounded-t-lg ">
                 <p class=" text-white text-xl w-full text-center ">Selecciona un producto y
                 agrégalo a
@@ -9,7 +9,7 @@
             
 
 
-            <div class="p-4 overflow-scroll h-[60vh]">
+            <div class="p-4 overflow-scroll max-h-[80vh]">
                 <SearchProduct @select-product="selectProduct" :tipo-cliente="props.tipoCliente"></SearchProduct>
                 <template v-if="isProductSelected">
                     <div class="mt-3">
@@ -188,6 +188,8 @@ const emitEditProduct = () => {
         precio: producto.value.precio,
         cantidad: producto.value.cantidad,
         cantidadCompra: nuevaCantidadInt,
+        nombrePrecio: producto.value.nombrePrecio,
+        precios: producto.value.precios,
         id: producto.value.id,
         peso: producto.value.peso,
         pesoTotal: pesoTotal,
@@ -230,6 +232,9 @@ const confirm = () => {
         precio: producto.value.precio,
         cantidad: producto.value.cantidad,
         cantidadCompra: producto.value.cantidadCompra,
+        precioDefecto: producto.value.precioDefecto,
+        nombrePrecio: producto.value.nombrePrecio,
+        precios: producto.value.precios,
         id: producto.value.id,
         subtotal: producto.value.subtotal,
         peso: producto.value.peso,
@@ -342,8 +347,6 @@ const validarProductoEnLista = () => {
 const selecceionarInputCantidad = () => {
     if (refInputCantidad.value) {
         refInputCantidad.value.focus();
-    }else{
-        console.log('no hay ref');
     }
 }
 

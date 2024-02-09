@@ -98,7 +98,7 @@ import { toast } from 'vue3-toastify';
 import ModalProducts from './ModalProducts.vue';
 import ProductoVenderRow from './ProductoVenderRow.vue';
 import ModalProducDetail from './ModalProducDetail.vue';
-import { getProductosBusqueda } from '@/api/api.js';
+import { getProductosBusqueda, getProductoId } from '@/api/api.js';
 import ModalCancelVenta from './ModalCancelVenta.vue';
 import ModalConfirmacionVenta from './ModalConfirmacionVenta.vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
@@ -178,7 +178,7 @@ const unselectProduct = (producto) => {
 };
 
 const selectProduct = (producto) => {
-    console.log('Producto seleccionado', producto); 
+     
     productSelected.value = producto;
     showModalProductDetail();
 };
@@ -328,7 +328,7 @@ const registrarCompra = async () => {
 
 
 const limpiarCampos = () => {
-    console.log('limpiando campos');
+    
     reloadSearch.value = !reloadSearch.value;
     productosLista.value = [];
     cliente.value = null;
@@ -339,15 +339,17 @@ const limpiarCampos = () => {
 
 const seleccionarCliente = (clienteEmit) => {
     cliente.value = clienteEmit;
+    
 
     if (tipoCliente.value !== clienteEmit.tipoCliente) {
-
+        
         tipoCliente.value = clienteEmit.tipoCliente;
         recargarProductos(clienteEmit.tipoCliente);
-    } else {
-        recargarProductos(clienteEmit.tipoCliente);
-
     }
+    // } else {
+    //     recargarProductos(clienteEmit.tipoCliente);
+
+    // }
     isClienteSelected.value = true;
 };
 
@@ -357,15 +359,49 @@ const deseleccionarCliente = () => {
 };
 
 const recargarProductos = (tipoCliente) => {
-    productosLista.value.forEach(async producto => {
-        let productosaAux = await getProductosBusqueda(producto.nombre, tipoCliente)
-        if (productosaAux.length > 0) {
-            if (producto.id === productosaAux[0].id) {
-                console.log('Actualizando precion de producto', producto.nombre);
-                producto.precio = productosaAux[0].precio;
-            }
+    let listaProductosAux = productosLista.value;
+    productosLista.value = [];
+
+    listaProductosAux.forEach(producto => {
+        let prodAux = producto;
+        let objPrecio = obtenerPrecioVenta(producto, tipoCliente);
+
+        if (objPrecio.precio){
+            prodAux.precio = objPrecio.precio;
+            prodAux.nombrePrecio = objPrecio.tipoCliente;
+        }else{
+            prodAux.precio = prodAux.precioDefecto;
+            prodAux.nombrePrecio = 'Publico';
+        }
+        
+        prodAux.subtotal = prodAux.cantidadCompra * prodAux.precio;
+
+        productosLista.value.push(prodAux);
+    });
+    calcularTotal();
+};
+
+const obtenerPrecioVenta = (producto, tipoCliente) => {
+    let precioAux = {}
+    producto.precios.forEach(precio => {
+        
+        if (precio.id === tipoCliente) {
+            
+            precioAux = precio;
         }
     });
+
+    return precioAux;
+};
+
+const getPrecio =  (producto) => {
+    let precio = 0;
+    producto.precios.forEach(precioAux => {
+        if (precioAux.tipo === tipoCliente.value) {
+            precio = precioAux.precio;
+        }
+    });
+    return precio;
 };
 
 

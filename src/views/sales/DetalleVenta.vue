@@ -18,7 +18,7 @@
                     </p>
                     <div
                         class="w-full h-[40vh] border border-gray-400 rounded-b-lg p-3 overflow-scroll md:grid md:grid-cols-3 ">
-                        <div v-for="product in productos" :key=product.id class="md:p-2 h-20">
+                        <div v-for="product in productos" :key=product.id class="md:p-2 md:h-20">
                             <ProductoVentaRow :producto="product">
                             </ProductoVentaRow>
                         </div>
@@ -76,7 +76,7 @@
                             <div class="w-1/2 pr-1">
                                 <ButtonX color="red" @click="regresar">Regresar</ButtonX>
                             </div>
-                            <div class="w-1/2 pl-1">
+                            <div class="w-1/2 pl-1 mb-5">
                                 <ButtonX color="blue" @click="registrarAbono">Confirmar Abono</ButtonX>
                             </div>
                         </div>
@@ -278,9 +278,7 @@ watch(
 );
 
 const eliminarVenta = async () => {
-    console.log(route.params.id)
     cerrarModalEliminarVenta()
-    console.log('Eliminadno venta')
     mensajeLoading.value = "Eliminado venta...";
     try {
         requestSent.value = true;

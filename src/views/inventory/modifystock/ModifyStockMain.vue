@@ -107,7 +107,7 @@
                             </svg>
                         </div>
                         <div class="w-2/4">
-                            <input v-model="cantidadAumentar" class="w-full rounded-lg" />
+                            <input v-model="cantidadAumentar" class="w-full rounded-lg text-center" />
                         </div>
                         <div class="w-1/4 py-2 h-full text-green-900" @click="aumentar">
                             <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" fill="none"
@@ -196,7 +196,7 @@ const getImageUrl = (id) => {
             console.log('url', url);
         })
         .catch((error) => {
-            console.log('no url');
+            
         });
 };
 
