@@ -1,7 +1,7 @@
 <template>
     <div v-if="isVisible" class="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center ">
         <div class="bg-white rounded-lg mx-4 max-h-[90vh] md:w-6/12   w-full z-50">
-            <div class="bg-bgBlue w-full py-2 flex flex-row items-center rounded-t-lg ">
+            <div class="bg-bgBlue w-full py-2 flex flex-row items-center rounded-t-lg px-2 ">
                 <p class=" text-white text-xl w-full text-center ">Selecciona un producto y
                 agrégalo a
                 la lista de compra</p>
