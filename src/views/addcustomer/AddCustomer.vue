@@ -6,10 +6,9 @@
     <template v-if="modalAgregarTipoClienteVisible">
         <ModalAddFieldX :is-edit="false" titulo="Nuevo tipo de cliente"
             mensaje="Agrega un nuevo tipo de cliente. Recuerda agregar el precio de este tipo de cliente a los productos previamente registrados."
-            @confirmar="registrarTipoCliente"
-            @cerrarModal="cerrrarModalAgregarTipoCliente">
-            
-            
+            @confirmar="registrarTipoCliente" @cerrarModal="cerrrarModalAgregarTipoCliente">
+
+
         </ModalAddFieldX>
     </template>
 
@@ -91,13 +90,15 @@
                 </MultiRegistAddressX>
             </template>
 
-            <div class="w-full mt-3">
-                <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
+            <div class="w-full mt-3 flex flex-row mb-5">
+                <div class="w-1/2 px-2">
+                    <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
+                </div>
+                <div class="w-1/2 px-2">
+                    <ButtonX color="blue" :is-loading="loading" @click="resgistrarCliente">Registrar Cliente</ButtonX>
+                </div>
             </div>
 
-            <div class="w-full mt-3">
-                <ButtonX color="red" @click="regresarVistaClientes">Regresar</ButtonX>
-            </div>
         </template>
         <template v-else>
             <ErrorX @aceptar="getTipos"></ErrorX>
@@ -154,14 +155,14 @@ const cerrrarModalAgregarTipoCliente = () => {
 
 const registrarTipoCliente = async (tipoCliente) => {
     cerrrarModalAgregarTipoCliente();
-    console.log( 'Registrrando' + tipoCliente);
+
     let tipoClienteAux = {
         nombre: tipoCliente,
     }
-    try{    
+    try {
         await postTipoCliente(tipoClienteAux);
         getTipos();
-    }catch(error){
+    } catch (error) {
         internalError.value = true;
     }
 }

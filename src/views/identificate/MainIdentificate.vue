@@ -1,6 +1,6 @@
 <template>
     <div
-        class="pt-10 pb-10 bg-bgBlue md:bg-bgBlue md:flex md:justify-center  md:h-[100vh] md:pt-0 md:pb-0 md:items-center md:w-full">
+        class="pt-10 pb-10 bg-bgBlue md:bg-bgBlue md:flex md:justify-center  h-[100vh] md:h-[100vh] md:pt-0 md:pb-0 md:items-center md:w-full">
 
         <div class="flex flex-col px-10 md:flex-row md:w-full">
             <div class="md:w-1/2">

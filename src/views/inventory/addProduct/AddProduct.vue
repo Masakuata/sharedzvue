@@ -1,6 +1,6 @@
 <template>
   <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3">AGREGAR PRODUCTO</h1>
-  <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full h-full md:h-full">
+  <div @click="clickEnDiv" class="flex flex-col items-center p-4  w-full  overflow-scroll h-full md:h-full">
     <template v-if="sessionExpired">
       <ModalSesionExpired></ModalSesionExpired>
     </template>
@@ -74,14 +74,16 @@
           </SearchTipoCliente>
         </div>
 
-
-
-        <div class="mt-3 w-full">
-          <ButtonX color="purple" @click="registrarInformacion">Registrar producto</ButtonX>
-          <div class="w-full mt-3">
+        <div class="flex flex-row mt-3 mb-5 w-full">
+          <div class="w-1/2 px-2">
             <ButtonX color="red" @click="regresar">Regresar</ButtonX>
           </div>
+          <div class="w-1/2 px-2">
+            <ButtonX color="purple" @click="registrarInformacion">Registrar producto</ButtonX>
+          </div>
         </div>
+
+        
       </template>
       <template v-else>
         <template v-if="loading">
@@ -286,13 +288,13 @@ const validateForm = () => {
   }
 };
 
-let idProducto = 0; 
+let idProducto = 0;
 
 const registrarInformacion = async () => {
   await registrarProductoMetod();
   if (imageData.value !== null) {
     subirimagen(idProducto);
-  }else{
+  } else {
     console.log('No se subio la imagen');
   }
 };

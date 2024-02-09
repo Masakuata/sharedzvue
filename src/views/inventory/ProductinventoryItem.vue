@@ -78,30 +78,15 @@ const imageUrl = ref('');
 
 const getImageUrl = (id) => {
 
-    console.log('getting url');
+    
     const path = process.env.VUE_APP_FIREBASE_PATH + id + '.png';
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
-            console.log('url', url);
-            // `url` is the download URL for 'images/stars.jpg'
-
-            // This can be downloaded directly:
-            // const xhr = new XMLHttpRequest();
-            // xhr.responseType = 'blob';
-            // xhr.onload = (event) => {
-            //     const blob = xhr.response;
-            // };
-            // xhr.open('GET', url);
-            // xhr.send();
-
-            // // Or inserted into an <img> element
-            // const img = document.getElementById('myimg');
-            // img.setAttribute('src', url);
+            
         })
         .catch((error) => {
-            console.log('no url');
-            // Handle any errors
+            
         });
 
 };
@@ -115,7 +100,7 @@ onMounted(() => {
     }
     if (props.producto.presentacion.length > 6) {
         descripcionLarga.value = true;
-        console.log('descripcion larga');
+        
     }
     if (props.producto.nombre.length > 15) {
         nombreLargo.value = true;

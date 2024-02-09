@@ -104,6 +104,10 @@ const props = defineProps({
     isFromCliente: {
         type: Boolean,
         default: false,
+    },
+    isFromHome: {
+        type: Boolean,
+        default: false,
     }
 });
 
@@ -112,9 +116,9 @@ const internalError = ref(false);
 
 const nombreCliente = ref('');
 
-const opciones = [
+let opciones = [
     { value: 'fecha-dia', texto: 'Fecha - Dia' },
-    { value: 'no-pagados', texto: 'No pagados primero' },
+    { value: 'no-pagados', texto: 'No liquidadas' },
     { value: 'todas', texto: 'Todas' },
 ];
 
@@ -203,7 +207,23 @@ const construirQuery = () => {
     query.value = {};
     query.value.cliente = nombreCliente.value;
 
-    console.log('La opcion seleccionada es:' + opcionSeleccionada.value);
+    if (props.isFromHome){
+        dateValue.value = getHoyDate()
+        let anio = dateValue.value.substring(0, 4);
+        let mes = dateValue.value.substring(5, 7);
+        let dia = dateValue.value.substring(8, 10);
+        query.value.dia = dia;
+        query.value.mes = mes;
+        query.value.anio = anio;
+
+    }
+    if (opcionSeleccionada.value === 'pendientes') {
+
+        query.value.abono = 0;
+        agregarQueryProps();
+        getItems();
+        return
+    }
 
     if (opcionSeleccionada.value === 'todas') {
         agregarQueryProps();
@@ -212,7 +232,6 @@ const construirQuery = () => {
     }
 
     if (opcionSeleccionada.value === '') {
-        console.log('No hay opcion seleccionada');
         query.value.pagado = 0;
         agregarQueryProps();
         getItems();
@@ -224,10 +243,9 @@ const construirQuery = () => {
         getItems();
         return
     }
+    
     if (opcionSeleccionada.value === 'fecha-dia') {
-        console.log('La fecha es:' + dateValue.value);
         if (dateValue.value == null || dateValue.value.length === 0) {
-            console.log('No hay fecha');
             return
         }
 
@@ -345,6 +363,16 @@ watch(
 
 
 onMounted(() => {
+    if(props.isFromHome){
+        //eliminar la pocicion 0 de las opciones
+        opciones.shift();
+        opciones.push({ value: 'pendientes', texto: 'Pendientes' });
+
+        opcionSeleccionada.value = opciones[2].value;
+        construirQuery();
+        return
+
+    }
     opcionSeleccionada.value = opciones[1].value;
     dateValue.value = getHoyDate();
     construirQuery();

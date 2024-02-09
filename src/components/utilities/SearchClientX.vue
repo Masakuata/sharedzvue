@@ -36,7 +36,11 @@
                                     d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7" />
                             </svg>
                         </div>
-                        <p class="text-black font-semibold w-10/12 text-lg ml-3 turncate">{{ selectedItem.nombre }}</p>
+                        <div class="w-10/12">
+                            <p class="text-black font-semibold w-full text-lg ml-3 truncate">{{ selectedItem.nombre }}</p>
+                            <p class="text-black  w-full  ml-3 truncate" v-if="tipoCliente">{{ tipoCliente }}</p>
+                        </div>
+                        
                     </div>
 
                     <div class="flex flex-row w-1/12 h-full items-center " @click="unselectItem">
@@ -63,7 +67,7 @@
   
 <script setup>
 import { ref, watch, defineEmits, defineProps } from 'vue';
-import { getClientesBusqueda } from '@/api/api.js';
+import { getClientesBusqueda, getTiposCliente } from '@/api/api.js';
 import AlertX from './AlertX.vue';
 import LoadingIcon from './LoadingIcon.vue';
 import SelectXDirecciones from './SelectXDirecciones.vue';
@@ -86,6 +90,7 @@ const isSelected = ref(false);
 const noResults = ref(false);
 
 const loading = ref(false);
+const tipoCliente = ref(null);
 
 
 
@@ -102,11 +107,26 @@ const seleccionarDireccion = (direccion) => {
     selectItem(selectedItem.value);
 };
 
-const selectItem = (item) => {
+const obtenerTipoCliente = async () => {
+    try {
+        const tipos = await getTiposCliente();
+        tipos.data.forEach(element => {
+            if (element.id == selectedItem.value.tipoCliente) {
+                //selectedItem.value.tipoCliente = element;
+                tipoCliente.value = element.tipoCliente;
+            }
+        });
+        
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const selectItem = async (item) => {
     selectedItem.value = item;
     searchQuery.value = item.nombre;
     isSelected.value = true;
-
+    await obtenerTipoCliente();
 
 
     let cliente = {
