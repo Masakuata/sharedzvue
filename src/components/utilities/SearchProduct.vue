@@ -24,21 +24,30 @@
             </ul>
         </template>
         <template v-else>
-            <p>Producto seleccionado:</p>
-            <div class="flex flex-row w-full h-14 items-center shadow-lg rounded-lg px-3 border border-gray-500">
-                <p class="w-7/12">{{ selectedItem.nombre }}</p>
-                <p class="w-4/12 ">{{ presentacion }}</p>
-                <div class="flex flew-row w-1/12 justify-end">
-                    <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-x-circle text-red-700">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m15 9-6 6" />
-                        <path d="m9 9 6 6" />
-                    </svg>
-                </div>
+            <template v-if="!loading">
+                <p>Producto seleccionado:</p>
+                <div class="flex flex-row w-full h-14 items-center shadow-lg rounded-lg px-3 border border-gray-500">
+                    <p class="w-7/12">{{ selectedItem.nombre }}</p>
+                    <p class="w-4/12 ">{{ presentacion }}</p>
+                    <div class="flex flew-row w-1/12 justify-end">
+                        <svg @click="unselectItem" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-x-circle text-red-700">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m15 9-6 6" />
+                            <path d="m9 9 6 6" />
+                        </svg>
+                    </div>
 
-            </div>
+                </div>
+            </template>
+            <template v-else>
+                <div class="w-full h-96 flex flex-col items-center justify-center">
+                    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-bgBlue"></div>
+                    <p class="text-xl font-bold text-gray-900">Cargando...</p>
+                </div>
+            </template>
+
         </template>
     </div>
 </template>
@@ -49,7 +58,7 @@ import { getProductosBusqueda, getProductoId } from '@/api/api.js';
 import AlertX from './AlertX.vue';
 
 
-
+const loading = ref(false);
 
 
 const pros = defineProps({
@@ -84,32 +93,34 @@ const selectItem = async (item) => {
     cantidadDisponible.value = cantidad.value > 0 ? true : false;
     isSelected.value = true;
 
-    
+    loading.value = true;
 
     let itemAux = await optenerProductoCompleto(item.id);
-    
+
+    loading.value = false;
+
 
     itemAux.precioDefecto = itemAux.precio;
 
     itemAux.precio = item.precio
     itemAux.id = item.id;
-    
-
-    
-
-    let nombrePrecio= obtenerPrecioVenta( itemAux, pros.tipoCliente)
 
 
-    if (nombrePrecio.tipoCliente){
+
+
+    let nombrePrecio = obtenerPrecioVenta(itemAux, pros.tipoCliente)
+
+
+    if (nombrePrecio.tipoCliente) {
         itemAux.nombrePrecio = nombrePrecio.tipoCliente;
-    }else{
+    } else {
         itemAux.nombrePrecio = 'Publico';
         itemAux.precio = itemAux.precioDefecto;
     }
-    
 
-    
-    
+
+
+
     emit('selectProduct', itemAux);
 };
 
@@ -118,7 +129,7 @@ const obtenerPrecioVenta = (producto, tipoCliente) => {
     producto.precios.forEach(precio => {
         ;
         if (precio.id === tipoCliente) {
-            
+
             precioAux = precio;
         }
     });
@@ -129,9 +140,10 @@ const obtenerPrecioVenta = (producto, tipoCliente) => {
 const optenerProductoCompleto = async (id) => {
     try {
         const productoRespuesta = await getProductoId(id);
-        
+
         return productoRespuesta.data;
     } catch (error) {
+        loading.value = false;
         console.log(error);
     }
 };
@@ -177,7 +189,7 @@ onMounted(() => {
     nextTick(() => {
         if (refInputSearch.value) {
             refInputSearch.value.focus();
-        }else{
+        } else {
             console.log('no se pudo hacer focus en el search');
         }
     });

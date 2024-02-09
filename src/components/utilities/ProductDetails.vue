@@ -1,7 +1,7 @@
 <template>
     <p class="w-full text-lg font-semibold text-left ml-3">Detalles del producto</p>
     <div class="w-full flex flex-row   py-3">
-
+        
         <div class="w-5/12 bg-white rounded-lg md:p-3">
             <template v-if="!imageUrl">
                 <svg class="w-full h-auto md:h-20 md:w-20 " width="400" height="400" viewBox="0 0 200 200" fill="none"
@@ -67,7 +67,9 @@
 import { ref, onMounted, defineProps, watch } from 'vue';
 import { storage } from '@/firebase.js';
 import { ref as storageRef, getDownloadURL } from 'firebase/storage'
-import { getPrecios } from '@/api/api.js'
+
+
+const loading = ref(false);
 
 const precios = ref(null);
 
@@ -83,7 +85,7 @@ const getImageUrl = () => {
     getDownloadURL(storageRef(storage, path))
         .then((url) => {
             imageUrl.value = url;
-            
+
         })
         .catch((error) => {
         });
