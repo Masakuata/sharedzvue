@@ -11,7 +11,7 @@
             <div class="w-full mt-3">
                 <ButtonX color="purple" :isSlim="true" @click="agregarCliente">Agregar cliente</ButtonX>
             </div>
-            <template v-if="noClientes">
+            <template v-if="!loading && noClientes">
                 <div class="w-full h-24 flex flex-col items-center justify-center">
                     <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
                 </div>
@@ -35,7 +35,7 @@
                         </div>
                     </template>
                     <template v-else>
-                        <div class="w-full h-24 flex flex-col items-center justify-center">
+                        <div v-if="!loadingaddItems" class="w-full h-24 flex flex-col items-center justify-center">
                             <p class="text-xl font-bold text-gray-900">No hay más resultados</p>
                         </div>
                     </template>
