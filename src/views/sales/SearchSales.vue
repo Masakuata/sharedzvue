@@ -52,8 +52,8 @@
                     </div>
 
                     <template v-if="isThereMoreResults">
-                        <div class="mt-3">
-                            <ButtonX @click="addItems" color="purple" :isSlim="true" :isLoading="loadingAdd">Cargar items</ButtonX>
+                        <div class="mt-3 mb-5">
+                            <ButtonX @click="addItems" color="purple" :isSlim="true" :isLoading="loadingAdd">Cargar ventas</ButtonX>
                         </div>
                     </template>
                     
