@@ -80,7 +80,7 @@
 
 import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
 import { getVentas } from '@/api/api.js';
-import { isFutureDate, getHoyDate } from '@/utils/validator.js';
+import { isFutureDate, getHoyDate, getHoyString  } from '@/utils/validator.js';
 import AlertX from '@/components/utilities/AlertX.vue';
 import SaleRow from '@/components/SaleRow.vue';
 import ModalAbonar from '@/views/sales/ModalAbonar.vue';
@@ -208,13 +208,27 @@ const construirQuery = () => {
     query.value.cliente = nombreCliente.value;
 
     if (props.isFromHome){
-        dateValue.value = getHoyDate()
-        let anio = dateValue.value.substring(0, 4);
-        let mes = dateValue.value.substring(5, 7);
-        let dia = dateValue.value.substring(8, 10);
-        query.value.dia = dia;
-        query.value.mes = mes;
-        query.value.anio = anio;
+        let dateString = getHoyString()
+        dateString = dateString.replace(/,/g, '');
+        console.log(dateString);
+        let arrayDate = dateString.split('-');
+        let diaAux = arrayDate[0];
+        let mesAux = arrayDate[1];
+        let anioAux = arrayDate[2];
+
+        
+        dateValue.value = dateString;
+        console.log( 'La fecha es',dateValue.value);
+       
+        console.log(diaAux);
+        console.log(mesAux);
+        console.log( anioAux);
+
+        console.log(dateString);
+        
+        query.value.dia = diaAux;
+        query.value.mes = mesAux;
+        query.value.anio = anioAux;
 
     }
     if (opcionSeleccionada.value === 'pendientes') {

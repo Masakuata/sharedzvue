@@ -35,11 +35,6 @@ const clickEnDiv = () => {
 onMounted(() => {
   hoy.value = getHoyString();
   hoy.value = hoy.value.replace(/,/g, '');
-
-
-
-
-
 });
 
 
