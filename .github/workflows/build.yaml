@@ -41,7 +41,7 @@ jobs:
       uses: docker/setup-buildx-action@v1.0.0
 
     - name: Construir imagen de docker
-      uses: docker/build-push-action@v4.0.0
+      uses: docker/build-push-action@v5.1.0
       with:
         context: .
         tags: ${{ secrets.EDSON_DOCKERHUB_ID }}/sharedz_vue:${{ github.event.inputs.tag }}

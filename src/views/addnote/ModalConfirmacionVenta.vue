@@ -122,7 +122,12 @@
                                         <path d="M18 6 7 17l-5-5" />
                                         <path d="m22 10-7.5 7.5L13 16" />
                                     </svg>
+
+
+
                                 </div>
+                                <PrintNoteComp :productos="productos" :total="total" :cliente="cliente"
+                                    :abono="abonoInicial"></PrintNoteComp>
                                 <div class="p-2 w-full md:px-20 ">
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
@@ -159,6 +164,7 @@ import ErrorX from '@/components/utilities/ErrorX.vue';
 import { postVenta } from '@/api/api.js';
 import { filtrarEntrada } from '@/utils/validator.js'
 import AlertX from '@/components/utilities/AlertX.vue';
+import PrintNoteComp from './PrintNoteComp.vue';
 
 
 
@@ -246,7 +252,22 @@ const construirVenta = () => {
     return venta;
 };
 
+const imprimirVenta = (data) => {
+
+
+    let file = new Blob([data], { type: 'application/pdf' });
+    let fileURL = URL.createObjectURL(file);
+    window.open(fileURL).print();
+
+
+
+
+
+};
+
 const registrarVentaApi = async () => {
+    let response = null;
+
     if (errorCantidadMayor.value) {
         return;
     }
@@ -254,8 +275,30 @@ const registrarVentaApi = async () => {
         loading.value = true;
         requestSent.value = true;
         let venta = construirVenta();
-        await postVenta(venta);
-        loading.value = false;
+        response = await postVenta(venta);
+
+
+
+
+        // const url = window.URL.createObjectURL(new Blob([response.data]));
+
+
+        // const link = document.createElement('a');
+        // link.href = url;
+
+        // link.setAttribute('download', 'file.pdf');
+
+
+
+
+
+        // document.body.appendChild(link);
+        // link.click();
+
+
+        loading.value = false
+
+
 
     } catch (errorResponse) {
 
@@ -273,6 +316,8 @@ const registrarVentaApi = async () => {
         errorMessage.value = errorResponse.response.data.detail;
         console.log(errorResponse);
     }
+
+    imprimirVenta(response.data);
 
 };
 
