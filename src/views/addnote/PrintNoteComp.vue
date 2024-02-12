@@ -1,6 +1,6 @@
 <template>
     <div class="w-80 border border-black p-10">
-        <p>La nota mas actual</p>
+        <p>Esta pinche nota es la buena</p>
         <div v-for="producto in productos" class="flex felx-row w-full items-end">
             <p class="w-6/12">{{ producto.nombre }}</p>
             <p class="w-1/12">{{ producto.cantidadCompra }}</p>

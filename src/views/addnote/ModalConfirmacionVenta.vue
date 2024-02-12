@@ -256,8 +256,15 @@ const imprimirVenta = (data) => {
 
 
     let file = new Blob([data], { type: 'application/pdf' });
-    let fileURL = URL.createObjectURL(file);
-    window.open(fileURL)
+    let fileURL = URL.createObjectURL(file, );
+    window.open(fileURL, "_blank")
+
+    // const elem = window.document.createElement('a')
+    // elem.href = window.URL.createObjectURL(blob)
+    // elem.download = 'venta.pdf'
+    // document.body.appendChild(elem)
+    // elem.click()
+    // document.body.removeChild(elem)
 
 
 
