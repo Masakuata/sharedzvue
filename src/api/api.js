@@ -185,7 +185,9 @@ export async function postVenta(venta) {
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.post(urlnew, venta);
+        let respuesta = await axiosInstance.post(urlnew, venta, {
+            responseType: 'blob'
+          } );
         return respuesta;
     } catch (error) {
         throw error;

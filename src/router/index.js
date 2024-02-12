@@ -115,6 +115,13 @@ const routes = [
       return import(/* webpackChunkName: "identificate" */ '../views/contact/MainContact.vue')
     }
   },
+  {
+    path: '/sale/print/:id',
+    name: 'print',
+    component: function () {
+      return import(/* webpackChunkName: "identificate" */ '../views/printNote/PrintNote.vue')
+    }
+  },
 
 ]
 
