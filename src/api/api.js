@@ -457,7 +457,18 @@ export async function getPrecios(idProducto) {
     }
 }
 
+export async function getTicketVenta(idVenta) {
+    const complemento = '/venta/' + idVenta + '/ticket';
+    
+    let urlnew = getUrl() + complemento;
 
+    try {
+        let respuesta = await axiosInstance.get(urlnew);
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 

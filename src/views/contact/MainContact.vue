@@ -33,7 +33,16 @@
             </div>
 
         </div>
+        <div class="w-full">
+            <ButtonX @click="abrirPestaniaPdf" color="blue">
+                Abrir reporte
+            </ButtonX>
+        </div>
 
+        <a :href="reporteUrl" target="_blank" class="underline w-full text-center">
+                    Abre el link
+                </a>
+        
 
 
 
@@ -48,16 +57,26 @@ import { ref, onMounted } from 'vue';
 import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getTicketVenta } from '@/api/api.js';
 
 const route = useRoute();
 const router = useRouter();
 const whatsAppLink = 'https://wa.me/522291763687'
+const reporteUrl = 'https://www.facebook.com/';
 
 
+const abrirPestaniaPdf = async () => {
+    try {
+        let response = await getTicketVenta(154);
+        console.log(response);
 
+    } catch (error) {
+        
+    }
+};
 
 const clickEnDiv = () => {
-    toggleSidebar();
+    toggleSidebar(162);
 };
 
 

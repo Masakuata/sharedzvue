@@ -131,6 +131,9 @@
                                 <div class="p-2 w-full md:px-20 ">
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
+                                <div>
+                                    <ButtonX color="red" @click="abrirPestaniaPdf">Descargar</ButtonX>
+                                </div>
 
                             </div>
 
@@ -161,7 +164,7 @@ import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import ProductoVenderRow from './ProductoVenderRow.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
-import { postVenta } from '@/api/api.js';
+import { postVenta, getTicketVenta } from '@/api/api.js';
 import { filtrarEntrada } from '@/utils/validator.js'
 import AlertX from '@/components/utilities/AlertX.vue';
 import PrintNoteComp from './PrintNoteComp.vue';
@@ -181,6 +184,7 @@ const loading = ref(false);
 const error = ref(false);
 const errorMessage = ref('');
 const errorObject = ref(null);
+const idVenta = ref(0);
 
 const limpiarComponente = () => {
     requestSent.value = false;
@@ -252,6 +256,15 @@ const construirVenta = () => {
     return venta;
 };
 
+const abrirPestaniaPdf = async () => {
+    try {
+        await getTicketVenta();
+
+    } catch (error) {
+        
+    }
+};
+
 const imprimirVenta = (data) => {
 
 
@@ -283,7 +296,8 @@ const registrarVentaApi = async () => {
         requestSent.value = true;
         let venta = construirVenta();
         response = await postVenta(venta);
-
+        
+        idVenta.value = response.data.id;
 
 
 
@@ -324,7 +338,7 @@ const registrarVentaApi = async () => {
         console.log(errorResponse);
     }
 
-    imprimirVenta(response.data);
+    //imprimirVenta(response.data);
 
 };
 
