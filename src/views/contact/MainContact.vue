@@ -62,7 +62,7 @@ import { getTicketVenta } from '@/api/api.js';
 const route = useRoute();
 const router = useRouter();
 const whatsAppLink = 'https://wa.me/522291763687'
-const reporteUrl = 'https://www.facebook.com/';
+const reporteUrl = 'https://chat.openai.com/';
 
 
 const abrirPestaniaPdf = async () => {
