@@ -342,6 +342,14 @@ const registrarVentaApi = async () => {
 
 };
 
+const subirTicket = async (ticket) => {
+    try {
+        await getTicketVenta(idVenta.value);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const togleFiniquitarRestante = () => {
     finiquitarVenta.value = !finiquitarVenta.value;
 };

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { limpiarSesion } from '@/utils/SessionManager';
 
 import { storage } from '@/firebase.js';
-import { ref as storageRef, getDownloadURL } from 'firebase/storage'
+import { ref as storageRef, getDownloadURL, uploadBytes } from 'firebase/storage'
 
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
@@ -187,7 +187,7 @@ export async function postVenta(venta) {
     try {
         let respuesta = await axiosInstance.post(urlnew, venta, {
             responseType: 'blob'
-          } );
+        });
         return respuesta;
     } catch (error) {
         throw error;
@@ -209,7 +209,7 @@ export async function getVentas(paramsMethod) {
     const complemento = '/venta/buscar';
     let urlnew = getUrl() + complemento;
 
-    
+
 
     try {
         let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
@@ -424,7 +424,7 @@ export async function getReporte(paramsMethod) {
     const complemento = '/reporte';
     let urlnew = getUrl() + complemento;
 
-    
+
 
     try {
         let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
@@ -446,7 +446,7 @@ export async function postTipoCliente(tipoCliente) {
 
 export async function getPrecios(idProducto) {
     const complemento = '/producto/' + idProducto + '/precios';
-    
+
     let urlnew = getUrl() + complemento;
 
     try {
@@ -459,7 +459,7 @@ export async function getPrecios(idProducto) {
 
 export async function getTicketVenta(idVenta) {
     const complemento = '/venta/' + idVenta + '/ticket';
-    
+
     let urlnew = getUrl() + complemento;
 
     try {
@@ -469,6 +469,28 @@ export async function getTicketVenta(idVenta) {
         throw error;
     }
 }
+
+export async function subirTicket(idVenta, ticket) {
+    const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
+    const storageRef = fireRef(storage, path)
+
+    uploadBytes(storageRef, ticket).then((snapshot) => {
+        console.log('Se subió el ticket correctamente');
+    });
+}
+
+export async function getUrlTicket(idVenta) {
+    const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
+    
+    getDownloadURL(storageRef(storage, path))
+        .then((url) => {
+            return url
+        })
+        .catch((error) => {
+            return null
+        });
+}
+
 
 
 

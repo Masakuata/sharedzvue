@@ -39,7 +39,7 @@
             </ButtonX>
         </div>
 
-        <a :href="reporteUrl" target="_blank" class="underline w-full text-center">
+        <a :href="urlFirebase" target="_blank" class="underline w-full text-center">
                     Abre el link
                 </a>
         
@@ -63,6 +63,8 @@ const route = useRoute();
 const router = useRouter();
 const whatsAppLink = 'https://wa.me/522291763687'
 const reporteUrl = 'https://chat.openai.com/';
+const url = 'http://clayrite.ddns.net:81/venta/154/ticket'
+const urlFirebase = 'https://firebasestorage.googleapis.com/v0/b/petlove-38b24.appspot.com/o/2023%20Precios%20MVZ%20Li%CC%81nea%20Selecta.pdf?alt=media&token=9bd65045-3e2f-4707-98fc-f59fb55da331'
 
 
 const abrirPestaniaPdf = async () => {
