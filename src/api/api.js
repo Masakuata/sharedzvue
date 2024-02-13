@@ -2,7 +2,7 @@ import axios from 'axios';
 import { limpiarSesion } from '@/utils/SessionManager';
 
 import { storage } from '@/firebase.js';
-import { ref as storageRef, getDownloadURL, uploadBytes } from 'firebase/storage'
+import { ref as storageRef, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage'
 
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
@@ -185,9 +185,10 @@ export async function postVenta(venta) {
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.post(urlnew, venta, {
-            responseType: 'blob'
-        });
+        // let respuesta = await axiosInstance.post(urlnew, venta, {
+        //     responseType: 'blob'
+        // });
+        let respuesta = await axiosInstance.post(urlnew, venta);
         return respuesta;
     } catch (error) {
         throw error;
@@ -458,37 +459,61 @@ export async function getPrecios(idProducto) {
 }
 
 export async function getTicketVenta(idVenta) {
+    // let respuesta = await axiosInstance.post(urlnew, venta, {
+        //     responseType: 'blob'
+        // });
     const complemento = '/venta/' + idVenta + '/ticket';
 
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.get(urlnew);
+        let respuesta = await axiosInstance.get(urlnew, {
+                 responseType: 'blob'
+             });
         return respuesta;
     } catch (error) {
         throw error;
     }
 }
 
-export async function subirTicket(idVenta, ticket) {
+export async function postTicket(idVenta, ticket) {
+    console.log('Subiendo ticket API')
+    console.log(ticket)
+    
     const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
-    const storageRef = fireRef(storage, path)
+        const storageRefe = storageRef(storage, path)
 
-    uploadBytes(storageRef, ticket).then((snapshot) => {
-        console.log('Se subió el ticket correctamente');
-    });
+        uploadBytes(storageRefe, ticket).then((snapshot) => {
+            console.log('Se subió el ticket correctamente');
+        });
+
+
 }
 
 export async function getUrlTicket(idVenta) {
     const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
-    
-    getDownloadURL(storageRef(storage, path))
+
+    return getDownloadURL(storageRef(storage, path))
         .then((url) => {
+            console.log('URL TICKET', url)
             return url
         })
         .catch((error) => {
             return null
         });
+}
+
+export async function deleteTicket(idVenta) {
+    const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
+    const storageRef = fireRef(storage, path)
+
+    deleteObject(storageRef).then(() => {
+        return true
+        // File deleted successfully
+    }).catch((error) => {
+        return false
+        // Uh-oh, an error occurred!
+    });
 }
 
 

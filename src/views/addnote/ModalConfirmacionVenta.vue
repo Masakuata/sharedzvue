@@ -131,6 +131,11 @@
                                 <div class="p-2 w-full md:px-20 ">
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
+
+                                <a :href="urlFirebase" target="_blank" class="underline w-full text-center">
+                    Imprimir ticket
+                </a>
+
                                 <div>
                                     <ButtonX color="red" @click="abrirPestaniaPdf">Descargar</ButtonX>
                                 </div>
@@ -164,7 +169,7 @@ import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import ProductoVenderRow from './ProductoVenderRow.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
-import { postVenta, getTicketVenta } from '@/api/api.js';
+import { postVenta, postTicket, getTicketVenta, getUrlTicket } from '@/api/api.js';
 import { filtrarEntrada } from '@/utils/validator.js'
 import AlertX from '@/components/utilities/AlertX.vue';
 import PrintNoteComp from './PrintNoteComp.vue';
@@ -185,6 +190,8 @@ const error = ref(false);
 const errorMessage = ref('');
 const errorObject = ref(null);
 const idVenta = ref(0);
+let ticket = null;
+let urlFirebase = ''
 
 const limpiarComponente = () => {
     requestSent.value = false;
@@ -256,33 +263,38 @@ const construirVenta = () => {
     return venta;
 };
 
-const abrirPestaniaPdf = async () => {
-    try {
-        await getTicketVenta();
 
+
+// const imprimirVenta = (data) => {
+
+//     let file = new Blob([data], { type: 'application/pdf' });
+//     let fileURL = URL.createObjectURL(file, );
+//     window.open(fileURL, "_blank")
+//     // const elem = window.document.createElement('a')
+//     // elem.href = window.URL.createObjectURL(blob)
+//     // elem.download = 'venta.pdf'
+//     // document.body.appendChild(elem)
+//     // elem.click()
+//     // document.body.removeChild(elem)
+
+// };
+
+
+const obtenerUrlFirebase = async () => {
+    try {
+        urlFirebase = await getUrlTicket(idVenta.value);
+        console.log('El url' ,urlFirebase);
     } catch (error) {
-        
+        console.log(error);
     }
 };
 
-const imprimirVenta = (data) => {
+const subirTicket = async () => {
+    //console.log('el ticket es');
+    //console.log(ticket);
 
 
-    let file = new Blob([data], { type: 'application/pdf' });
-    let fileURL = URL.createObjectURL(file, );
-    window.open(fileURL, "_blank")
-
-    // const elem = window.document.createElement('a')
-    // elem.href = window.URL.createObjectURL(blob)
-    // elem.download = 'venta.pdf'
-    // document.body.appendChild(elem)
-    // elem.click()
-    // document.body.removeChild(elem)
-
-
-
-
-
+    await postTicket(idVenta.value,  ticket);
 };
 
 const registrarVentaApi = async () => {
@@ -296,8 +308,21 @@ const registrarVentaApi = async () => {
         requestSent.value = true;
         let venta = construirVenta();
         response = await postVenta(venta);
+        console.log('response');
+        console.log(response);
+
+        ticket = response.data
         
         idVenta.value = response.data.id;
+        console.log(idVenta.value);
+
+        await obtenerTicket();
+        await subirTicket();
+        await obtenerUrlFirebase();
+
+        
+
+        loading.value = false;
 
 
 
@@ -317,7 +342,7 @@ const registrarVentaApi = async () => {
         // link.click();
 
 
-        loading.value = false
+        //loading.value = false
 
 
 
@@ -337,14 +362,15 @@ const registrarVentaApi = async () => {
         errorMessage.value = errorResponse.response.data.detail;
         console.log(errorResponse);
     }
-
+    subirTicket(idVenta.value, ticket);
     //imprimirVenta(response.data);
 
 };
 
-const subirTicket = async (ticket) => {
+const obtenerTicket = async () => {
     try {
-        await getTicketVenta(idVenta.value);
+        const response = await getTicketVenta(idVenta.value);
+        ticket = response.data;
     } catch (error) {
         console.log(error);
     }
