@@ -33,7 +33,18 @@
             </div>
 
         </div>
-
+        <div class="w-full">
+            <ButtonX @click="abrirPestaniaPdf" color="blue">
+                Abrir reporte
+            </ButtonX>
+        </div>
+        <div class="w-full h-12 bg-bgBlue rounded-lg flex flex-row items-center ">
+            <a :href="urlFirebase" target="_blank" class="w-full text-center text-white ">
+                    Abre el link
+                </a>
+        </div>
+        
+        
 
 
 
@@ -48,16 +59,28 @@ import { ref, onMounted } from 'vue';
 import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getTicketVenta } from '@/api/api.js';
 
 const route = useRoute();
 const router = useRouter();
 const whatsAppLink = 'https://wa.me/522291763687'
+const reporteUrl = 'https://chat.openai.com/';
+const url = 'http://clayrite.ddns.net:81/venta/154/ticket'
+const urlFirebase = 'https://firebasestorage.googleapis.com/v0/b/petlove-38b24.appspot.com/o/2023%20Precios%20MVZ%20Li%CC%81nea%20Selecta.pdf?alt=media&token=9bd65045-3e2f-4707-98fc-f59fb55da331'
 
 
+const abrirPestaniaPdf = async () => {
+    try {
+        let response = await getTicketVenta(154);
+        console.log(response);
 
+    } catch (error) {
+        
+    }
+};
 
 const clickEnDiv = () => {
-    toggleSidebar();
+    toggleSidebar(162);
 };
 
 

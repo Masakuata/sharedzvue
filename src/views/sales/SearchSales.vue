@@ -218,13 +218,7 @@ const construirQuery = () => {
 
         
         dateValue.value = dateString;
-        console.log( 'La fecha es',dateValue.value);
-       
-        console.log(diaAux);
-        console.log(mesAux);
-        console.log( anioAux);
-
-        console.log(dateString);
+        
         
         query.value.dia = diaAux;
         query.value.mes = mesAux;
