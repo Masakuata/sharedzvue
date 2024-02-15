@@ -2,7 +2,7 @@ import axios from 'axios';
 import { limpiarSesion } from '@/utils/SessionManager';
 
 import { storage } from '@/firebase.js';
-import { ref as storageRef, getDownloadURL } from 'firebase/storage'
+import { ref as storageRef, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage'
 
 
 const httpsUrl = 'https://petloveback-x7smt.ondigitalocean.app'
@@ -185,9 +185,10 @@ export async function postVenta(venta) {
     let urlnew = getUrl() + complemento;
 
     try {
-        let respuesta = await axiosInstance.post(urlnew, venta, {
-            responseType: 'blob'
-          } );
+        // let respuesta = await axiosInstance.post(urlnew, venta, {
+        //     responseType: 'blob'
+        // });
+        let respuesta = await axiosInstance.post(urlnew, venta);
         return respuesta;
     } catch (error) {
         throw error;
@@ -209,7 +210,7 @@ export async function getVentas(paramsMethod) {
     const complemento = '/venta/buscar';
     let urlnew = getUrl() + complemento;
 
-    
+
 
     try {
         let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
@@ -424,7 +425,7 @@ export async function getReporte(paramsMethod) {
     const complemento = '/reporte';
     let urlnew = getUrl() + complemento;
 
-    
+
 
     try {
         let respuesta = await axiosInstance.get(urlnew, { params: paramsMethod });
@@ -446,7 +447,7 @@ export async function postTipoCliente(tipoCliente) {
 
 export async function getPrecios(idProducto) {
     const complemento = '/producto/' + idProducto + '/precios';
-    
+
     let urlnew = getUrl() + complemento;
 
     try {
@@ -457,7 +458,82 @@ export async function getPrecios(idProducto) {
     }
 }
 
+export async function getTicketVenta(idVenta) {
+    // let respuesta = await axiosInstance.post(urlnew, venta, {
+        //     responseType: 'blob'
+        // });
+    const complemento = '/venta/' + idVenta + '/ticket';
 
+    let urlnew = getUrl() + complemento;
+
+    try {
+        let respuesta = await axiosInstance.get(urlnew, {
+                 responseType: 'blob'
+             });
+        return respuesta;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postTicket(idVenta, ticket) {
+    console.log('Subiendo ticket API')
+    console.log(ticket)
+    
+    const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
+        const storageRefe = storageRef(storage, path)
+
+        uploadBytes(storageRefe, ticket).then((snapshot) => {
+            console.log('Se subió el ticket correctamente');
+        });
+
+
+}
+
+export async function getUrlTicket(idVenta) {
+    const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
+
+    return getDownloadURL(storageRef(storage, path))
+        .then((url) => {
+            console.log('URL TICKET', url)
+            return url
+        })
+        .catch((error) => {
+            return null
+        });
+}
+
+export async function deleteTicket(idVenta) {
+    const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
+    const storageRefe = storageRef(storage, path)
+
+    deleteObject(storageRefe).then(() => {
+        console.log('Se eliminó el ticket correctamente');
+        return true
+        // File deleted successfully
+    }).catch((error) => {
+        console.log('Error al eliminar el ticket', error);
+        return false
+        // Uh-oh, an error occurred!
+    });
+}
+
+export async function deleteImage(idProducto) {
+    
+    const path = process.env.VUE_APP_FIREBASE_PATH + idProducto + '.png';
+
+    const storageRefe = storageRef(storage, path)
+
+    deleteObject(storageRefe).then(() => {
+        console.log('Se eliminó la imagen correctamente');
+        return true
+        // File deleted successfully
+    }).catch((error) => {
+        console.log('Error al eliminar la imagen ', error);
+        return false
+        // Uh-oh, an error occurred!
+    });
+}
 
 
 
