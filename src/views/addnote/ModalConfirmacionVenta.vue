@@ -130,7 +130,7 @@
                                 <div class="p-2 w-full md:px-20 ">
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
-                                <div class="w-full px-2">
+                                <div class="w-full px-2 md:px-20">
                                     <div
                                         class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
                                         <div class="mx-2 text-white">
