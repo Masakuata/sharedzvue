@@ -131,24 +131,10 @@
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
                                 <div class="w-full px-2 md:px-20">
-                                    <div
-                                        class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
-                                        <div class="mx-2 text-white">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-printer w-5 h-5">
-                                                <polyline points="6 9 6 2 18 2 18 9" />
-                                                <path
-                                                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                                <rect width="12" height="8" x="6" y="14" />
-                                            </svg>
-                                        </div>
-                                        <a v-if="urlFirebase" :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
-                                            Imprimir ticket
-                                        </a>
-                                    </div>
+                                    <ButtonX icon="print" color="red" @click="imprimirTicket" :is-loading="loadingPrintTicket" >Imprimir ticket</ButtonX>
                                 </div>
+
+                                
 
                             </div>
 
@@ -196,12 +182,14 @@ const errorCantidadMayor = ref(false);
 const requestSent = ref(false);
 const loading = ref(false);
 
+const loadingPrintTicket = ref(false);
+
 const error = ref(false);
 const errorMessage = ref('');
 const errorObject = ref(null);
 const idVenta = ref(0);
 let ticket = null;
-let urlFirebase = ''
+const  urlFirebase = ref(null);
 
 const limpiarComponente = () => {
     requestSent.value = false;
@@ -273,20 +261,21 @@ const construirVenta = () => {
     return venta;
 };
 
-
-
-
-
-const traerUrlFirebase = async () => {
-    console.log('Intentando obtener url', urlFirebase);
-
-    let intentos = 0;
-    while (urlFirebase === null && intentos < 5) {
-        await obtenerUrlFirebase();
-        intentos++;
-    }
-    
+const imprimirTicket = async() => {
+    loadingPrintTicket.value = true;
+    urlFirebase.value = null;
+    await obtenerUrlFirebase();
+    loadingPrintTicket.value = false;
 };
+
+watch(
+    () => urlFirebase.value,
+    () => {
+        if(urlFirebase.value !== null){
+            window.open(urlFirebase.value, '_blank')
+        }
+    }
+);
 
 
 const obtenerUrlFirebase = async () => {
@@ -294,9 +283,9 @@ const obtenerUrlFirebase = async () => {
 
     try {
         console.log('Intentando obtener url');
-        urlFirebase = await getUrlTicket(idVenta.value);
-        console.log('El url', urlFirebase);
-        if(urlFirebase === null){
+        urlFirebase.value = await getUrlTicket(idVenta.value);
+        console.log('El url', urlFirebase.value);
+        if(urlFirebase.value === null){
             console.log('El url es null intentando recuperar url');
             obtenerUrlFirebase();
         }
@@ -337,7 +326,7 @@ const registrarVentaApi = async () => {
 
         await obtenerTicket();
         await subirTicket();
-        await obtenerUrlFirebase();
+        
 
 
 
