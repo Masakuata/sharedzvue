@@ -505,17 +505,35 @@ export async function getUrlTicket(idVenta) {
 
 export async function deleteTicket(idVenta) {
     const path = process.env.VUE_APP_FIREBASE_PATH_TICKETS + idVenta + '.pdf';
-    const storageRef = fireRef(storage, path)
+    const storageRefe = storageRef(storage, path)
 
-    deleteObject(storageRef).then(() => {
+    deleteObject(storageRefe).then(() => {
+        console.log('Se eliminó el ticket correctamente');
         return true
         // File deleted successfully
     }).catch((error) => {
+        console.log('Error al eliminar el ticket', error);
         return false
         // Uh-oh, an error occurred!
     });
 }
 
+export async function deleteImage(idProducto) {
+    
+    const path = process.env.VUE_APP_FIREBASE_PATH + idProducto + '.png';
+
+    const storageRefe = storageRef(storage, path)
+
+    deleteObject(storageRefe).then(() => {
+        console.log('Se eliminó la imagen correctamente');
+        return true
+        // File deleted successfully
+    }).catch((error) => {
+        console.log('Error al eliminar la imagen ', error);
+        return false
+        // Uh-oh, an error occurred!
+    });
+}
 
 
 

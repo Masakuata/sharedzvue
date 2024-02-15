@@ -126,18 +126,28 @@
 
 
                                 </div>
-                                <PrintNoteComp :productos="productos" :total="total" :cliente="cliente"
-                                    :abono="abonoInicial"></PrintNoteComp>
+                                
                                 <div class="p-2 w-full md:px-20 ">
                                     <ButtonX color="blue" @click="emitirConfirmarVenta">Aceptar</ButtonX>
                                 </div>
-
-                                <a :href="urlFirebase" target="_blank" class="underline w-full text-center">
-                    Imprimir ticket
-                </a>
-
-                                <div>
-                                    <ButtonX color="red" @click="abrirPestaniaPdf">Descargar</ButtonX>
+                                <div class="w-full px-2">
+                                    <div
+                                        class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
+                                        <div class="mx-2 text-white">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-printer w-5 h-5">
+                                                <polyline points="6 9 6 2 18 2 18 9" />
+                                                <path
+                                                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                                <rect width="12" height="8" x="6" y="14" />
+                                            </svg>
+                                        </div>
+                                        <a v-if="urlFirebase" :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
+                                            Imprimir ticket
+                                        </a>
+                                    </div>
                                 </div>
 
                             </div>
@@ -165,11 +175,11 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
+import { defineProps, defineEmits, onMounted, ref, watch, onUnmounted } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
 import ProductoVenderRow from './ProductoVenderRow.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
-import { postVenta, postTicket, getTicketVenta, getUrlTicket } from '@/api/api.js';
+import { postVenta, postTicket, getTicketVenta, getUrlTicket, deleteTicket } from '@/api/api.js';
 import { filtrarEntrada } from '@/utils/validator.js'
 import AlertX from '@/components/utilities/AlertX.vue';
 import PrintNoteComp from './PrintNoteComp.vue';
@@ -265,25 +275,33 @@ const construirVenta = () => {
 
 
 
-// const imprimirVenta = (data) => {
 
-//     let file = new Blob([data], { type: 'application/pdf' });
-//     let fileURL = URL.createObjectURL(file, );
-//     window.open(fileURL, "_blank")
-//     // const elem = window.document.createElement('a')
-//     // elem.href = window.URL.createObjectURL(blob)
-//     // elem.download = 'venta.pdf'
-//     // document.body.appendChild(elem)
-//     // elem.click()
-//     // document.body.removeChild(elem)
 
-// };
+const traerUrlFirebase = async () => {
+    console.log('Intentando obtener url', urlFirebase);
+
+    let intentos = 0;
+    while (urlFirebase === null && intentos < 5) {
+        await obtenerUrlFirebase();
+        intentos++;
+    }
+    
+};
 
 
 const obtenerUrlFirebase = async () => {
+    
+
     try {
+        console.log('Intentando obtener url');
         urlFirebase = await getUrlTicket(idVenta.value);
-        console.log('El url' ,urlFirebase);
+        console.log('El url', urlFirebase);
+        if(urlFirebase === null){
+            console.log('El url es null intentando recuperar url');
+            obtenerUrlFirebase();
+        }
+        console.log('El url fue obtenido'); 
+
     } catch (error) {
         console.log(error);
     }
@@ -293,8 +311,9 @@ const subirTicket = async () => {
     //console.log('el ticket es');
     //console.log(ticket);
 
-
-    await postTicket(idVenta.value,  ticket);
+    console.log('Intentando subir ticket');
+    await postTicket(idVenta.value, ticket);
+    console.log('El ticket fue subido');
 };
 
 const registrarVentaApi = async () => {
@@ -312,7 +331,7 @@ const registrarVentaApi = async () => {
         console.log(response);
 
         ticket = response.data
-        
+
         idVenta.value = response.data.id;
         console.log(idVenta.value);
 
@@ -320,31 +339,9 @@ const registrarVentaApi = async () => {
         await subirTicket();
         await obtenerUrlFirebase();
 
-        
+
 
         loading.value = false;
-
-
-
-        // const url = window.URL.createObjectURL(new Blob([response.data]));
-
-
-        // const link = document.createElement('a');
-        // link.href = url;
-
-        // link.setAttribute('download', 'file.pdf');
-
-
-
-
-
-        // document.body.appendChild(link);
-        // link.click();
-
-
-        //loading.value = false
-
-
 
     } catch (errorResponse) {
 
@@ -369,8 +366,10 @@ const registrarVentaApi = async () => {
 
 const obtenerTicket = async () => {
     try {
+        console.log('Intentando obtener ticket');
         const response = await getTicketVenta(idVenta.value);
         ticket = response.data;
+        console.log('El ticket fue obtenido');
     } catch (error) {
         console.log(error);
     }
@@ -427,6 +426,10 @@ const cerrarModal = () => {
 onMounted(() => {
     totalInt.value = parseInt(props.total);
     abonoInicial.value = '0';
+});
+onUnmounted(() => {
+    console.log('Se desmonta el componente');
+    deleteTicket(idVenta.value);
 });
 
 

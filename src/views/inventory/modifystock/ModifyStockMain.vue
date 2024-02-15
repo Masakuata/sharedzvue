@@ -155,7 +155,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { getProductoId, getVentas } from '@/api/api.js'
 import ModalConfirmacionAdd from './ModalConfirmacionAdd.vue';
 import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
-import { eliminarProducto } from '@/api/api.js';
+import { eliminarProducto, deleteImage } from '@/api/api.js';
 import { toast } from 'vue3-toastify';
 import ModalSesionExpired from '@/components/utilities/ModalSesionExpired.vue';
 import ErrorX from '@/components/utilities/ErrorX.vue';
@@ -229,20 +229,21 @@ const errorAlAgregar = (error) => {
     }
 };
 
-const confirmarEliminar = () => {
+const confirmarEliminar = async ()  => {
     isVisibleModalDelete.value = false;
-    eliminar();
+    await eliminar();
+    deleteImage(producto.value.id);
 };
 const cerrarModalDelete = () => {
     isVisibleModalDelete.value = false;
 };
 const mostrarModalDelete = async () => {
 
-    if (await hasVentas()) {
-        mensajeModalDelete.value = 'El producto  ' + producto.value.nombre + ' tiene ventas registradas, ¿Estás seguro de eliminarlo?';
-        isVisibleModalDelete.value = true;
-        return;
-    }
+    // if (await hasVentas()) {
+    //     mensajeModalDelete.value = 'El producto  ' + producto.value.nombre + ' tiene ventas registradas, ¿Estás seguro de eliminarlo?';
+    //     isVisibleModalDelete.value = true;
+    //     return;
+    // }
 
     mensajeModalDelete.value = '¿Está seguro que desea eliminar el producto ' + producto.value.nombre + '?';
     isVisibleModalDelete.value = true;
@@ -257,6 +258,7 @@ const eliminar = async () => {
             type: 'success',
             autoClose: 2000,
         });
+        
         router.go(-1);
     } catch (error) {
         loading.value = false;

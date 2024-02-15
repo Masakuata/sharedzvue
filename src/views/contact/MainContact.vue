@@ -38,10 +38,12 @@
                 Abrir reporte
             </ButtonX>
         </div>
-
-        <a :href="urlFirebase" target="_blank" class="underline w-full text-center">
+        <div class="w-full h-12 bg-bgBlue rounded-lg flex flex-row items-center ">
+            <a :href="urlFirebase" target="_blank" class="w-full text-center text-white ">
                     Abre el link
                 </a>
+        </div>
+        
         
 
 
