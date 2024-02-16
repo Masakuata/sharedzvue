@@ -33,16 +33,7 @@
             </div>
 
         </div>
-        <div class="w-full">
-            <ButtonX @click="abrirPestaniaPdf" color="blue">
-                Abrir reporte
-            </ButtonX>
-        </div>
-        <div class="w-full h-12 bg-bgBlue rounded-lg flex flex-row items-center ">
-            <a :href="urlFirebase" target="_blank" class="w-full text-center text-white ">
-                    Abre el link
-                </a>
-        </div>
+        
         
         
 
