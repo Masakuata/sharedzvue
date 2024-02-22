@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible ">DETALLES DE
-        VENTA</h1>
+        VENTAaaa</h1>
     <template v-if="modalEliminarVentaVisible">
         <ModalConfirmationX :is-visible="modalEliminarVentaVisible" :is-important="true" titulo="Eliminación de venta"
             texto-realizar="Eliminar" texto-cancelar="Regresar"
@@ -24,6 +24,33 @@
                         </div>
 
                     </div>
+
+                    <template v-if="urlFirebase !== null">
+                        <div class="w-full px-2 mt-2">
+                            <div class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
+                                <div class="mx-2 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-printer w-5 h-5">
+                                        <polyline points="6 9 6 2 18 2 18 9" />
+                                        <path
+                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                        <rect width="12" height="8" x="6" y="14" />
+                                    </svg>
+                                </div>
+                                <a :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
+                                    Imprimir ticket
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+
+
+
+                    <!-- <div class="w-full mt-3">
+                        <ButtonX @click="imprimirTicket" icon="print" :is-slim="true" color="red"
+                            :is-loading="loadingImprimirTicket">Imprimir ticket</ButtonX>
+                    </div> -->
 
                     <ClienteDetailRow :cliente="cliente"></ClienteDetailRow>
 
@@ -61,9 +88,9 @@
                                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                         </svg>
                                     </div>
-                                    <input v-if="!modalEliminarVentaVisible"  :disabled="finiquitarRestante" v-model="abono" id="default-search"
-                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                                        >
+                                    <input v-if="!modalEliminarVentaVisible" :disabled="finiquitarRestante" v-model="abono"
+                                        id="default-search"
+                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
 
                                 </div>
                             </div>
@@ -127,6 +154,49 @@
                                         <path d="m22 10-7.5 7.5L13 16" />
                                     </svg>
                                 </div>
+                                <!-- <div class="w-full mt-3">
+                                    <ButtonX @click="imprimirTicket" icon="print" :is-slim="true" color="red"
+                                        :is-loading="loadingImprimirTicket">Imprimir ticket</ButtonX>
+                                </div> -->
+                                <div class="w-full px-2">
+                                    <div
+                                        class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
+                                        <div class="mx-2 text-white">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-printer w-5 h-5">
+                                                <polyline points="6 9 6 2 18 2 18 9" />
+                                                <path
+                                                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                                <rect width="12" height="8" x="6" y="14" />
+                                            </svg>
+                                        </div>
+                                        <template v-if="urlFirebase !== null">
+                                            <div class="w-full px-2 mt-2">
+                                                <div
+                                                    class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
+                                                    <div class="mx-2 text-white">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="lucide lucide-printer w-5 h-5">
+                                                            <polyline points="6 9 6 2 18 2 18 9" />
+                                                            <path
+                                                                d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                                            <rect width="12" height="8" x="6" y="14" />
+                                                        </svg>
+                                                    </div>
+                                                    <a :href="urlFirebase" target="_blank"
+                                                        class="w-fit text-center text-white">
+                                                        Imprimir ticket
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
                                 <div class="p-2 w-full">
                                     <ButtonX @click="aceptar" color="blue">Aceptar</ButtonX>
                                 </div>
@@ -205,9 +275,9 @@
 </template>
     
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, onUnmounted } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
-import { getDetallesVenta, postAbono, deleteVenta } from '@/api/api.js';
+import { getDetallesVenta, postAbono, deleteVenta, getTicketVenta, postTicket, getUrlTicket, deleteTicket } from '@/api/api.js';
 import ProductoVentaRow from './ProductoVentaRow.vue';
 import AlertX from '@/components/utilities/AlertX.vue';
 import { getHoyString } from '@/utils/validator.js'
@@ -216,6 +286,7 @@ import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ClienteDetailRow from './ClienteDetailRow.vue';
 import DetallesVentaRow from './DetallesVentaRow.vue';
 import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
+
 
 const route = useRoute();
 const router = useRouter();
@@ -246,6 +317,7 @@ const modalEliminarVentaVisible = ref(false)
 
 const ventaEliminada = ref(false);
 const mensajeLoading = ref("")
+const idVenta = ref(null);
 
 
 
@@ -256,6 +328,68 @@ const cerrarModalEliminarVenta = () => {
     modalEliminarVentaVisible.value = false;
 }
 
+const loadingImprimirTicket = ref(false);
+let ticket = null;
+
+let urlFirebase = ref(null);
+
+
+const imprimirTicket = async () => {
+    urlFirebase.value = null;
+    loadingImprimirTicket.value = true;
+    await obtenerTicket();
+    await subirTicket();
+    await obtenerUrlFirebase();
+    loadingImprimirTicket.value = false;
+
+
+}
+
+
+// watch(
+//     () => urlFirebase.value,
+//     () => {
+//         if (urlFirebase.value !== null) {
+//             console.log('Entro al watch', urlFirebase.value);
+//             window.open(urlFirebase.value, '_blank')
+//         }
+//     }
+// );
+
+const obtenerTicket = async () => {
+    try {
+        console.log('Intentando obtener ticket');
+        const response = await getTicketVenta(route.params.id);
+        ticket = response.data;
+        console.log('El ticket fue obtenido');
+    } catch (error) {
+        console.log(error);
+    }
+};
+const subirTicket = async () => {
+
+    console.log('Intentando subir ticket');
+    await postTicket(route.params.id, ticket);
+    console.log('El ticket fue subido');
+};
+
+const obtenerUrlFirebase = async () => {
+
+
+    try {
+        console.log('Intentando obtener url');
+        urlFirebase.value = await getUrlTicket(route.params.id);
+        console.log('El url', urlFirebase);
+        if (urlFirebase.value === null) {
+            console.log('El url es null intentando recuperar url');
+            obtenerUrlFirebase();
+        }
+        console.log('El url fue obtenido');
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 
 
@@ -330,6 +464,10 @@ const registrarAbono = async () => {
             requestSent.value = true;
             loadingSendAbono.value = true;
             let response = await postAbono(route.params.id, payload);
+
+            await obtenerTicket();
+            await subirTicket();
+            await obtenerUrlFirebase();
 
             loadingSendAbono.value = false;
             abono.value = '';
@@ -431,6 +569,9 @@ const getDetailsVenta = async (ventaId) => {
 
 
         restante.value = sale.value.total - sale.value.abonado;
+        await obtenerTicket();
+        await subirTicket();
+        await obtenerUrlFirebase()
 
         loading.value = false;
 
@@ -445,9 +586,16 @@ const regresar = () => {
     router.go(-1)
 };
 
+onUnmounted(
+    () => {
+        deleteTicket(idVenta.value);
+    }
+);
+
 
 onMounted(() => {
     const ventaId = route.params.id
+    idVenta.value = route.params.id
     getDetailsVenta(ventaId);
 
 });
