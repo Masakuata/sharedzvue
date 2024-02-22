@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-white absolute top-0 right-0 mr-2   text-xl font-semibold text-left mt-3 md:invisible ">DETALLES DE
-        VENTAaaa</h1>
+        VENTA</h1>
     <template v-if="modalEliminarVentaVisible">
         <ModalConfirmationX :is-visible="modalEliminarVentaVisible" :is-important="true" titulo="Eliminación de venta"
             texto-realizar="Eliminar" texto-cancelar="Regresar"
@@ -100,7 +100,7 @@
 
 
                         <div class="flex flex-row w-full mt-3">
-                            <div class="w-1/2 pr-1">
+                            <div class="w-1/2 pr-1 mb-4">
                                 <ButtonX color="red" @click="regresar">Regresar</ButtonX>
                             </div>
                             <div class="w-1/2 pl-1 mb-5">
@@ -114,7 +114,7 @@
                                 ¡Esta venta ya ha sido pagada!
                             </p>
                         </div>
-                        <div class="w-full">
+                        <div class="w-full mb-4">
                             <ButtonX color="blue" @click="regresar">Regresar</ButtonX>
                         </div>
                     </template>
@@ -159,42 +159,29 @@
                                         :is-loading="loadingImprimirTicket">Imprimir ticket</ButtonX>
                                 </div> -->
                                 <div class="w-full px-2">
-                                    <div
-                                        class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
-                                        <div class="mx-2 text-white">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-printer w-5 h-5">
-                                                <polyline points="6 9 6 2 18 2 18 9" />
-                                                <path
-                                                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                                <rect width="12" height="8" x="6" y="14" />
-                                            </svg>
-                                        </div>
-                                        <template v-if="urlFirebase !== null">
-                                            <div class="w-full px-2 mt-2">
-                                                <div
-                                                    class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
-                                                    <div class="mx-2 text-white">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-printer w-5 h-5">
-                                                            <polyline points="6 9 6 2 18 2 18 9" />
-                                                            <path
-                                                                d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                                            <rect width="12" height="8" x="6" y="14" />
-                                                        </svg>
-                                                    </div>
-                                                    <a :href="urlFirebase" target="_blank"
-                                                        class="w-fit text-center text-white">
-                                                        Imprimir ticket
-                                                    </a>
+
+                                    <template v-if="urlFirebase !== null">
+                                        <div class="w-full px-2 mt-2">
+                                            <div
+                                                class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
+                                                <div class="mx-2 text-white">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-printer w-5 h-5">
+                                                        <polyline points="6 9 6 2 18 2 18 9" />
+                                                        <path
+                                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                                        <rect width="12" height="8" x="6" y="14" />
+                                                    </svg>
                                                 </div>
+                                                <a :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
+                                                    Imprimir ticket
+                                                </a>
                                             </div>
-                                        </template>
-                                    </div>
+                                        </div>
+                                    </template>
+
                                 </div>
 
                                 <div class="p-2 w-full">
