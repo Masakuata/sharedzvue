@@ -163,7 +163,7 @@ const loginUsuario = async (miembro) => {
 }
 
 const notify = () => {
-    toast("El correo y contraseña no coincidden con algún usuario registrado ", {
+    toast("El correo y contraseña no coinciden con algún usuario registrado ", {
         type: 'warning',
         autoClose: 2000,
     });

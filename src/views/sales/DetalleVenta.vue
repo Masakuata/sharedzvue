@@ -24,6 +24,10 @@
                         </div>
 
                     </div>
+                    <div class="w-full mt-3">
+                        <ButtonX @click="imprimirTicket" icon="print" :is-slim="true" color="red"
+                            :is-loading="loadingImprimirTicket">Imprimir ticket</ButtonX>
+                    </div>
 
                     <ClienteDetailRow :cliente="cliente"></ClienteDetailRow>
 
@@ -61,9 +65,9 @@
                                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                         </svg>
                                     </div>
-                                    <input v-if="!modalEliminarVentaVisible"  :disabled="finiquitarRestante" v-model="abono" id="default-search"
-                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                                        >
+                                    <input v-if="!modalEliminarVentaVisible" :disabled="finiquitarRestante" v-model="abono"
+                                        id="default-search"
+                                        class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
 
                                 </div>
                             </div>
@@ -126,6 +130,10 @@
                                         <path d="M18 6 7 17l-5-5" />
                                         <path d="m22 10-7.5 7.5L13 16" />
                                     </svg>
+                                </div>
+                                <div class="w-full mt-3">
+                                    <ButtonX @click="imprimirTicket" icon="print" :is-slim="true" color="red"
+                                        :is-loading="loadingImprimirTicket">Imprimir ticket</ButtonX>
                                 </div>
                                 <div class="p-2 w-full">
                                     <ButtonX @click="aceptar" color="blue">Aceptar</ButtonX>
@@ -205,9 +213,9 @@
 </template>
     
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, onUnmounted } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
-import { getDetallesVenta, postAbono, deleteVenta } from '@/api/api.js';
+import { getDetallesVenta, postAbono, deleteVenta, getTicketVenta, postTicket, getUrlTicket, deleteTicket } from '@/api/api.js';
 import ProductoVentaRow from './ProductoVentaRow.vue';
 import AlertX from '@/components/utilities/AlertX.vue';
 import { getHoyString } from '@/utils/validator.js'
@@ -216,6 +224,7 @@ import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ClienteDetailRow from './ClienteDetailRow.vue';
 import DetallesVentaRow from './DetallesVentaRow.vue';
 import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
+
 
 const route = useRoute();
 const router = useRouter();
@@ -246,6 +255,7 @@ const modalEliminarVentaVisible = ref(false)
 
 const ventaEliminada = ref(false);
 const mensajeLoading = ref("")
+const idVenta = ref(null);
 
 
 
@@ -256,6 +266,68 @@ const cerrarModalEliminarVenta = () => {
     modalEliminarVentaVisible.value = false;
 }
 
+const loadingImprimirTicket = ref(false);
+let ticket = null;
+
+let urlFirebase = ref(null);
+
+
+const imprimirTicket = async () => {
+    urlFirebase.value = null;
+    loadingImprimirTicket.value = true;
+    await obtenerTicket();
+    await subirTicket();
+    await obtenerUrlFirebase();
+    loadingImprimirTicket.value = false;
+
+
+}
+
+
+watch(
+    () => urlFirebase.value,
+    () => {
+        if (urlFirebase.value !== null) {
+            console.log('Entro al watch', urlFirebase.value);
+            window.open(urlFirebase.value, '_blank')
+        }
+    }
+);
+
+const obtenerTicket = async () => {
+    try {
+        console.log('Intentando obtener ticket');
+        const response = await getTicketVenta(route.params.id);
+        ticket = response.data;
+        console.log('El ticket fue obtenido');
+    } catch (error) {
+        console.log(error);
+    }
+};
+const subirTicket = async () => {
+
+    console.log('Intentando subir ticket');
+    await postTicket(route.params.id, ticket);
+    console.log('El ticket fue subido');
+};
+
+const obtenerUrlFirebase = async () => {
+
+
+    try {
+        console.log('Intentando obtener url');
+        urlFirebase.value = await getUrlTicket(route.params.id);
+        console.log('El url', urlFirebase);
+        if (urlFirebase.value === null) {
+            console.log('El url es null intentando recuperar url');
+            obtenerUrlFirebase();
+        }
+        console.log('El url fue obtenido');
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 
 
@@ -445,9 +517,16 @@ const regresar = () => {
     router.go(-1)
 };
 
+onUnmounted(
+    () => {
+        deleteTicket(idVenta.value);
+    }
+);
+
 
 onMounted(() => {
     const ventaId = route.params.id
+    idVenta.value = route.params.id
     getDetailsVenta(ventaId);
 
 });
