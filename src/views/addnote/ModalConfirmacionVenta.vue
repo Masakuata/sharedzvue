@@ -4,7 +4,8 @@
         <div class="bg-gray-100 h-[90vh] rounded-lg md:w-3/4 w-full mx-4 z-50">
 
             <template v-if="!requestSent">
-                <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la venta
+                <p class="w-full h-14 text-center text-white font-semibold bg-bgBlue rounded-t-lg pt-4">Confirmar la
+                    venta
                 </p>
                 <div class="w-full p-4 h-[80vh] overflow-scroll">
                     <p class="w-full text-center font-semibold text-lg">Productos a vender</p>
@@ -17,9 +18,9 @@
                     </div>
                     <div class="w-full flex flex-row items-center border-b border-gray-400 py-3">
                         <div class="w-1/12">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-store">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-store">
                                 <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
                                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
                                 <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
@@ -51,13 +52,15 @@
                             </div>
                             <div class="w-1/4 flex flex-row  justify-end">
                                 <input type="checkbox" v-model="finiquitarVenta"
-                                    class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500" id="checkbox">
+                                    class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500"
+                                    id="checkbox">
                             </div>
                         </div>
 
                     </div>
 
-                    <AlertX message="El abono no puede ser mayor que el monto total" :flag="errorCantidadMayor"></AlertX>
+                    <AlertX message="El abono no puede ser mayor que el monto total" :flag="errorCantidadMayor">
+                    </AlertX>
 
                     <div class="flex flex-row w-full  items-center justify-between space-x-2 pt-2">
                         <p class="font-semibold text-lg w-1/2">Abono Inicial</p>
@@ -113,7 +116,8 @@
                     <template v-else>
                         <template v-if="!error">
                             <div class="w-full">
-                                <p class="text-2xl font-semibold text-center text-bgBlue">Venta registrada exitósamente</p>
+                                <p class="text-2xl font-semibold text-center text-bgBlue">Venta registrada exitósamente
+                                </p>
                                 <div class="w-full flex justify-center mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="currentFill" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -137,18 +141,9 @@
                                     <div class="w-full px-2 mt-2">
                                         <div
                                             class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
-                                            <div class="mx-2 text-white">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-printer w-5 h-5">
-                                                    <polyline points="6 9 6 2 18 2 18 9" />
-                                                    <path
-                                                        d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                                    <rect width="12" height="8" x="6" y="14" />
-                                                </svg>
-                                            </div>
-                                            <a :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
+
+                                            <a :href="urlFirebase" target="_blank"
+                                                class="flex justify-center items-center w-full h-full text-white">
                                                 Imprimir ticket
                                             </a>
                                         </div>
@@ -204,6 +199,7 @@ const requestSent = ref(false);
 const loading = ref(false);
 
 const loadingPrintTicket = ref(false);
+const fechaVenta = ref('');
 
 const error = ref(false);
 const errorMessage = ref('');
@@ -211,6 +207,8 @@ const errorObject = ref(null);
 const idVenta = ref(0);
 let ticket = null;
 const urlFirebase = ref(null);
+
+let contadorIntentos = 0;
 
 const limpiarComponente = () => {
     requestSent.value = false;
@@ -306,8 +304,9 @@ const obtenerUrlFirebase = async () => {
         console.log('Intentando obtener url');
         urlFirebase.value = await getUrlTicket(idVenta.value);
         console.log('El url', urlFirebase.value);
-        if (urlFirebase.value === null) {
+        if (urlFirebase.value === null && contadorIntentos < 3) {
             console.log('El url es null intentando recuperar url');
+            contadorIntentos++;
             obtenerUrlFirebase();
         }
         console.log('El url fue obtenido');
@@ -341,6 +340,8 @@ const registrarVentaApi = async () => {
         console.log(response);
 
         ticket = response.data
+
+        fechaVenta.value = response.data.fecha.split('T')[0];
 
         idVenta.value = response.data.id;
         console.log(idVenta.value);

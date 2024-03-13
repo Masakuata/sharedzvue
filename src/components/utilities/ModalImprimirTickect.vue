@@ -1,0 +1,71 @@
+<template>
+    <div class="modal fixed inset-0 bg-white flex justify-center items-center">
+        <div>
+            <p>Este es ticket que se va a imprimir</p>
+            <div class="ticket">
+                <p class="centered">RECEIPT EXAMPLE
+                    <br>Address line 1
+                    <br>Address line 2
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="quantity">Q.</th>
+                            <th class="description">Description</th>
+                            <th class="price">$$</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="quantity">1.00</td>
+                            <td class="description">ARDUINO UNO R3</td>
+                            <td class="price">$25.00</td>
+                        </tr>
+                        <tr>
+                            <td class="quantity">2.00</td>
+                            <td class="description">JAVASCRIPT BOOK</td>
+                            <td class="price">$10.00</td>
+                        </tr>
+                        <tr>
+                            <td class="quantity">1.00</td>
+                            <td class="description">STICKER PACK</td>
+                            <td class="price">$10.00</td>
+                        </tr>
+                        <tr>
+                            <td class="quantity"></td>
+                            <td class="description">TOTAL</td>
+                            <td class="price">$55.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="centered">Thanks for your purchase!
+                    <br>parzibyte.me/blog
+                </p>
+            </div>
+
+            <ButtonX color="blue" @click="imprimir" >Imprimir</ButtonX>
+            <ButtonX color="red" @click="cerrarModal">Cancelar</ButtonX>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import ButtonX from '@/components/utilities/ButtonX.vue';
+import { ref, defineEmits } from 'vue';
+
+
+const emit = defineEmits(['cerrarModal']);
+const imprimiendo = ref(false)
+
+
+
+const imprimir = ()=>{
+    imprimiendo.value = true;
+    window.print();
+}
+
+const cerrarModal = () => {
+    emit('cerrarModal');
+};
+
+</script>
