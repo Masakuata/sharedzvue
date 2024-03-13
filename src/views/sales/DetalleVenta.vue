@@ -14,7 +14,8 @@
             <template v-if="!requestSent">
 
                 <div class="w-full">
-                    <p class="w-full text-center font-semibold bg-gray-400 text-white rounded-t-lg ">PRODUCTOS DE LA VENTA
+                    <p class="w-full text-center font-semibold bg-gray-400 text-white rounded-t-lg ">PRODUCTOS DE LA
+                        VENTA
                     </p>
                     <div
                         class="w-full h-[40vh] border border-gray-400 rounded-b-lg p-3 overflow-scroll md:grid md:grid-cols-3 ">
@@ -27,18 +28,11 @@
 
                     <template v-if="urlFirebase !== null">
                         <div class="w-full px-2 mt-2">
-                            <div class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
-                                <div class="mx-2 text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-printer w-5 h-5">
-                                        <polyline points="6 9 6 2 18 2 18 9" />
-                                        <path
-                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                        <rect width="12" height="8" x="6" y="14" />
-                                    </svg>
-                                </div>
-                                <a :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
+                            <div
+                                class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
+
+                                <a :href="urlFirebase" target="_blank"
+                                    class="flex justify-center items-center w-full h-full text-white">
                                     Imprimir ticket
                                 </a>
                             </div>
@@ -68,7 +62,8 @@
                             </div>
                             <div class="w-1/4 flex flex-row  justify-end">
                                 <input type="checkbox" v-model="finiquitarRestante"
-                                    class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500" id="checkbox">
+                                    class="w-6 h-6 text-bgBlue border-gray-300 rounded focus:ring-blue-500"
+                                    id="checkbox">
                             </div>
 
 
@@ -79,17 +74,18 @@
                             <p class="font-semibold w-1/2">Monto del Abono</p>
                             <div class="w-1/2 text-right">
 
-                                <div class="relative">
+                                <div v-if="!modalEliminarVentaVisible && !isVisibleModalTicket" class="relative">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-dollar-sign">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-dollar-sign">
                                             <line x1="12" x2="12" y1="2" y2="22" />
                                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                         </svg>
                                     </div>
-                                    <input v-if="!modalEliminarVentaVisible" :disabled="finiquitarRestante" v-model="abono"
-                                        id="default-search"
+                                    <input v-if="!modalEliminarVentaVisible" :disabled="finiquitarRestante"
+                                        v-model="abono" id="default-search"
                                         class="block w-full p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
 
                                 </div>
@@ -144,7 +140,8 @@
                     <template v-else>
                         <template v-if="!error && !ventaEliminada">
                             <div class="w-full">
-                                <p class="text-2xl font-semibold text-center text-bgBlue">Abono registrado exitósamente</p>
+                                <p class="text-2xl font-semibold text-center text-bgBlue">Abono registrado exitósamente
+                                </p>
                                 <div class="w-full flex justify-center mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="currentFill" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -164,18 +161,9 @@
                                         <div class="w-full px-2 mt-2">
                                             <div
                                                 class="w-full h-12  bg-colorCancel rounded-lg flex flex-row items-center justify-center ">
-                                                <div class="mx-2 text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-printer w-5 h-5">
-                                                        <polyline points="6 9 6 2 18 2 18 9" />
-                                                        <path
-                                                            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                                        <rect width="12" height="8" x="6" y="14" />
-                                                    </svg>
-                                                </div>
-                                                <a :href="urlFirebase" target="_blank" class="w-fit text-center text-white">
+
+                                                <a :href="urlFirebase" target="_blank"
+                                                    class="flex justify-center items-center w-full h-full text-white">
                                                     Imprimir ticket
                                                 </a>
                                             </div>
@@ -183,6 +171,8 @@
                                     </template>
 
                                 </div>
+
+
 
                                 <div class="p-2 w-full">
                                     <ButtonX @click="aceptar" color="blue">Aceptar</ButtonX>
@@ -193,7 +183,8 @@
                         </template>
                         <template v-else-if="!error && ventaEliminada">
                             <div class="w-full">
-                                <p class="text-2xl font-semibold text-center text-bgBlue">Venta eliminada exitósamente</p>
+                                <p class="text-2xl font-semibold text-center text-bgBlue">Venta eliminada exitósamente
+                                </p>
                                 <div class="w-full flex justify-center mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="currentFill" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -212,12 +203,14 @@
                         </template>
                         <template v-else>
                             <div class="w-full">
-                                <p class="text-2xl font-semibold text-center text-bgBlue">Error al registrar el abono</p>
+                                <p class="text-2xl font-semibold text-center text-bgBlue">Error al registrar el abono
+                                </p>
                                 <p class="text-center text-red-600">{{ errorMessage }}</p>
                                 <div class="w-full flex justify-center mt-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-x-circle text-red-600 w-16 h-16">
+                                        fill="currentColor" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-x-circle text-red-600 w-16 h-16">
                                         <circle cx="12" cy="12" r="10" />
                                         <path d="m15 9-6 6" />
                                         <path d="m9 9 6 6" />
@@ -260,7 +253,7 @@
 
     </div>
 </template>
-    
+
 <script setup>
 import { onMounted, ref, watch, onUnmounted } from 'vue';
 import ButtonX from '@/components/utilities/ButtonX.vue';
@@ -273,6 +266,7 @@ import { toggleSidebar } from '@/utils/sidebarManager.js';
 import ClienteDetailRow from './ClienteDetailRow.vue';
 import DetallesVentaRow from './DetallesVentaRow.vue';
 import ModalConfirmationX from '@/components/utilities/ModalConfirmationX.vue';
+import ModalImprimirTickect from '@/components/utilities/ModalImprimirTickect.vue';
 
 
 const route = useRoute();
@@ -305,6 +299,16 @@ const modalEliminarVentaVisible = ref(false)
 const ventaEliminada = ref(false);
 const mensajeLoading = ref("")
 const idVenta = ref(null);
+
+let contadorIntentos = 0;
+const isVisibleModalTicket = ref(false);
+
+const abrirModalTicket = () => {
+    isVisibleModalTicket.value = true;
+}
+const cerrarModalTicket = () => {
+    isVisibleModalTicket.value = false;
+}
 
 
 
@@ -367,8 +371,9 @@ const obtenerUrlFirebase = async () => {
         console.log('Intentando obtener url');
         urlFirebase.value = await getUrlTicket(route.params.id);
         console.log('El url', urlFirebase);
-        if (urlFirebase.value === null) {
+        if (urlFirebase.value === null && contadorIntentos < 3) {
             console.log('El url es null intentando recuperar url');
+            contadorIntentos++;
             obtenerUrlFirebase();
         }
         console.log('El url fue obtenido');
